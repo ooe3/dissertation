@@ -11,6 +11,7 @@ public class Run {
     // add application code here
     LogInGUI lg = new LogInGUI();
     //database connection
+    //add extra comment here
     conn.close();
 		
 	}
