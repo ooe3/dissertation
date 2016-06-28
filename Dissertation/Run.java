@@ -10,6 +10,7 @@ public class Run {
         getConnection("jdbc:h2:~/test", "sa", "");
     // add application code here
     LogInGUI lg = new LogInGUI();
+    //database connection
     conn.close();
 		
 	}
