@@ -41,6 +41,9 @@ public class MainGUI implements ItemListener {
 	
 	public void displayGUI(){
 		JFrame jf = new JFrame("University Records System");
+		jf.setDefaultCloseOperation(jf.EXIT_ON_CLOSE);
+		
+		jf.setVisible(true);
 	}
 	
 	public void actionPerformed(ActionEvent e){
