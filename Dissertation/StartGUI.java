@@ -26,23 +26,6 @@ public class StartGUI implements ActionListener{
 	String password = "olubunmi";
 
 	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StartGUI window = new StartGUI();
-					window.frame.setVisible(true);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
 	 * Create the application.
 	 */
 	public StartGUI() {
@@ -111,6 +94,8 @@ public class StartGUI implements ActionListener{
 
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
+		
+		frame.setVisible(true);
 	}
 
 	public void actionPerformed(ActionEvent ee){

@@ -1,3 +1,4 @@
+import java.awt.EventQueue;
 import java.sql.*;
 import javax.swing.*;
 public class Run {
@@ -10,13 +11,17 @@ public class Run {
         getConnection("jdbc:h2:~/test", "sa", "");
     // add application code here
     //LogInGUI lg = new LogInGUI();
-    MainGUI mg = new MainGUI();
-    
-    javax.swing.SwingUtilities.invokeLater(new Runnable(){
-    	public void run(){
-    		mg.displayGUI();
-    	}
-    });
+    EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					StartGUI window = new StartGUI();
+					
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
     //database connection
     //add extra comment here
     conn.close();
