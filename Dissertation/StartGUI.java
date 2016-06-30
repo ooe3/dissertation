@@ -14,6 +14,7 @@ import java.awt.CardLayout;
 import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Choice;
 
 public class StartGUI implements ActionListener{
 
@@ -24,6 +25,7 @@ public class StartGUI implements ActionListener{
 	private JButton btnLogIn, btnLogOut;
 	String text = "ooe";
 	String password = "olubunmi";
+	private JTextField textField_1;
 
 	/**
 	 * Create the application.
@@ -91,9 +93,43 @@ public class StartGUI implements ActionListener{
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(16, 99, 735, 339);
 		panel_1.add(textArea);
+		
+		JButton btnNewButton = new JButton("Add Course");
+		btnNewButton.setBounds(16, 544, 117, 29);
+		panel_1.add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Remove Course");
+		btnNewButton_1.setBounds(16, 675, 135, 29);
+		panel_1.add(btnNewButton_1);
+		
+		JButton btnViewResults = new JButton("View Results");
+		btnViewResults.setBounds(634, 468, 117, 29);
+		panel_1.add(btnViewResults);
+		
+		JLabel lblToAddA = new JLabel("To add a course select from the list below");
+		lblToAddA.setBounds(22, 473, 276, 16);
+		panel_1.add(lblToAddA);
+		
+		Choice choice = new Choice();
+		choice.setBounds(16, 495, 264, 27);
+		panel_1.add(choice);
+		
+		JLabel lblEnterCourseCode = new JLabel("Enter course code below to remove course");
+		lblEnterCourseCode.setBounds(16, 601, 281, 16);
+		panel_1.add(lblEnterCourseCode);
+		
+		JLabel lblCourseCode = new JLabel("Course Code");
+		lblCourseCode.setBounds(22, 635, 96, 16);
+		panel_1.add(lblCourseCode);
+		
+		textField_1 = new JTextField();
+		textField_1.setBounds(150, 629, 130, 26);
+		panel_1.add(textField_1);
+		textField_1.setColumns(10);
 
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
+		
 		
 		frame.setVisible(true);
 	}
