@@ -26,6 +26,10 @@ public class StartGUI implements ActionListener{
 	String text = "ooe";
 	String password = "olubunmi";
 	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
+	private JTextField textField_4;
+	private JTextField textField_5;
 
 	/**
 	 * Create the application.
@@ -83,7 +87,7 @@ public class StartGUI implements ActionListener{
 
 		btnLogOut = new JButton("Log Out");
 		btnLogOut.addActionListener(this);
-		btnLogOut.setBounds(842, 6, 129, 52);
+		btnLogOut.setBounds(865, 6, 129, 52);
 		panel_1.add(btnLogOut);
 
 		JLabel lblWelcome = new JLabel("Welcome");
@@ -91,7 +95,7 @@ public class StartGUI implements ActionListener{
 		panel_1.add(lblWelcome);
 
 		JTextArea textArea = new JTextArea();
-		textArea.setBounds(16, 99, 735, 339);
+		textArea.setBounds(16, 98, 978, 339);
 		panel_1.add(textArea);
 		
 		JButton btnNewButton = new JButton("Add Course");
@@ -99,11 +103,11 @@ public class StartGUI implements ActionListener{
 		panel_1.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Remove Course");
-		btnNewButton_1.setBounds(16, 675, 135, 29);
+		btnNewButton_1.setBounds(16, 667, 135, 29);
 		panel_1.add(btnNewButton_1);
 		
 		JButton btnViewResults = new JButton("View Results");
-		btnViewResults.setBounds(634, 468, 117, 29);
+		btnViewResults.setBounds(688, 6, 141, 52);
 		panel_1.add(btnViewResults);
 		
 		JLabel lblToAddA = new JLabel("To add a course select from the list below");
@@ -115,11 +119,11 @@ public class StartGUI implements ActionListener{
 		panel_1.add(choice);
 		
 		JLabel lblEnterCourseCode = new JLabel("Enter course code below to remove course");
-		lblEnterCourseCode.setBounds(16, 601, 281, 16);
+		lblEnterCourseCode.setBounds(22, 601, 281, 16);
 		panel_1.add(lblEnterCourseCode);
 		
 		JLabel lblCourseCode = new JLabel("Course Code");
-		lblCourseCode.setBounds(22, 635, 96, 16);
+		lblCourseCode.setBounds(22, 634, 96, 16);
 		panel_1.add(lblCourseCode);
 		
 		textField_1 = new JTextField();
@@ -129,6 +133,75 @@ public class StartGUI implements ActionListener{
 
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
+		panel_2.setLayout(null);
+		
+		JButton btnLogOut_1 = new JButton("Log Out");
+		btnLogOut_1.setBounds(877, 18, 117, 57);
+		panel_2.add(btnLogOut_1);
+		
+		JTextArea textArea_1 = new JTextArea();
+		textArea_1.setBounds(18, 111, 976, 335);
+		panel_2.add(textArea_1);
+		
+		JLabel lblAddACourse = new JLabel("Add a course");
+		lblAddACourse.setBounds(18, 458, 96, 16);
+		panel_2.add(lblAddACourse);
+		
+		JLabel lblCourseCode_1 = new JLabel("Course Code");
+		lblCourseCode_1.setBounds(18, 496, 88, 16);
+		panel_2.add(lblCourseCode_1);
+		
+		JLabel lblNewLabel_2 = new JLabel("Course Name");
+		lblNewLabel_2.setBounds(18, 524, 88, 22);
+		panel_2.add(lblNewLabel_2);
+		
+		JLabel lblCourseCredit = new JLabel("Course Credit");
+		lblCourseCredit.setBounds(18, 558, 86, 16);
+		panel_2.add(lblCourseCredit);
+		
+		textField_2 = new JTextField();
+		textField_2.setBounds(140, 491, 348, 26);
+		panel_2.add(textField_2);
+		textField_2.setColumns(10);
+		
+		textField_3 = new JTextField();
+		textField_3.setBounds(140, 522, 348, 26);
+		panel_2.add(textField_3);
+		textField_3.setColumns(10);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(140, 553, 348, 26);
+		panel_2.add(textField_4);
+		textField_4.setColumns(10);
+		
+		JButton btnAddCourse = new JButton("Add Course");
+		btnAddCourse.setBounds(140, 580, 117, 29);
+		panel_2.add(btnAddCourse);
+		
+		JLabel lblNewLabel_3 = new JLabel("Remove Course");
+		lblNewLabel_3.setBounds(18, 621, 130, 27);
+		panel_2.add(lblNewLabel_3);
+		
+		JLabel lblCourseCode_2 = new JLabel("Course Code");
+		lblCourseCode_2.setBounds(18, 660, 96, 16);
+		panel_2.add(lblCourseCode_2);
+		
+		textField_5 = new JTextField();
+		textField_5.setBounds(140, 655, 348, 26);
+		panel_2.add(textField_5);
+		textField_5.setColumns(10);
+		
+		JButton btnRemoveCourse = new JButton("Remove Course");
+		btnRemoveCourse.setBounds(140, 701, 130, 29);
+		panel_2.add(btnRemoveCourse);
+		
+		JButton btnAddResults = new JButton("Add results");
+		btnAddResults.setBounds(556, 18, 123, 57);
+		panel_2.add(btnAddResults);
+		
+		JButton btnNewButton_2 = new JButton("Make results available");
+		btnNewButton_2.setBounds(691, 18, 174, 56);
+		panel_2.add(btnNewButton_2);
 		
 		
 		frame.setVisible(true);
