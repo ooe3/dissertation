@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Choice;
+import java.awt.Label;
 
 public class StartGUI implements ActionListener{
 
@@ -30,6 +31,8 @@ public class StartGUI implements ActionListener{
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JTextField textField_5;
+	private JTextField textField_6;
+	private JTextField textField_7;
 
 	/**
 	 * Create the application.
@@ -42,7 +45,7 @@ public class StartGUI implements ActionListener{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("University Record System");
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new CardLayout(0, 0));
@@ -95,7 +98,7 @@ public class StartGUI implements ActionListener{
 		panel_1.add(lblWelcome);
 
 		JTextArea textArea = new JTextArea();
-		textArea.setBounds(16, 98, 978, 339);
+		textArea.setBounds(0, 97, 978, 339);
 		panel_1.add(textArea);
 		
 		JButton btnNewButton = new JButton("Add Course");
@@ -140,7 +143,7 @@ public class StartGUI implements ActionListener{
 		panel_2.add(btnLogOut_1);
 		
 		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setBounds(18, 111, 976, 335);
+		textArea_1.setBounds(6, 111, 976, 335);
 		panel_2.add(textArea_1);
 		
 		JLabel lblAddACourse = new JLabel("Add a course");
@@ -202,6 +205,68 @@ public class StartGUI implements ActionListener{
 		JButton btnNewButton_2 = new JButton("Make results available");
 		btnNewButton_2.setBounds(691, 18, 174, 56);
 		panel_2.add(btnNewButton_2);
+		
+		JPanel panel_3 = new JPanel();
+		frame.getContentPane().add(panel_3, "name_1845822356495898");
+		panel_3.setLayout(null);
+		
+		JLabel lblAddingResults = new JLabel("Adding results");
+		lblAddingResults.setBounds(19, 19, 147, 16);
+		panel_3.add(lblAddingResults);
+		
+		Choice choice_1 = new Choice();
+		choice_1.setBounds(19, 70, 307, 27);
+		panel_3.add(choice_1);
+		
+		JLabel lblSelectTheStudent = new JLabel("Select the student whose result you want to add below");
+		lblSelectTheStudent.setBounds(19, 48, 390, 16);
+		panel_3.add(lblSelectTheStudent);
+		
+		JLabel lblNewLabel_4 = new JLabel("Select course you want to add mark for below");
+		lblNewLabel_4.setBounds(19, 137, 354, 16);
+		panel_3.add(lblNewLabel_4);
+		
+		Choice choice_2 = new Choice();
+		choice_2.setBounds(19, 179, 295, 27);
+		panel_3.add(choice_2);
+		
+		JLabel lblExam = new JLabel("Exam");
+		lblExam.setBounds(19, 351, 61, 16);
+		panel_3.add(lblExam);
+		
+		JLabel lblCoursework = new JLabel("Coursework");
+		lblCoursework.setBounds(19, 392, 81, 16);
+		panel_3.add(lblCoursework);
+		
+		JLabel lblPercentage = new JLabel("Percentage");
+		lblPercentage.setBounds(127, 319, 81, 16);
+		panel_3.add(lblPercentage);
+		
+		textField_6 = new JTextField();
+		textField_6.setBounds(217, 346, 66, 26);
+		panel_3.add(textField_6);
+		textField_6.setColumns(10);
+		
+		textField_7 = new JTextField();
+		textField_7.setBounds(217, 387, 66, 26);
+		panel_3.add(textField_7);
+		textField_7.setColumns(10);
+		
+		JLabel lblNewLabel_5 = new JLabel("");
+		lblNewLabel_5.setBounds(127, 351, 61, 16);
+		panel_3.add(lblNewLabel_5);
+		
+		JLabel label = new JLabel("");
+		label.setBounds(127, 392, 61, 16);
+		panel_3.add(label);
+		
+		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(110, 425, 117, 29);
+		panel_3.add(btnSubmit);
+		
+		JButton btnGoBack = new JButton("Go back");
+		btnGoBack.setBounds(802, 70, 141, 58);
+		panel_3.add(btnGoBack);
 		
 		
 		frame.setVisible(true);
