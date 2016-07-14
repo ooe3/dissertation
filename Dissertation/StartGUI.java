@@ -17,14 +17,17 @@ import java.awt.event.ActionEvent;
 import java.awt.Choice;
 import java.awt.Label;
 
-public class StartGUI implements ActionListener{
+import java.sql.*;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
+public class StartGUI{
 
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JTextField textField;
 	private JPanel panel, panel_1;
-	private JButton btnLogIn, btnLogOut;
-	String text = "ooe";
+	private JButton btnLogIn;
+	String text = "ooe3";
 	String password = "olubunmi";
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -33,12 +36,18 @@ public class StartGUI implements ActionListener{
 	private JTextField textField_5;
 	private JTextField textField_6;
 	private JTextField textField_7;
+	private Connection conn = null;
+	private DatabaseConnection d;
+	
 
 	/**
 	 * Create the application.
 	 */
-	public StartGUI() {
+	public StartGUI(DatabaseConnection dc) {
 		initialize();
+		d = dc;
+		conn = dc.connectToDatabase();
+		
 	}
 
 	/**
@@ -55,20 +64,42 @@ public class StartGUI implements ActionListener{
 		frame.getContentPane().add(panel, "name_1756125214064824");
 		panel.setLayout(null);
 
-		btnLogIn = new JButton("Log In");
-		btnLogIn.addActionListener(this);
-		btnLogIn.setBounds(390, 310, 181, 49);
-		panel.add(btnLogIn);
-
 		passwordField = new JPasswordField();
 		passwordField.setBounds(477, 252, 147, 26);
 		panel.add(passwordField);
 
 		textField = new JTextField();
 		textField.setBounds(477, 193, 147, 26);
-		textField.addActionListener(this);
 		panel.add(textField);
 		textField.setColumns(10);
+		
+		btnLogIn = new JButton("Log In");
+		btnLogIn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+	
+					try{
+						String uName = textField.getText();
+						String pass = new String(passwordField.getPassword());
+						String query = "SELECT * FROM USER WHERE MATRICNO = '"+uName+"' AND PASSWORD = '"+pass+"'";
+						Statement ps = conn.createStatement();
+						ResultSet rs = ps.executeQuery(query);		
+						if(rs.next()){
+							panel.setVisible(false);
+							panel_1.setVisible(true);
+						}else {
+							JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
+									JOptionPane.ERROR_MESSAGE);
+						}
+							rs.close();
+							ps.close();
+					}catch(Exception e1){
+						e1.printStackTrace();
+					} 
+			}
+		});
+		
+		btnLogIn.setBounds(390, 310, 181, 49);
+		panel.add(btnLogIn);
 
 
 		JLabel lblNewLabel = new JLabel("Username");
@@ -88,30 +119,21 @@ public class StartGUI implements ActionListener{
 		frame.getContentPane().add(panel_1, "name_1756125223660446");
 		panel_1.setLayout(null);
 
-		btnLogOut = new JButton("Log Out");
-		btnLogOut.addActionListener(this);
-		btnLogOut.setBounds(865, 6, 129, 52);
-		panel_1.add(btnLogOut);
-
-		JLabel lblWelcome = new JLabel("Welcome");
-		lblWelcome.setBounds(6, 11, 77, 28);
-		panel_1.add(lblWelcome);
-
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(0, 97, 978, 339);
 		panel_1.add(textArea);
 		
 		JButton btnNewButton = new JButton("Add Course");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
 		btnNewButton.setBounds(16, 544, 117, 29);
 		panel_1.add(btnNewButton);
 		
 		JButton btnNewButton_1 = new JButton("Remove Course");
 		btnNewButton_1.setBounds(16, 667, 135, 29);
 		panel_1.add(btnNewButton_1);
-		
-		JButton btnViewResults = new JButton("View Results");
-		btnViewResults.setBounds(688, 6, 141, 52);
-		panel_1.add(btnViewResults);
 		
 		JLabel lblToAddA = new JLabel("To add a course select from the list below");
 		lblToAddA.setBounds(22, 473, 276, 16);
@@ -133,7 +155,7 @@ public class StartGUI implements ActionListener{
 		textField_1.setBounds(150, 629, 130, 26);
 		panel_1.add(textField_1);
 		textField_1.setColumns(10);
-
+		
 		JPanel panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
 		panel_2.setLayout(null);
@@ -268,25 +290,15 @@ public class StartGUI implements ActionListener{
 		btnGoBack.setBounds(802, 70, 141, 58);
 		panel_3.add(btnGoBack);
 		
+		JMenuBar menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		JMenu mnHome = new JMenu("Home");
+		menuBar.add(mnHome);
 		
 		frame.setVisible(true);
+		
 	}
+	
 
-	public void actionPerformed(ActionEvent ee){
-		if(ee.getSource() == btnLogIn){
-			if(textField.getText().equals(text)){
-				textField.setText("");
-				panel_1.setVisible(true);
-				panel.setVisible(false);
-			} else 
-				JOptionPane.showMessageDialog(null, "Username incorrrect", "Incorrect Username", JOptionPane.ERROR_MESSAGE);
-
-
-		} else if(ee.getSource() == btnLogOut){
-			panel_1.setVisible(false);
-			panel.setVisible(true);
-		}
-
-
-	}
 }
