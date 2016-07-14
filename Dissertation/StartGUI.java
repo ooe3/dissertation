@@ -25,7 +25,7 @@ public class StartGUI{
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JTextField textField;
-	private JPanel panel, panel_1;
+	private JPanel panel, panel_1, panel_2, panel_3;
 	private JButton btnLogIn;
 	String text = "ooe3";
 	String password = "olubunmi";
@@ -38,6 +38,9 @@ public class StartGUI{
 	private JTextField textField_7;
 	private Connection conn = null;
 	private DatabaseConnection d;
+	private Statement ps;
+	private JMenuBar menuBar;
+	private JMenu mnMain, admin;
 	
 
 	/**
@@ -81,11 +84,39 @@ public class StartGUI{
 						String uName = textField.getText();
 						String pass = new String(passwordField.getPassword());
 						String query = "SELECT * FROM USER WHERE MATRICNO = '"+uName+"' AND PASSWORD = '"+pass+"'";
-						Statement ps = conn.createStatement();
-						ResultSet rs = ps.executeQuery(query);		
+						
+						ps = conn.createStatement();
+						ResultSet rs = ps.executeQuery(query);	
+						
 						if(rs.next()){
+							
+							String type = rs.getString("USERTYPE");
+							
+							if(type.equals("Student")){
+							String query1 = "SELECT FIRSTNAME, LASTNAME FROM STUDENT WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+							ResultSet rs1 = ps.executeQuery(query1);
+							while(rs1.next()){
+							String studentf = rs1.getString("FIRSTNAME");
+							String studentl = rs1.getString("LASTNAME");
+							mnMain = new JMenu(studentf + " " + studentl);
+							displayMenu(mnMain);
 							panel.setVisible(false);
 							panel_1.setVisible(true);
+							}
+							rs1.close();
+							}else{
+								String query2 = "SELECT FIRSTNAME, LASTNAME FROM ADMIN WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+								ResultSet rs2 = ps.executeQuery(query2);
+								while(rs2.next()){
+								String adminf = rs2.getString("FIRSTNAME");
+								String adminl = rs2.getString("LASTNAME");
+								admin = new JMenu(adminf + " " + adminl);
+								displayMenu(admin);
+								panel.setVisible(false);
+								panel_2.setVisible(true);
+								}
+								rs2.close();
+							}
 						}else {
 							JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
 									JOptionPane.ERROR_MESSAGE);
@@ -96,6 +127,7 @@ public class StartGUI{
 						e1.printStackTrace();
 					} 
 			}
+
 		});
 		
 		btnLogIn.setBounds(390, 310, 181, 49);
@@ -156,7 +188,7 @@ public class StartGUI{
 		panel_1.add(textField_1);
 		textField_1.setColumns(10);
 		
-		JPanel panel_2 = new JPanel();
+		panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
 		panel_2.setLayout(null);
 		
@@ -228,7 +260,7 @@ public class StartGUI{
 		btnNewButton_2.setBounds(691, 18, 174, 56);
 		panel_2.add(btnNewButton_2);
 		
-		JPanel panel_3 = new JPanel();
+		panel_3 = new JPanel();
 		frame.getContentPane().add(panel_3, "name_1845822356495898");
 		panel_3.setLayout(null);
 		
@@ -290,14 +322,18 @@ public class StartGUI{
 		btnGoBack.setBounds(802, 70, 141, 58);
 		panel_3.add(btnGoBack);
 		
-		JMenuBar menuBar = new JMenuBar();
-		frame.setJMenuBar(menuBar);
-		
 		JMenu mnHome = new JMenu("Home");
-		menuBar.add(mnHome);
+		this.displayMenu(mnHome);
 		
 		frame.setVisible(true);
 		
+	}
+	
+	public void displayMenu(JMenu menub){
+		menuBar = new JMenuBar();
+		frame.setJMenuBar(menuBar);
+		
+		menuBar.add(menub);
 	}
 	
 
