@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class DatabaseConnection{
 	Connection conn = null;
+	Statement st = null;
 
 	public static Connection connectToDatabase(){
 		//Database connection code from H2 database website
@@ -11,8 +12,8 @@ public class DatabaseConnection{
 		try {
 			Class.forName("org.h2.Driver");
 			Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
-			JOptionPane.showMessageDialog(null, "Connection successful", "Connection check",
-					JOptionPane.ERROR_MESSAGE);
+			//JOptionPane.showMessageDialog(null, "Connection successful", "Connection check",
+					//JOptionPane.ERROR_MESSAGE);
 			return conn;
 		} catch (Exception e){
 			return null;
