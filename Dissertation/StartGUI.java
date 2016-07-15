@@ -1,4 +1,5 @@
 import java.awt.EventQueue;
+import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -28,7 +29,7 @@ public class StartGUI{
 	private JTextArea textArea, textArea_1;
 	private JPanel panel, panel_1, panel_2, panel_3;
 	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
-	private JButton btnLogIn;
+	private JButton btnLogIn, btnNewButton;
 	String text = "ooe3";
 	String password = "olubunmi";
 	private Connection conn = null;
@@ -38,7 +39,10 @@ public class StartGUI{
 	private JMenu mnMain, admin, mnHome;
 	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
 	private String studentf, studentl, studentE;
+	private int studentID;
 	private Queries q;
+	private JTextField textField_8;
+	private Choice choice, choice_1, choice_2;
 
 	/**
 	 * Create the application.
@@ -151,6 +155,7 @@ public class StartGUI{
 							String query1 = "SELECT * FROM STUDENT WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
 							ResultSet rs1 = ps.executeQuery(query1);
 							while(rs1.next()){
+								studentID = rs1.getInt("STUDENTID");
 								studentf = rs1.getString("FIRSTNAME");
 								studentl = rs1.getString("LASTNAME");
 								studentE = rs1.getString("Email");
@@ -171,11 +176,38 @@ public class StartGUI{
 								label.setBounds(219, 58, 276, 16);
 								panel_1.add(label);
 								
+								
 								textArea.setText(q.displayStudentCourses(studentl));
 								panel.setVisible(false);
 								panel_1.setVisible(true);
 							}
 							rs1.close();
+							
+							choice = new Choice();
+							choice.setBounds(22, 495, 264, 27);
+							choice.add("");
+							String query2 = "SELECT cd.COURSE_NAME FROM COURSEDEGREE AS cd INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = cd.DEGREE_ID WHERE sd.STUDENT = '"+studentID+"'";
+							ResultSet rst = ps.executeQuery(query2);
+							while(rst.next()){
+								String course = rst.getString("COURSE_NAME");
+								choice.add(course);
+							}
+							String selected = "";
+							choice.addItemListener(new ItemListener(){
+				        public void itemStateChanged(ItemEvent ie)
+				        {
+				        		selected = choice.getSelectedItem();
+				        }
+
+				    });
+							btnNewButton.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									q.insertChoice(selected, studentID);
+								}
+							});
+							rst.close();
+							panel_1.add(choice);
+							
 						}else{
 							String query2 = "SELECT * FROM ADMIN WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
 							ResultSet rs2 = ps.executeQuery(query2);
@@ -183,6 +215,7 @@ public class StartGUI{
 								String adminf = rs2.getString("FIRSTNAME");
 								String adminl = rs2.getString("LASTNAME");
 								String adminE = rs2.getString("EMAIL");
+								
 								admin = new JMenu(adminf + " " + adminl);
 								admin.add(mntmAdminHome);
 								admin.add(mntmResults);
@@ -190,19 +223,22 @@ public class StartGUI{
 								admin.add(mntmLogOut);
 								admin.add(mntmExit);
 								displayMenu(admin);
+								
 								label_2 = new JLabel(q.displayDetails(type, uName));
 								label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 								label_2.setBounds(177, 16, 400, 28);
 								panel_2.add(label_2);
+								
 								label_3 = new JLabel(adminE);
 								label_3.setBounds(227, 83, 276, 16);
 								panel_2.add(label_3);
+								
 								textArea_1.setText(q.displayAvailableCourses(adminl));
 								panel.setVisible(false);
 								panel_2.setVisible(true);
 							}
 							rs2.close();
-						}
+							}
 					}else {
 						JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
 								JOptionPane.ERROR_MESSAGE);
@@ -245,11 +281,8 @@ public class StartGUI{
 		panel_1.add(textArea, BorderLayout.CENTER);
 		
 
-		JButton btnNewButton = new JButton("Add Course");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
+		btnNewButton = new JButton("Add Course");
+		
 		btnNewButton.setBounds(16, 544, 117, 29);
 		panel_1.add(btnNewButton);
 
@@ -260,10 +293,6 @@ public class StartGUI{
 		lblToAddA = new JLabel("To add a course select from the list below");
 		lblToAddA.setBounds(22, 473, 276, 16);
 		panel_1.add(lblToAddA);
-
-		Choice choice = new Choice();
-		choice.setBounds(16, 495, 264, 27);
-		panel_1.add(choice);
 
 		lblEnterCourseCode = new JLabel("Enter course code below to remove course");
 		lblEnterCourseCode.setBounds(22, 601, 281, 16);
@@ -290,57 +319,66 @@ public class StartGUI{
 		lblAddACourse.setBounds(18, 458, 96, 16);
 		panel_2.add(lblAddACourse);
 
-		JLabel lblCourseCode_1 = new JLabel("Course Code");
-		lblCourseCode_1.setBounds(18, 496, 88, 16);
+		JLabel lblCourseCode_1 = new JLabel("Course Name");
+		lblCourseCode_1.setBounds(18, 486, 88, 16);
 		panel_2.add(lblCourseCode_1);
 
-		JLabel lblNewLabel_2 = new JLabel("Course Name");
-		lblNewLabel_2.setBounds(18, 524, 88, 22);
+		JLabel lblNewLabel_2 = new JLabel("Course Credit");
+		lblNewLabel_2.setBounds(18, 514, 88, 22);
 		panel_2.add(lblNewLabel_2);
 
-		JLabel lblCourseCredit = new JLabel("Course Credit");
-		lblCourseCredit.setBounds(18, 558, 86, 16);
+		JLabel lblCourseCredit = new JLabel("Exam Percentage");
+		lblCourseCredit.setBounds(18, 548, 108, 16);
 		panel_2.add(lblCourseCredit);
 
 		textField_2 = new JTextField();
-		textField_2.setBounds(140, 491, 348, 26);
+		textField_2.setBounds(177, 481, 348, 26);
 		panel_2.add(textField_2);
 		textField_2.setColumns(10);
 
 		textField_3 = new JTextField();
-		textField_3.setBounds(140, 522, 348, 26);
+		textField_3.setBounds(177, 512, 348, 26);
 		panel_2.add(textField_3);
 		textField_3.setColumns(10);
 
 		textField_4 = new JTextField();
-		textField_4.setBounds(140, 553, 348, 26);
+		textField_4.setBounds(177, 543, 348, 26);
 		panel_2.add(textField_4);
 		textField_4.setColumns(10);
 
 		JButton btnAddCourse = new JButton("Add Course");
-		btnAddCourse.setBounds(140, 580, 117, 29);
+		btnAddCourse.setBounds(533, 512, 117, 29);
 		panel_2.add(btnAddCourse);
 
 		JLabel lblNewLabel_3 = new JLabel("Remove Course");
 		lblNewLabel_3.setBounds(18, 621, 130, 27);
 		panel_2.add(lblNewLabel_3);
 
-		JLabel lblCourseCode_2 = new JLabel("Course Code");
+		JLabel lblCourseCode_2 = new JLabel("Course Name");
 		lblCourseCode_2.setBounds(18, 660, 96, 16);
 		panel_2.add(lblCourseCode_2);
 
 		textField_5 = new JTextField();
-		textField_5.setBounds(140, 655, 348, 26);
+		textField_5.setBounds(177, 655, 348, 26);
 		panel_2.add(textField_5);
 		textField_5.setColumns(10);
 
 		JButton btnRemoveCourse = new JButton("Remove Course");
-		btnRemoveCourse.setBounds(140, 701, 130, 29);
+		btnRemoveCourse.setBounds(533, 655, 130, 29);
 		panel_2.add(btnRemoveCourse);
 		
 		lblEmail_1 = new JLabel("Email:");
 		lblEmail_1.setBounds(177, 83, 44, 16);
 		panel_2.add(lblEmail_1);
+		
+		JLabel lblCourseworkPercentage = new JLabel("Coursework Percentage");
+		lblCourseworkPercentage.setBounds(18, 576, 147, 16);
+		panel_2.add(lblCourseworkPercentage);
+		
+		textField_8 = new JTextField();
+		textField_8.setBounds(177, 571, 348, 26);
+		panel_2.add(textField_8);
+		textField_8.setColumns(10);
 		
 		
 		
@@ -360,7 +398,7 @@ public class StartGUI{
 		lblAddingResults.setBounds(19, 19, 147, 16);
 		panel_3.add(lblAddingResults);
 
-		Choice choice_1 = new Choice();
+		choice_1 = new Choice();
 		choice_1.setBounds(19, 70, 307, 27);
 		panel_3.add(choice_1);
 
@@ -372,7 +410,7 @@ public class StartGUI{
 		lblNewLabel_4.setBounds(19, 137, 354, 16);
 		panel_3.add(lblNewLabel_4);
 
-		Choice choice_2 = new Choice();
+		choice_2 = new Choice();
 		choice_2.setBounds(19, 179, 295, 27);
 		panel_3.add(choice_2);
 

@@ -40,7 +40,7 @@ public class Queries {
 
 	public String displayAvailableCourses(String s){
 		String courses = "";
-		String display = String.format(" %-10s %-10s %-10s %-10s\n", "Courses","Credit","Exam","Coursework");
+		String display = String.format(" %-50s %-50s %-50s %-50s\n", "Courses","Credit","Exam","Coursework");
 		courses+=display;
 		courses+="\n";
 		String t = "", t1 = "";
@@ -59,7 +59,7 @@ public class Queries {
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
-				t1 = String.format(" %-10s %-10d %-10d %-10d\n", course,credit,exam,cw);
+				t1 = String.format(" %-50s %-50d %-50d %-50d\n", course,credit,exam,cw);
 				courses+=t1;
 				courses+="\n";
 			}
@@ -113,6 +113,27 @@ public class Queries {
 			e.printStackTrace();
 		} 
 		return school;
+	}
+	
+	public void insertChoice(String s, int d){
+		try{
+			st = conn.createStatement();
+			String sql = "INSERT INTO COURSERESULT (COURSE_NAME, STUDENTID) VALUES ('"+s+"','"+d+"')";
+			st.executeUpdate(sql);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void removeChoice(String s, int d){
+		try{
+			st = conn.createStatement();
+			String sql = "DELETE FROM COURSERESULT WHERE COURSE_NAME = '"+s+"' AND STUDENTID = '"+d+"'";
+			st.executeUpdate(sql);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 
