@@ -13,6 +13,7 @@ public class Queries {
 		String courses = "";
 		String display = String.format(" %s\n", "Chosen Courses");
 		courses+=display;
+		courses+="\n";
 		String t = "", t1 = "";
 		try{
 			String query = "SELECT c.COURSE_NAME FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID WHERE st.LASTNAME = '"+s+"'";
@@ -24,6 +25,7 @@ public class Queries {
 				String chosen = rs.getString("COURSE_NAME");
 				t1 = String.format(" %s\n", chosen);
 				courses+=t1;
+				courses+="\n";
 			}
 			if(check == 0){
 				t = String.format(" %s\n", "No Courses Selected yet. Add a course below");
@@ -59,7 +61,7 @@ public class Queries {
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
-				t1 = String.format(" %-50s %-50d %-50d %-50d\n", course,credit,exam,cw);
+				t1 = String.format(" %-50s %-60d %-60d %-60d\n", course,credit,exam,cw);
 				courses+=t1;
 				courses+="\n";
 			}
@@ -130,6 +132,26 @@ public class Queries {
 		try{
 			st = conn.createStatement();
 			String sql = "DELETE FROM COURSERESULT WHERE COURSE_NAME = '"+s+"' AND STUDENTID = '"+d+"'";
+			st.executeUpdate(sql);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void insertCourse(String s, int d, int d1, int d2){
+		try{
+			st = conn.createStatement();
+			String sql = "INSERT INTO COURSES VALUES ('"+s+"','"+d+"','"+d1+"','"+d2+"')";
+			st.executeUpdate(sql);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void removeCourse(String s){
+		try{
+			st = conn.createStatement();
+			String sql = "DELETE FROM COURSES WHERE COURSENAME = '"+s+"'";
 			st.executeUpdate(sql);
 		}catch (Exception e){
 			e.printStackTrace();

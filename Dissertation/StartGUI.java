@@ -29,7 +29,7 @@ public class StartGUI{
 	private JTextArea textArea, textArea_1;
 	private JPanel panel, panel_1, panel_2, panel_3;
 	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
-	private JButton btnLogIn, btnNewButton;
+	private JButton btnLogIn, btnNewButton, btnNewButton_1;
 	String text = "ooe3";
 	String password = "olubunmi";
 	private Connection conn = null;
@@ -38,7 +38,7 @@ public class StartGUI{
 	private JMenuBar menuBar;
 	private JMenu mnMain, admin, mnHome;
 	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
-	private String studentf, studentl, studentE;
+	private String studentf, studentl, studentE,selected;
 	private int studentID;
 	private Queries q;
 	private JTextField textField_8;
@@ -152,7 +152,7 @@ public class StartGUI{
 						String type = rs.getString("USERTYPE");
 						
 						if(type.equals("Student")){
-							String query1 = "SELECT * FROM STUDENT WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+							String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = '"+uName+"'";
 							ResultSet rs1 = ps.executeQuery(query1);
 							while(rs1.next()){
 								studentID = rs1.getInt("STUDENTID");
@@ -192,7 +192,7 @@ public class StartGUI{
 								String course = rst.getString("COURSE_NAME");
 								choice.add(course);
 							}
-							String selected = "";
+							
 							choice.addItemListener(new ItemListener(){
 				        public void itemStateChanged(ItemEvent ie)
 				        {
@@ -202,14 +202,35 @@ public class StartGUI{
 				    });
 							btnNewButton.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
+									if(choice.getSelectedItem().equals("")){
+										JOptionPane.showMessageDialog(null, "No course selected", "Window",
+												JOptionPane.ERROR_MESSAGE);
+									}else{
 									q.insertChoice(selected, studentID);
+									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
+											JOptionPane.INFORMATION_MESSAGE);
+									}
+								}
+							});
+							
+							btnNewButton_1.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									if(textField_1.getText().equals("")){
+										JOptionPane.showMessageDialog(null, "No information entered", "Window",
+												JOptionPane.ERROR_MESSAGE);
+									}else{
+									q.removeChoice(textField_1.getText(), studentID);
+									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
+											JOptionPane.ERROR_MESSAGE);
+									textField_1.setText("");
+									}
 								}
 							});
 							rst.close();
 							panel_1.add(choice);
 							
 						}else{
-							String query2 = "SELECT * FROM ADMIN WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+							String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = '"+uName+"'";
 							ResultSet rs2 = ps.executeQuery(query2);
 							while(rs2.next()){
 								String adminf = rs2.getString("FIRSTNAME");
@@ -286,7 +307,7 @@ public class StartGUI{
 		btnNewButton.setBounds(16, 544, 117, 29);
 		panel_1.add(btnNewButton);
 
-		JButton btnNewButton_1 = new JButton("Remove Course");
+		btnNewButton_1 = new JButton("Remove Course");
 		btnNewButton_1.setBounds(16, 667, 135, 29);
 		panel_1.add(btnNewButton_1);
 
