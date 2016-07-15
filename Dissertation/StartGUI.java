@@ -162,7 +162,7 @@ public class StartGUI{
 								mnMain.add(mntmExit);
 								displayMenu(mnMain);
 								
-								label_1 = new JLabel(q.displayDetails(""));
+								label_1 = new JLabel(q.displayDetails(type, uName));
 								label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 								label_1.setBounds(175, 6, 400, 28);
 								panel_1.add(label_1);
@@ -190,6 +190,10 @@ public class StartGUI{
 								admin.add(mntmLogOut);
 								admin.add(mntmExit);
 								displayMenu(admin);
+								label_2 = new JLabel(q.displayDetails(type, uName));
+								label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+								label_2.setBounds(177, 16, 400, 28);
+								panel_2.add(label_2);
 								label_3 = new JLabel(adminE);
 								label_3.setBounds(227, 83, 276, 16);
 								panel_2.add(label_3);
@@ -340,10 +344,7 @@ public class StartGUI{
 		
 		
 		
-		label_2 = new JLabel("");
-		label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-		label_2.setBounds(177, 16, 61, 16);
-		panel_2.add(label_2);
+		
 		
 		lblEmail = new JLabel("Email:");
 		lblEmail.setBounds(175, 58, 45, 16);
