@@ -123,7 +123,7 @@ public class StartGUI{
 						String type = rs.getString("USERTYPE");
 						
 						if(type.equals("Student")){
-							String query1 = "SELECT FIRSTNAME, LASTNAME FROM STUDENT WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+							String query1 = "SELECT * FROM STUDENT WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
 							ResultSet rs1 = ps.executeQuery(query1);
 							while(rs1.next()){
 								studentf = rs1.getString("FIRSTNAME");
@@ -132,13 +132,13 @@ public class StartGUI{
 								mnMain.add(mntmLogOut);
 								mnMain.add(mntmExit);
 								displayMenu(mnMain);
-								textArea.setText(q.displayStudentCourses(studentl));
+								textArea.setText(q.displayStudentCourses(uName));
 								panel.setVisible(false);
 								panel_1.setVisible(true);
 							}
 							rs1.close();
 						}else{
-							String query2 = "SELECT FIRSTNAME, LASTNAME FROM ADMIN WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
+							String query2 = "SELECT * FROM ADMIN WHERE USERID IN (SELECT ID FROM USER WHERE MATRICNO = '"+uName+"')";
 							ResultSet rs2 = ps.executeQuery(query2);
 							while(rs2.next()){
 								String adminf = rs2.getString("FIRSTNAME");
@@ -147,7 +147,7 @@ public class StartGUI{
 								admin.add(mntmLogOut);
 								admin.add(mntmExit);
 								displayMenu(admin);
-								textArea_1.setText(q.displayAvailableCourses(adminl));
+								textArea_1.setText(q.displayAvailableCourses(uName));
 								panel.setVisible(false);
 								panel_2.setVisible(true);
 							}

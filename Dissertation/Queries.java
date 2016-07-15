@@ -14,15 +14,17 @@ public class Queries {
 		courses+=display;
 		String t = "", t1 = "";
 		try{
-			String query = "SELECT * FROM COURSERESULT WHERE STUDENTID IN (SELECT STUDENTID FROM STUDENT WHERE LASTNAME = '"+s+"')";
+			String query = "SELECT c.COURSE_NAME FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID WHERE st.LASTNAME = '"+s+"'";
 			st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
-			
-			if(rs.next()){
+			int check = 0;
+			while(rs.next()){
+				check+=1;
 				String chosen = rs.getString("COURSE_NAME");
 				t1 = String.format(" %s\n", chosen);
 				courses+=t1;
-			}else{
+			}
+			if(check == 0){
 				t = String.format(" %s\n", "No Courses Selected yet. Add a course below");
 				courses+=t;
 			}
@@ -41,16 +43,21 @@ public class Queries {
 		courses+=display;
 		String t = "", t1 = "";
 		try{
-			String query = "SELECT COURSE_NAME FROM COURSEDEGREE ";
+			String query = "SELECT cd.COURSE_NAME FROM COURSEDEGREE AS cd INNER JOIN DEGREE AS d ON cd.DEGREE_ID = d.DEGREEID INNER JOIN "
+				+ "SCHOOL AS s ON s.SCHOOLNAME = d.SCHOOL_REF INNER JOIN ADMIN AS a ON a.SCHOOLREF = s.SCHOOLNAME WHERE a.LASTNAME = '"+s+"'"; 
 			st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);
 			
-			if(rs.next()){
+			int check = 0;
+			while(rs.next()){
+				check+=1;
+				//ResultSet rs
 				String chosen = rs.getString("COURSE_NAME");
 				t1 = String.format(" %s\n", chosen);
 				courses+=t1;
-			}else{
-				t = String.format(" %s\n", "No courses available for selection Add a course below");
+			}
+				if(check == 0){
+					t = String.format(" %s\n", "No courses available for selection Add a course below");
 				courses+=t;
 			}
 			rs.close();
