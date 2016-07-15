@@ -27,7 +27,7 @@ public class StartGUI{
 	private JTextField textField,textField_1, textField_2, textField_3, textField_4, textField_5, textField_6, textField_7 ;
 	private JTextArea textArea, textArea_1;
 	private JPanel panel, panel_1, panel_2, panel_3;
-	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblCourseCode, lblAddACourse;
+	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
 	private JButton btnLogIn;
 	String text = "ooe3";
 	String password = "olubunmi";
@@ -36,8 +36,8 @@ public class StartGUI{
 	private Statement ps;
 	private JMenuBar menuBar;
 	private JMenu mnMain, admin, mnHome;
-	private JMenuItem mntmLogOut, mntmExit;
-	private String studentf, studentl;
+	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
+	private String studentf, studentl, studentE;
 	private Queries q;
 
 	/**
@@ -49,19 +49,6 @@ public class StartGUI{
 		conn = dc.connectToDatabase();
 		q = new Queries(dc);
 		
-		
-		JLabel lblEmail = new JLabel("Email:");
-		lblEmail.setBounds(175, 58, 45, 16);
-		panel_1.add(lblEmail);
-		
-		JLabel label = new JLabel("");
-		label.setBounds(57, 69, 61, 16);
-		panel_1.add(label);
-		
-		JLabel label_1 = new JLabel("");
-		label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-		label_1.setBounds(175, 6, 61, 16);
-		panel_1.add(label_1);
 
 	}
 
@@ -106,6 +93,44 @@ public class StartGUI{
 			}
 		});
 		
+		mntmResults = new JMenuItem("Add Result");
+		mntmResults.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				panel_2.setVisible(false);
+				panel_3.setVisible(true);
+			}
+		});
+		
+		mntmAdminHome = new JMenuItem("Home");
+		mntmAdminHome.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				panel_2.setVisible(true);
+				panel_3.setVisible(false);
+			}
+		});
+		mntmStudentHome = new JMenuItem("Home");
+		mntmStudentHome.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				panel_1.setVisible(true);
+			}
+		});
+		
+		mntmStudentResults = new JMenuItem("View Results");
+		mntmStudentResults.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				
+			}
+		});
+		
+		mntmPassword = new JMenuItem("Change Password");
+		mntmPassword.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e1){
+				panel_2.setVisible(true);
+				panel_3.setVisible(false);
+			}
+		});
+		
+		
 		btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -128,11 +153,25 @@ public class StartGUI{
 							while(rs1.next()){
 								studentf = rs1.getString("FIRSTNAME");
 								studentl = rs1.getString("LASTNAME");
+								studentE = rs1.getString("Email");
 								mnMain = new JMenu(studentf + " " + studentl);
+								mnMain.add(mntmStudentHome);
+								mnMain.add(mntmStudentResults);
+								mnMain.add(mntmPassword);
 								mnMain.add(mntmLogOut);
 								mnMain.add(mntmExit);
 								displayMenu(mnMain);
-								textArea.setText(q.displayStudentCourses(uName));
+								
+								label_1 = new JLabel(q.displayDetails(""));
+								label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+								label_1.setBounds(175, 6, 400, 28);
+								panel_1.add(label_1);
+								
+								label = new JLabel(studentE);
+								label.setBounds(219, 58, 276, 16);
+								panel_1.add(label);
+								
+								textArea.setText(q.displayStudentCourses(studentl));
 								panel.setVisible(false);
 								panel_1.setVisible(true);
 							}
@@ -143,11 +182,18 @@ public class StartGUI{
 							while(rs2.next()){
 								String adminf = rs2.getString("FIRSTNAME");
 								String adminl = rs2.getString("LASTNAME");
+								String adminE = rs2.getString("EMAIL");
 								admin = new JMenu(adminf + " " + adminl);
+								admin.add(mntmAdminHome);
+								admin.add(mntmResults);
+								admin.add(mntmPassword);
 								admin.add(mntmLogOut);
 								admin.add(mntmExit);
 								displayMenu(admin);
-								textArea_1.setText(q.displayAvailableCourses(uName));
+								label_3 = new JLabel(adminE);
+								label_3.setBounds(227, 83, 276, 16);
+								panel_2.add(label_3);
+								textArea_1.setText(q.displayAvailableCourses(adminl));
 								panel.setVisible(false);
 								panel_2.setVisible(true);
 							}
@@ -219,12 +265,12 @@ public class StartGUI{
 		lblEnterCourseCode.setBounds(22, 601, 281, 16);
 		panel_1.add(lblEnterCourseCode);
 
-		lblCourseCode = new JLabel("Course Code");
+		lblCourseCode = new JLabel("Course Name");
 		lblCourseCode.setBounds(22, 634, 96, 16);
 		panel_1.add(lblCourseCode);
 
 		textField_1 = new JTextField();
-		textField_1.setBounds(150, 629, 130, 26);
+		textField_1.setBounds(150, 629, 314, 26);
 		panel_1.add(textField_1);
 		textField_1.setColumns(10);
 
@@ -288,18 +334,22 @@ public class StartGUI{
 		btnRemoveCourse.setBounds(140, 701, 130, 29);
 		panel_2.add(btnRemoveCourse);
 		
-		JLabel lblEmail_1 = new JLabel("Email:");
-		lblEmail_1.setBounds(177, 83, 38, 16);
+		lblEmail_1 = new JLabel("Email:");
+		lblEmail_1.setBounds(177, 83, 44, 16);
 		panel_2.add(lblEmail_1);
 		
-		JLabel label_1 = new JLabel("");
-		label_1.setBounds(227, 83, 61, 16);
-		panel_2.add(label_1);
 		
-		JLabel label_2 = new JLabel("");
+		
+		label_2 = new JLabel("");
 		label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		label_2.setBounds(177, 16, 61, 16);
 		panel_2.add(label_2);
+		
+		lblEmail = new JLabel("Email:");
+		lblEmail.setBounds(175, 58, 45, 16);
+		panel_1.add(lblEmail);
+		
+		
 
 		panel_3 = new JPanel();
 		frame.getContentPane().add(panel_3, "name_1845822356495898");

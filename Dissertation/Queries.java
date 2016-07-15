@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.awt.*;
 public class Queries {
 	DatabaseConnection dc;
 	private Connection conn = null;
@@ -39,22 +40,28 @@ public class Queries {
 	
 	public String displayAvailableCourses(String s){
 		String courses = "";
-		String display = String.format(" %s\n", "Courses Available To Students");
+		String display = String.format(" %-10s %-10s %-10s %-10s\n", "Courses","Credit","Exam","Coursework");
 		courses+=display;
+		courses+="\n";
 		String t = "", t1 = "";
 		try{
-			String query = "SELECT cd.COURSE_NAME FROM COURSEDEGREE AS cd INNER JOIN DEGREE AS d ON cd.DEGREE_ID = d.DEGREEID INNER JOIN "
-				+ "SCHOOL AS s ON s.SCHOOLNAME = d.SCHOOL_REF INNER JOIN ADMIN AS a ON a.SCHOOLREF = s.SCHOOLNAME WHERE a.LASTNAME = '"+s+"'"; 
+			String queryx = "SELECT * FROM COURSES INNER JOIN COURSEDEGREE ON COURSES.COURSENAME = COURSEDEGREE.COURSE_NAME INNER JOIN "
+				+ "DEGREE ON DEGREE.DEGREEID = COURSEDEGREE.DEGREE_ID INNER JOIN SCHOOL ON SCHOOL.SCHOOLNAME = DEGREE.SCHOOL_REF INNER JOIN "
+				+ "ADMIN ON ADMIN.SCHOOLREF = SCHOOL.SCHOOLNAME WHERE ADMIN.LASTNAME = '"+s+"'";
 			st = conn.createStatement();
-			ResultSet rs = st.executeQuery(query);
+			ResultSet rs = st.executeQuery(queryx);
 			
 			int check = 0;
 			while(rs.next()){
 				check+=1;
 				//ResultSet rs
-				String chosen = rs.getString("COURSE_NAME");
-				t1 = String.format(" %s\n", chosen);
+				String course = rs.getString("COURSE_NAME");
+				int credit = rs.getInt("CREDIT");
+				int exam = rs.getInt("EXAM");
+				int cw = rs.getInt("COURSEWORK");
+				t1 = String.format(" %-10s %-10d %-10d %-10d\n", course,credit,exam,cw);
 				courses+=t1;
+				courses+="\n";
 			}
 				if(check == 0){
 					t = String.format(" %s\n", "No courses available for selection Add a course below");
@@ -65,8 +72,13 @@ public class Queries {
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		
 		return courses;
+	}
+	
+	public String displayDetails(String s){
+		String school = "";
+		
+		return school;
 	}
 	
 	
