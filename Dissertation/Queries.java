@@ -148,6 +148,16 @@ public class Queries {
 		}
 	}
 	
+	public void addCourseDegree(String course, int degreeid){
+		try{
+			st = conn.createStatement();
+			String sql = "INSERT INTO COURSEDEGREE VALUES ('"+course+"', '"+degreeid+"')";
+			st.executeUpdate(sql);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	public void removeCourse(String s){
 		try{
 			st = conn.createStatement();
