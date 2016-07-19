@@ -1,20 +1,16 @@
 import java.sql.*;
 public class Student {
-	private String matric;
+	//private String matric;
+	private String firstName, lastName, email;
+	private int studentID;
+	private Users us;
+
 
 	public Student(String m){
-		matric = m;
-	}
-	
-	public void addCourse(){
-		
-	}
-	
-	public void removeCourse(){
-		
+		//matric = m;
 	}
 
 	public String getStudent(){
-		return matric;
+		return"";
 	}
 }

@@ -1,25 +1,16 @@
 import java.sql.*;
 public class Admin {
-	private String matric;
+	private String firstName, lastName, email;
+	private int adminID;
+	private Users us;
+	private School sc;
 
-	public Admin(String m){
-		matric = m;
-	}
-	
-	public void addResult(){
-		
-	}
-	
-	public void addCourse(){
-		
-	}
-	
-	public void removeCourse(){
+	public Admin(){
 		
 	}
 
 	public String getAdmin(){
-		return matric;
+		return "";
 	}
 	
 }
