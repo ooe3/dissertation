@@ -1,12 +1,114 @@
 import java.sql.*;
+import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JOptionPane;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 public class Queries {
 	DatabaseConnection dc;
 	private Connection conn = null;
 	private Statement st;
-	public Queries(DatabaseConnection d){
+	private Users us;
+	private Course cs;
+	private Student stu;
+	private Admin ad;
+	private Degree dg;
+	private School sc;
+	private CourseDegree cd;
+	private CourseResult cr;
+	private StudentDegree sd;
+	public Queries(DatabaseConnection d, Users u, Student sts, Admin adm,  Course course, School school, Degree dge, CourseResult crs, StudentDegree sds, CourseDegree cds){
 		dc = d;
+		us = u;
+		stu = sts;
+		ad = adm;
+		this.cs = course;
+		this.dg = dge;
+		this.sc = school;
+		this.cd = cds;
+		this.cr = crs;
+		this.sd = sds;
 		conn = d.connectToDatabase();
+		
+	}
+	
+	public String LogIn(String matric, String password){
+		String check = "";
+		try{
+		String query = "SELECT * FROM USER WHERE MATRICNO = '"+matric+"' AND PASSWORD = '"+password+"'";
+
+		st = conn.createStatement();
+		ResultSet rs = st.executeQuery(query);	
+		
+		while(rs.next()){
+			check +="Success";
+			String type = rs.getString("USERTYPE");
+			int id = rs.getInt("ID");
+			String matricno = rs.getString("MATRICNO");
+			String pass = rs.getString("PASSWORD");
+			
+			
+			us.setType(type);
+			us.setMatric(matricno);
+			us.setPassword(pass);
+			us.setID(id);
+			
+			if(type.equals("Student")){
+				String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = '"+us.getMatric()+"'";
+				rs = st.executeQuery(query1);
+				
+				while(rs.next()){
+					int studentID = rs.getInt("STUDENTID");
+					String studentf = rs.getString("FIRSTNAME");
+					String studentl = rs.getString("LASTNAME");
+					String studentE = rs.getString("EMAIL");
+					int userid = rs.getInt("USERID");
+					
+					
+					
+					stu.setStudentID(studentID);
+					stu.setFirstName(studentf);
+					stu.setLastName(studentl);
+					stu.setEmail(studentE);
+					stu.setUserID(userid);
+					
+				}
+				
+			}else {
+				String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = '"+us.getMatric()+"'";
+				rs = st.executeQuery(query2);
+				
+				while(rs.next()){
+					int adminID = rs.getInt("ADMINID");
+					String adminf = rs.getString("FIRSTNAME");
+					String adminl = rs.getString("LASTNAME");
+					String adminE = rs.getString("EMAIL");
+					int userid = rs.getInt("USERID");
+					String schoolref = rs.getString("SCHOOLREF");
+					
+					
+					ad.setFirstName(adminf);
+					ad.setLastName(adminl);
+					ad.setEmail(adminE);
+					ad.setAdminID(adminID);
+					ad.setSchoolName(schoolref);
+					ad.setUserID(userid);
+					
+				}
+				
+				}
+		}
+		
+		rs.close();
+		st.close();
+	}catch(Exception e1){
+		e1.printStackTrace();
+	} 
+		return check;
 	}
 
 	public String displayStudentCourses(String s){
@@ -61,7 +163,8 @@ public class Queries {
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
-				t1 = String.format(" %-50s %-60d %-60d %-60d\n", course,credit,exam,cw);
+				
+				t1 = String.format(" %-50s %-50d %-50d %-50d\n", course,credit,exam,cw);
 				courses+=t1;
 				courses+="\n";
 			}
@@ -79,26 +182,28 @@ public class Queries {
 
 	public String displayDetails(String s, String s1){
 		String school = "";
+		ResultSet rs;
 		try{
 			if(s.equals("Student")){
 				String query = "SELECT d.DEGREENAME, d.DEGREETYPE FROM DEGREE AS d INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = d.DEGREEID "
 						+ "INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = '"+s1+"'";
 				st = conn.createStatement();
-				ResultSet rs = st.executeQuery(query);
+				rs = st.executeQuery(query);
 				while(rs.next()){
 					String degree = rs.getString("DEGREENAME");
 					String degreetype = rs.getString("DEGREETYPE");
+					
 					school+=degreetype;
 					school+=" ";
 					school+=degree;
 				}
-				rs.close();
+				
 			}else{
 				String query1 = "SELECT ad.SCHOOLREF FROM ADMIN AS ad INNER JOIN USER AS us ON us.ID = ad.USERID WHERE us.MATRICNO = '"+s1+"'";
 				st = conn.createStatement();
-				ResultSet rs1 = st.executeQuery(query1);
-				while(rs1.next()){
-				String schoolref = rs1.getString("SCHOOLREF");
+				rs = st.executeQuery(query1);
+				while(rs.next()){
+				String schoolref = rs.getString("SCHOOLREF");
 				if(schoolref.equals("Dental") || schoolref.equals("Adam Smith Business")){
 					school+=schoolref;
 					school+=" School";
@@ -107,9 +212,9 @@ public class Queries {
 				school+= schoolref;
 				}
 				}
-				rs1.close();
+				
 			}
-
+			rs.close();
 			st.close();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -161,13 +266,108 @@ public class Queries {
 	public void removeCourse(String s){
 		try{
 			st = conn.createStatement();
+			String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = '"+s+"'";
+			st.executeUpdate(sql1);
 			String sql = "DELETE FROM COURSES WHERE COURSENAME = '"+s+"'";
 			st.executeUpdate(sql);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 	}
-
+	
+	public String displayCourses(int s){
+		
+		String choice="";
+		ResultSet rs;
+		try{
+		String query = "SELECT cd.COURSE_NAME FROM COURSEDEGREE AS cd INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = cd.DEGREE_ID WHERE sd.STUDENT = '"+s+"'";
+		st = conn.createStatement();
+		rs = st.executeQuery(query);
+		while(rs.next()){
+			String name = rs.getString("COURSE_NAME");
+			choice+=name;
+			choice+=",";
+			}
+		rs.close();
+		st.close();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	return choice;
+		
+		
+	}
+	
+	public String removeSelection(String s){
+		String choice="";
+		ResultSet rs;
+		
+		try{
+			String query = "SELECT c.COURSE_NAME FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID WHERE st.LASTNAME = '"+s+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			while(rs.next()){
+				String name = rs.getString("COURSE_NAME");
+				choice+=name;
+				choice+=",";
+				}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return choice;
+	}
+	
+	public String removeSelectionAdmin(String s){
+		String choice="";
+		ResultSet rs;
+		
+		try{
+			String queryx = "SELECT COURSENAME FROM COURSES INNER JOIN COURSEDEGREE ON COURSES.COURSENAME = COURSEDEGREE.COURSE_NAME INNER JOIN "
+					+ "DEGREE ON DEGREE.DEGREEID = COURSEDEGREE.DEGREE_ID INNER JOIN SCHOOL ON SCHOOL.SCHOOLNAME = DEGREE.SCHOOL_REF INNER JOIN "
+					+ "ADMIN ON ADMIN.SCHOOLREF = SCHOOL.SCHOOLNAME WHERE ADMIN.LASTNAME = '"+s+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(queryx);
+			
+			while(rs.next()){
+				String name = rs.getString("COURSENAME");
+				choice+=name;
+				choice+=",";
+				}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return choice;
+	}
+	
+public String displayDegree(String s){
+		
+		String choice="";
+		ResultSet rs;
+		try{
+		String query = "SELECT * FROM DEGREE WHERE SCHOOL_REF = '"+s+"'";
+		st = conn.createStatement();
+		rs = st.executeQuery(query);
+		while(rs.next()){
+			String name = rs.getString("DEGREENAME");
+			String type = rs.getString("DEGREETYPE");
+			choice+=name;
+			choice+="("+type+")";
+			choice+=",";
+			}
+		rs.close();
+		st.close();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	return choice;
+		
+		
+	}
 
 
 }

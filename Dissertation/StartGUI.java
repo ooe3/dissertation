@@ -26,34 +26,47 @@ public class StartGUI{
 
 	private JFrame frame;
 	private JPasswordField passwordField;
-	private JTextField textField,textField_1, textField_2, textField_3, textField_4, textField_5, textField_6, textField_7 ;
+	private JTextField textField, textField_2, textField_3, textField_4, textField_6, textField_7 ;
 	private JTextArea textArea, textArea_1;
 	private JPanel panel, panel_1, panel_2, panel_3;
-	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
+	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
 	private JButton btnLogIn, btnNewButton, btnNewButton_1, btnAddCourse, btnRemoveCourse;
-	String text = "ooe3";
-	String password = "olubunmi";
-	private Connection conn = null;
-	private DatabaseConnection d;
-	private Statement ps;
 	private JMenuBar menuBar;
 	private JMenu mnMain, admin, mnHome;
 	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
-	private String studentf, studentl, studentE,selected,adminSchool;
+	private String studentf, studentl, studentE,selected,adminSchool,selected1,selected2, selected3;
 	private int studentID;
 	private Queries q;
 	private JTextField textField_8;
 	private Choice choice, choice_1, choice_2;
-	private Choice choice_3;
+	private Choice choice_3, choice_4, choice_5;
+	private Users us;
+	private Student st;
+	private Admin ad;
+	private Course cs;
+	private School sc;
+	private Degree dg;
+	private CourseResult cr;
+	private StudentDegree sd;
+	private CourseDegree cd;
+
 
 	/**
 	 * Create the application.
 	 */
-	public StartGUI(DatabaseConnection dc) {
+	public StartGUI(Queries qu, Users u, Student stu, Admin adm, Course course, School school, Degree dge, CourseResult crs, StudentDegree sds, CourseDegree cds) {
 		initialize();
-		d = dc;
-		conn = dc.connectToDatabase();
-		q = new Queries(dc);
+		q = qu;
+		us = u;
+		st = stu;
+		ad = adm;
+		this.cs= course;
+		this.sc = school;
+		this.dg = dge;
+		this.cr= crs;
+		this.sd = sds;
+		this.cd = cds;
+
 
 
 	}
@@ -140,177 +153,209 @@ public class StartGUI{
 		btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try{
-					String uName = textField.getText();
-					String pass = new String(passwordField.getPassword());
-					String query = "SELECT * FROM USER WHERE MATRICNO = '"+uName+"' AND PASSWORD = '"+pass+"'";
 
-					ps = conn.createStatement();
-					ResultSet rs = ps.executeQuery(query);	
+				String uName = textField.getText();
+				String pass = new String(passwordField.getPassword());
+				if(q.LogIn(uName, pass).equals("Success")){
+					if(us.getType().equals("Student")){
 
-					if(rs.next()){
+						mnMain = new JMenu(st.getFirstName() + " " + st.getLastName());
+						mnMain.add(mntmStudentHome);
+						mnMain.add(mntmStudentResults);
+						mnMain.add(mntmPassword);
+						mnMain.add(mntmLogOut);
+						mnMain.add(mntmExit);
+						displayMenu(mnMain);
 
-						String type = rs.getString("USERTYPE");
+						label_1 = new JLabel(q.displayDetails(us.getType(), us.getMatric()));
+						label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+						label_1.setBounds(175, 6, 400, 28);
+						panel_1.add(label_1);
 
-						if(type.equals("Student")){
-							String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = '"+uName+"'";
-							ResultSet rs1 = ps.executeQuery(query1);
-							while(rs1.next()){
-								studentID = rs1.getInt("STUDENTID");
-								studentf = rs1.getString("FIRSTNAME");
-								studentl = rs1.getString("LASTNAME");
-								studentE = rs1.getString("Email");
-								mnMain = new JMenu(studentf + " " + studentl);
-								mnMain.add(mntmStudentHome);
-								mnMain.add(mntmStudentResults);
-								mnMain.add(mntmPassword);
-								mnMain.add(mntmLogOut);
-								mnMain.add(mntmExit);
-								displayMenu(mnMain);
-
-								label_1 = new JLabel(q.displayDetails(type, uName));
-								label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-								label_1.setBounds(175, 6, 400, 28);
-								panel_1.add(label_1);
-
-								label = new JLabel(studentE);
-								label.setBounds(219, 58, 276, 16);
-								panel_1.add(label);
+						label = new JLabel(st.getEmail());
+						label.setBounds(219, 58, 276, 16);
+						panel_1.add(label);
 
 
-								textArea.setText(q.displayStudentCourses(studentl));
-								panel.setVisible(false);
-								panel_1.setVisible(true);
-							}
-							rs1.close();
+						textArea.setText(q.displayStudentCourses(st.getLastName()));
+						panel.setVisible(false);
+						panel_1.setVisible(true);
 
-							choice = new Choice();
-							choice.setBounds(22, 495, 264, 27);
-							choice.add("");
-							String query2 = "SELECT cd.COURSE_NAME FROM COURSEDEGREE AS cd INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = cd.DEGREE_ID WHERE sd.STUDENT = '"+studentID+"'";
-							ResultSet rst = ps.executeQuery(query2);
-							while(rst.next()){
-								String course = rst.getString("COURSE_NAME");
-								choice.add(course);
+
+						choice = new Choice();
+						choice.setBounds(22, 495, 264, 27);
+						choice.add("");
+						String select = q.displayCourses(st.getStudentID());
+						String[]tokens = select.split(",");
+
+						for(int i = 0; i<tokens.length;i++){
+							choice.add(tokens[i]);
+						}
+
+						choice.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected = choice.getSelectedItem();
 							}
 
-							choice.addItemListener(new ItemListener(){
-								public void itemStateChanged(ItemEvent ie)
-								{
-									selected = choice.getSelectedItem();
+						});
+
+						btnNewButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								if(choice.getSelectedItem().equals("")){
+									JOptionPane.showMessageDialog(null, "No course selected", "Window",
+											JOptionPane.ERROR_MESSAGE);
+								}else{
+									q.insertChoice(selected, st.getStudentID());
+									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
+											JOptionPane.INFORMATION_MESSAGE);
 								}
-
-							});
-							btnNewButton.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									if(choice.getSelectedItem().equals("")){
-										JOptionPane.showMessageDialog(null, "No course selected", "Window",
-												JOptionPane.ERROR_MESSAGE);
-									}else{
-										q.insertChoice(selected, studentID);
-										JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
-												JOptionPane.INFORMATION_MESSAGE);
-									}
-								}
-							});
-
-							btnNewButton_1.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									if(textField_1.getText().equals("")){
-										JOptionPane.showMessageDialog(null, "No information entered", "Window",
-												JOptionPane.ERROR_MESSAGE);
-									}else{
-										q.removeChoice(textField_1.getText(), studentID);
-										JOptionPane.showMessageDialog(null, "Removal successful", "Window",
-												JOptionPane.ERROR_MESSAGE);
-										textField_1.setText("");
-									}
-								}
-							});
-							rst.close();
-							panel_1.add(choice);
-
-						}else{
-							String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = '"+uName+"'";
-							ResultSet rs2 = ps.executeQuery(query2);
-							while(rs2.next()){
-								String adminf = rs2.getString("FIRSTNAME");
-								String adminl = rs2.getString("LASTNAME");
-								String adminE = rs2.getString("EMAIL");
-								adminSchool = rs2.getString("SCHOOLREF");
-
-								admin = new JMenu(adminf + " " + adminl);
-								admin.add(mntmAdminHome);
-								admin.add(mntmResults);
-								admin.add(mntmPassword);
-								admin.add(mntmLogOut);
-								admin.add(mntmExit);
-								displayMenu(admin);
-
-								label_2 = new JLabel(q.displayDetails(type, uName));
-								label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-								label_2.setBounds(177, 16, 400, 28);
-								panel_2.add(label_2);
-
-								label_3 = new JLabel(adminE);
-								label_3.setBounds(227, 83, 276, 16);
-								panel_2.add(label_3);
-								
-
-								textArea_1.setText(q.displayAvailableCourses(adminl));
-								panel.setVisible(false);
-								panel_2.setVisible(true);
 							}
-							rs2.close();
-							btnAddCourse.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									int credit = Integer.parseInt(textField_3.getText());
-									int exam = Integer.parseInt(textField_4.getText());
-									int cw = Integer.parseInt(textField_8.getText());
-									q.insertCourse(textField_2.getText(), credit, exam, cw);
-								}
-							});
-							
-							btnRemoveCourse.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									if(textField_5.getText().equals("")){
-										JOptionPane.showMessageDialog(null, "No information entered", "Window",
-												JOptionPane.ERROR_MESSAGE);
-									}else{
-									q.removeCourse(textField_5.getText());
+						});
+						
+						choice_4 = new Choice();
+						choice_4.setBounds(22, 623, 281, 27);
+						choice_4.add("");
+						String select1 = q.removeSelection(st.getLastName());
+						String[]tokens_1 = select1.split(",");
+
+						for(int i = 0; i<tokens_1.length;i++){
+							choice_4.add(tokens_1[i]);
+						}
+
+						choice_4.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected1 = choice_4.getSelectedItem();
+							}
+
+						});
+
+						btnNewButton_1.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								if(choice_4.getSelectedItem().equals("")){
+									JOptionPane.showMessageDialog(null, "No course selected", "Window",
+											JOptionPane.ERROR_MESSAGE);
+								}else{
+									q.removeChoice(selected1, st.getStudentID());
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
-									textField_1.setText("");
+									
+								}
+							}
+						});
+
+						panel_1.add(choice);
+						panel_1.add(choice_4);
+
+					}else{
+
+						admin = new JMenu(ad.getFirstName() + " " + ad.getLastName());
+						admin.add(mntmAdminHome);
+						admin.add(mntmResults);
+						admin.add(mntmPassword);
+						admin.add(mntmLogOut);
+						admin.add(mntmExit);
+						displayMenu(admin);
+
+						label_2 = new JLabel(q.displayDetails(us.getType(), us.getMatric()));
+						label_2.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+						label_2.setBounds(177, 16, 400, 28);
+						panel_2.add(label_2);
+
+						label_3 = new JLabel(ad.getEmail());
+						label_3.setBounds(227, 83, 276, 16);
+						panel_2.add(label_3);
+
+
+						textArea_1.setText(q.displayAvailableCourses(ad.getLastName()));
+						panel.setVisible(false);
+						panel_2.setVisible(true);
+
+						btnAddCourse.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								if(textField_2.getText().equals("") || textField_3.getText().equals("") || textField_4.getText().equals("") || textField_8.getText().equals("")){
+									JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
+								}else{
+									try{
+										int credit = Integer.parseInt(textField_3.getText());
+										int exam = Integer.parseInt(textField_4.getText());
+										int cw = Integer.parseInt(textField_8.getText());
+										q.insertCourse(textField_2.getText(), credit, exam, cw);
+									}catch (NumberFormatException e1){
+										JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
 									}
 								}
-							});
-							choice_3 = new Choice();
-							choice_3.setBounds(177, 603, 348, 27);
-							choice_3.add("");
-							String query_4 = "SELECT * FROM DEGREE WHERE SCHOOL_REF = '"+adminSchool+"'";
-							ResultSet rs3 = ps.executeQuery(query_4);
-							while(rs3.next()){
-								int degreeid = rs3.getInt("DEGREEID");
-								String degree = rs3.getString("DEGREENAME");
-								String degreetype = rs3.getString("DEGREETYPE");
-								choice_3.add(degree+"("+degreetype+")");
 							}
-							rs3.close();
-							panel_2.add(choice_3);
-							
+						});
+						
+						choice_5 = new Choice();
+						choice_5.setBounds(18, 695, 507, 27);
+						choice_5.add("");
+						
+						String select2 = q.removeSelectionAdmin(ad.getLastName());
+						String[]tokens_2 = select2.split(",");
+
+						for(int i = 0; i<tokens_2.length;i++){
+							choice_5.add(tokens_2[i]);
 						}
-					}else {
-						JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
-								JOptionPane.ERROR_MESSAGE);
+
+						choice_5.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected2 = choice_5.getSelectedItem();
+							}
+
+						});
+						
+						
+
+						btnRemoveCourse.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								if(choice_5.getSelectedItem().equals("")){
+									JOptionPane.showMessageDialog(null, "No course selected", "Window",
+											JOptionPane.ERROR_MESSAGE);
+								}else{
+									q.removeCourse(selected2);
+									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
+											JOptionPane.ERROR_MESSAGE);
+							}
+							}
+						});
+
+						choice_3 = new Choice();
+						choice_3.setBounds(177, 603, 348, 27);
+						choice_3.add("");
+						
+						String select3 = q.displayDegree(ad.getSchoolName());
+						String[]tokens_3 = select3.split(",");
+
+						for(int i = 0; i<tokens_3.length;i++){
+							choice_3.add(tokens_3[i]);
+						}
+
+						choice_3.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected3 = choice_3.getSelectedItem();
+							}
+
+						});
+
+						panel_2.add(choice_3);
+						panel_2.add(choice_5);
+
 					}
-					textField.setText("");
-					passwordField.setText("");
-					rs.close();
-					ps.close();
-				}catch(Exception e1){
-					e1.printStackTrace();
-				} 
+
+				}else{
+					JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
+							JOptionPane.ERROR_MESSAGE);
+				}
+				textField.setText("");
+				passwordField.setText("");
 			}
+
+
 
 		});
 
@@ -336,7 +381,7 @@ public class StartGUI{
 		panel_1.setLayout(null);
 
 		textArea = new JTextArea();
-		textArea.setBounds(0, 97, 978, 339);
+		textArea.setBounds(16, 95, 978, 339);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		panel_1.add(textArea, BorderLayout.CENTER);
 
@@ -354,18 +399,9 @@ public class StartGUI{
 		lblToAddA.setBounds(22, 473, 276, 16);
 		panel_1.add(lblToAddA);
 
-		lblEnterCourseCode = new JLabel("Enter course code below to remove course");
+		lblEnterCourseCode = new JLabel("Select course you want to remove below");
 		lblEnterCourseCode.setBounds(22, 601, 281, 16);
 		panel_1.add(lblEnterCourseCode);
-
-		lblCourseCode = new JLabel("Course Name");
-		lblCourseCode.setBounds(22, 634, 96, 16);
-		panel_1.add(lblCourseCode);
-
-		textField_1 = new JTextField();
-		textField_1.setBounds(150, 629, 314, 26);
-		panel_1.add(textField_1);
-		textField_1.setColumns(10);
 
 		panel_2 = new JPanel();
 		frame.getContentPane().add(panel_2, "name_1756148928342669");
@@ -410,18 +446,9 @@ public class StartGUI{
 		btnAddCourse.setBounds(533, 512, 117, 29);
 		panel_2.add(btnAddCourse);
 
-		JLabel lblNewLabel_3 = new JLabel("Remove Course");
-		lblNewLabel_3.setBounds(18, 659, 130, 27);
+		JLabel lblNewLabel_3 = new JLabel("Select course you want to remove below");
+		lblNewLabel_3.setBounds(18, 659, 259, 27);
 		panel_2.add(lblNewLabel_3);
-
-		JLabel lblCourseCode_2 = new JLabel("Course Name");
-		lblCourseCode_2.setBounds(18, 698, 96, 16);
-		panel_2.add(lblCourseCode_2);
-
-		textField_5 = new JTextField();
-		textField_5.setBounds(177, 693, 348, 26);
-		panel_2.add(textField_5);
-		textField_5.setColumns(10);
 
 		btnRemoveCourse = new JButton("Remove Course");
 		btnRemoveCourse.setBounds(533, 693, 130, 29);
@@ -439,11 +466,11 @@ public class StartGUI{
 		textField_8.setBounds(177, 571, 348, 26);
 		panel_2.add(textField_8);
 		textField_8.setColumns(10);
-		
+
 		JLabel lblDegree = new JLabel("Degree");
 		lblDegree.setBounds(18, 607, 61, 16);
 		panel_2.add(lblDegree);
-		
+
 		lblEmail = new JLabel("Email:");
 		lblEmail.setBounds(175, 58, 45, 16);
 		panel_1.add(lblEmail);
