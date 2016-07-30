@@ -153,7 +153,6 @@ public class StartGUI{
 		btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				String uName = textField.getText();
 				String pass = new String(passwordField.getPassword());
 				if(q.LogIn(uName, pass).equals("Success")){
@@ -190,7 +189,7 @@ public class StartGUI{
 
 						for(int i = 0; i<tokens.length;i++){
 							choice.add(tokens[i]);
-						}
+							}
 
 						choice.addItemListener(new ItemListener(){
 							public void itemStateChanged(ItemEvent ie)
@@ -209,10 +208,11 @@ public class StartGUI{
 									q.insertChoice(selected, st.getStudentID());
 									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
 											JOptionPane.INFORMATION_MESSAGE);
+
 								}
 							}
 						});
-						
+
 						choice_4 = new Choice();
 						choice_4.setBounds(22, 623, 281, 27);
 						choice_4.add("");
@@ -240,7 +240,7 @@ public class StartGUI{
 									q.removeChoice(selected1, st.getStudentID());
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
-									
+
 								}
 							}
 						});
@@ -281,18 +281,25 @@ public class StartGUI{
 										int credit = Integer.parseInt(textField_3.getText());
 										int exam = Integer.parseInt(textField_4.getText());
 										int cw = Integer.parseInt(textField_8.getText());
-										q.insertCourse(textField_2.getText(), credit, exam, cw);
+										if(q.insertCourse(textField_2.getText(), credit, exam, cw).equals("Error")){
+											JOptionPane.showMessageDialog(null, "Course already exists", "Error message", JOptionPane.ERROR_MESSAGE);
+										}else{
+											String[] tokens = selected3.split("\\(");
+											q.addCourseDegree(textField_2.getText(), tokens[0]);
+											JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
+													JOptionPane.INFORMATION_MESSAGE);
+										}
 									}catch (NumberFormatException e1){
 										JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
 									}
 								}
 							}
 						});
-						
+
 						choice_5 = new Choice();
 						choice_5.setBounds(18, 695, 507, 27);
 						choice_5.add("");
-						
+
 						String select2 = q.removeSelectionAdmin(ad.getLastName());
 						String[]tokens_2 = select2.split(",");
 
@@ -307,8 +314,8 @@ public class StartGUI{
 							}
 
 						});
-						
-						
+
+
 
 						btnRemoveCourse.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
@@ -319,14 +326,14 @@ public class StartGUI{
 									q.removeCourse(selected2);
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
-							}
+								}
 							}
 						});
 
 						choice_3 = new Choice();
 						choice_3.setBounds(177, 603, 348, 27);
 						choice_3.add("");
-						
+
 						String select3 = q.displayDegree(ad.getSchoolName());
 						String[]tokens_3 = select3.split(",");
 
@@ -409,7 +416,9 @@ public class StartGUI{
 
 		textArea_1 = new JTextArea();
 		textArea_1.setBounds(6, 111, 976, 335);
-		panel_2.add(textArea_1);
+		textArea_1.setEditable(false);//method to prevent text area from being edited
+		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
+		panel_2.add(textArea_1, BorderLayout.CENTER);
 
 		lblAddACourse = new JLabel("Add a course");
 		lblAddACourse.setBounds(18, 458, 96, 16);
