@@ -27,7 +27,7 @@ public class StartGUI{
 	private JFrame frame;
 	private JPasswordField passwordField;
 	private JTextField textField, textField_2, textField_3, textField_4, textField_6, textField_7 ;
-	private JTextArea textArea, textArea_1;
+	private JTextArea textArea, textArea_1, textArea_2;
 	private JPanel panel, panel_1, panel_2, panel_3;
 	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
 	private JButton btnLogIn, btnNewButton, btnNewButton_1, btnAddCourse, btnRemoveCourse;
@@ -49,6 +49,7 @@ public class StartGUI{
 	private CourseResult cr;
 	private StudentDegree sd;
 	private CourseDegree cd;
+	private JPanel panel_4;
 
 
 	/**
@@ -135,11 +136,7 @@ public class StartGUI{
 		});
 
 		mntmStudentResults = new JMenuItem("View Results");
-		mntmStudentResults.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e1){
-
-			}
-		});
+		
 
 		mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.addActionListener(new ActionListener(){
@@ -244,6 +241,19 @@ public class StartGUI{
 								}
 							}
 						});
+						
+						mntmStudentResults.addActionListener(new ActionListener(){
+							public void actionPerformed(ActionEvent e1){
+									if(q.displayResult(st.getStudentID()).equals("Not Available")){
+										JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
+												JOptionPane.ERROR_MESSAGE);
+									}else{
+										textArea_2.setText(q.displayResult(st.getStudentID()));
+										panel_1.setVisible(false);
+										panel_4.setVisible(true);
+									}
+							}
+						});
 
 						panel_1.add(choice);
 						panel_1.add(choice_4);
@@ -324,6 +334,9 @@ public class StartGUI{
 											JOptionPane.ERROR_MESSAGE);
 								}else{
 									q.removeCourse(selected2);
+									choice_5.select(0);
+									
+									
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
 								}
@@ -541,6 +554,21 @@ public class StartGUI{
 		JButton btnSubmit = new JButton("Submit");
 		btnSubmit.setBounds(110, 425, 117, 29);
 		panel_3.add(btnSubmit);
+		
+		panel_4 = new JPanel();
+		frame.getContentPane().add(panel_4, "name_168856079465156");
+		panel_4.setLayout(null);
+		
+		textArea_2 = new JTextArea();
+		textArea_2.setBounds(26, 81, 829, 553);
+		textArea_2.setEditable(false);//method to prevent text area from being edited
+		textArea_2.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
+		panel_4.add(textArea_2, BorderLayout.CENTER);
+		
+		JLabel lblResults = new JLabel("Results");
+		lblResults.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		lblResults.setBounds(26, 16, 112, 25);
+		panel_4.add(lblResults);
 
 		mnHome = new JMenu("Home");
 		mnHome.add(mntmExit);

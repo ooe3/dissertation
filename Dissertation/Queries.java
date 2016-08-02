@@ -144,7 +144,7 @@ public class Queries {
 
 	public String displayAvailableCourses(String s){
 		String courses = "";
-		String display = String.format(" %s %10s %-10s %20s\n", "Courses","Credit","Exam","Coursework");
+		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Courses","Credit","Exam","Coursework");
 		courses+=display;
 		courses+="\n";
 		String t = "", t1 = "";
@@ -164,7 +164,7 @@ public class Queries {
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
 
-				t1 = String.format(" %s %10d %-10d %20d\n", course,credit,exam,cw);
+				t1 = String.format(" %-50.50s %-10d %-10d %-10d\n", course,credit,exam,cw);
 				courses+=t1;
 				courses+="\n";
 			}
@@ -396,6 +396,56 @@ public class Queries {
 
 
 	}
+
+	public String displayResult(int studentID){
+		String result = "", s = "";
+		int totalcred = 0, totalpoints = 0;
+		String display = String.format("%-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Overall Mark", "Credit x Overall");
+		result+=display;
+		result+="\n";
+		ResultSet rs;
+
+		try{
+			String query = "SELECT cr.COURSE, cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+studentID+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			while(rs.next()){
+				String course = rs.getString("COURSE");
+				int res = rs.getInt("RESULT");
+				int credit = rs.getInt("CREDIT"); 
+				if(res == 0){
+					return "Not Available";
+				}else
+					totalpoints+=(res*credit);
+				s = String.format("%-50.50s %-10d %-10d %-10d\n", course, credit, res, (res*credit));
+				result+=s;
+				totalcred+=credit;
+			}
+			String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
+			result+=s2;
+			result+="\n";
+			String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, ((double)(totalpoints/totalcred)));
+			result+=s1;
+
+			rs.close();
+			st.close();
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+
+	}
+
+	public void insertOverall(int mark){
+		try{
+
+		}catch(Exception e){
+
+		}
+
+	}
+
 
 
 }
