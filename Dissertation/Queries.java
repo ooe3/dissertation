@@ -303,18 +303,13 @@ public class Queries {
 		String choice="";
 		ResultSet rs;
 		try{
-			String query = "SELECT cd.COURSE_NAME, cr.COURSE FROM COURSEDEGREE AS cd INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = cd.DEGREE_ID LEFT JOIN COURSERESULT as cr ON cr.COURSE = cd.COURSE_NAME WHERE sd.STUDENT = '"+s+"'";
+			String query = "SELECT COURSE_NAME FROM COURSEDEGREE WHERE COURSE_NAME NOT IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = '"+s+"') AND DEGREE_ID = (SELECT DEGREE FROM STUDENT_DEGREE WHERE STUDENT = '"+s+"')";
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			while(rs.next()){
 				String name = rs.getString("COURSE_NAME");
-				String name_1 = rs.getString("COURSE");
-
-				if(name_1 == null){
-					choice+=name;
-					choice+=",";
-				}
-
+				choice+=name;
+				choice+=",";
 			}
 			rs.close();
 			st.close();
@@ -399,7 +394,8 @@ public class Queries {
 
 	public String displayResult(int studentID){
 		String result = "", s = "";
-		int totalcred = 0, totalpoints = 0;
+		int totalcred = 0, totalpoints = 0, average = 0;
+		int count = 0;
 		String display = String.format("%-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Overall Mark", "Credit x Overall");
 		result+=display;
 		result+="\n";
@@ -410,6 +406,8 @@ public class Queries {
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			while(rs.next()){
+				count+=1;
+
 				String course = rs.getString("COURSE");
 				int res = rs.getInt("RESULT");
 				int credit = rs.getInt("CREDIT"); 
@@ -420,11 +418,16 @@ public class Queries {
 				s = String.format("%-50.50s %-10d %-10d %-10d\n", course, credit, res, (res*credit));
 				result+=s;
 				totalcred+=credit;
+				average+=(totalpoints/totalcred);
+			}
+
+			if (count == 0){
+				return "Not Available";
 			}
 			String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
 			result+=s2;
 			result+="\n";
-			String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, ((double)(totalpoints/totalcred)));
+			String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, ((double)average));
 			result+=s1;
 
 			rs.close();
@@ -441,9 +444,96 @@ public class Queries {
 		try{
 
 		}catch(Exception e){
-
+			e.printStackTrace();
 		}
 
+	}
+
+	public String displayStudents(int id){
+		String result = "";
+		ResultSet rs;
+
+		try{
+			String query = "SELECT st.FIRSTNAME, st.LASTNAME FROM STUDENT AS st INNER JOIN STUDENT_DEGREE AS sd ON sd.STUDENT = st.STUDENTID INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS ad ON ad.SCHOOLREF = d.SCHOOL_REF WHERE ad.ADMINID = '"+id+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+
+			while(rs.next()){
+				String firstname = rs.getString("FIRSTNAME");
+				String lastname = rs.getString("LASTNAME");
+
+				result+=(firstname +" "+ lastname);
+				result+=",";
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public void getCourseDetails(String course){
+		ResultSet rs;
+
+		try{
+			String query = "SELECT * FROM COURSES WHERE COURSENAME = '"+course+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+
+			while(rs.next()){
+				String coursename = rs.getString("COURSENAME");
+				int credit = rs.getInt("CREDIT");
+				int exam = rs.getInt("EXAM");
+				int cw = rs.getInt("COURSEWORK");
+
+				cs.setCourse(coursename);
+				cs.setCredit(credit);
+				cs.setExam(exam);
+				cs.setCoursework(cw);
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public void insertCourseScore(int overall, String coursename, String fname, String lname){
+		ResultSet rs;
+		try{
+			String query = "SELECT STUDENTID FROM STUDENT WHERE FIRSTNAME = '"+fname+"' AND LASTNAME = '"+lname+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+
+			if(rs.next()){
+				int id = rs.getInt("STUDENTID");
+
+				String sql = "UPDATE COURSERESULT SET RESULT = '"+overall+"' WHERE COURSE = '"+coursename+"' AND STUDENTID = '"+id+"'";
+				st.executeUpdate(sql);
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){ 
+			e.printStackTrace();
+		}
+
+	}
+
+	public int calculateScore(int exam, int coursework, int courseMark, int examMark){
+		double e = (double)exam/100;
+		double c = (double)coursework/100;
+		final int maxcredit = 22;
+		int finalscore = 0;
+
+		e*=examMark;
+		c*=courseMark;
+		double score = e+c;
+		score/=100;
+		score*=maxcredit;
+
+		finalscore+=Math.round(score);
+		return finalscore;
 	}
 
 

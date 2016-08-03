@@ -29,12 +29,12 @@ public class StartGUI{
 	private JTextField textField, textField_2, textField_3, textField_4, textField_6, textField_7 ;
 	private JTextArea textArea, textArea_1, textArea_2;
 	private JPanel panel, panel_1, panel_2, panel_3;
-	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3;
-	private JButton btnLogIn, btnNewButton, btnNewButton_1, btnAddCourse, btnRemoveCourse;
+	private JLabel lblNewLabel, lblNewLabel_1, lblLogInPage, lblToAddA, lblEnterCourseCode, lblAddACourse, lblEmail, label, label_1, lblEmail_1, label_2, label_3, lblExam, lblCoursework, lblPercentage, lblNewLabel_4, lblNewLabel_5;
+	private JButton btnLogIn, btnNewButton, btnNewButton_1, btnAddCourse, btnRemoveCourse, btnSubmit;
 	private JMenuBar menuBar;
 	private JMenu mnMain, admin, mnHome;
 	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
-	private String studentf, studentl, studentE,selected,adminSchool,selected1,selected2, selected3;
+	private String studentf, studentl, studentE,selected,adminSchool,selected1,selected2, selected3,selected4,selected5, tokens_5[];
 	private int studentID;
 	private Queries q;
 	private JTextField textField_8;
@@ -98,6 +98,7 @@ public class StartGUI{
 		mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
+
 				panel.setVisible(true);
 				panel_1.setVisible(false);
 				panel_2.setVisible(false);
@@ -132,17 +133,17 @@ public class StartGUI{
 		mntmStudentHome.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
 				panel_1.setVisible(true);
+				panel_4.setVisible(false);
 			}
 		});
 
 		mntmStudentResults = new JMenuItem("View Results");
-		
+
 
 		mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
-				panel_2.setVisible(true);
-				panel_3.setVisible(false);
+
 			}
 		});
 
@@ -150,10 +151,13 @@ public class StartGUI{
 		btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				String uName = textField.getText();
 				String pass = new String(passwordField.getPassword());
 				if(q.LogIn(uName, pass).equals("Success")){
 					if(us.getType().equals("Student")){
+						panel.setVisible(false);
+						panel_1.setVisible(true);
 
 						mnMain = new JMenu(st.getFirstName() + " " + st.getLastName());
 						mnMain.add(mntmStudentHome);
@@ -174,8 +178,7 @@ public class StartGUI{
 
 
 						textArea.setText(q.displayStudentCourses(st.getLastName()));
-						panel.setVisible(false);
-						panel_1.setVisible(true);
+
 
 
 						choice = new Choice();
@@ -186,7 +189,7 @@ public class StartGUI{
 
 						for(int i = 0; i<tokens.length;i++){
 							choice.add(tokens[i]);
-							}
+						}
 
 						choice.addItemListener(new ItemListener(){
 							public void itemStateChanged(ItemEvent ie)
@@ -203,6 +206,7 @@ public class StartGUI{
 											JOptionPane.ERROR_MESSAGE);
 								}else{
 									q.insertChoice(selected, st.getStudentID());
+									choice.select(0);
 									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
 											JOptionPane.INFORMATION_MESSAGE);
 
@@ -235,23 +239,25 @@ public class StartGUI{
 											JOptionPane.ERROR_MESSAGE);
 								}else{
 									q.removeChoice(selected1, st.getStudentID());
+									choice_4.select(0);
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
 
 								}
 							}
 						});
-						
+
 						mntmStudentResults.addActionListener(new ActionListener(){
 							public void actionPerformed(ActionEvent e1){
-									if(q.displayResult(st.getStudentID()).equals("Not Available")){
-										JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
-												JOptionPane.ERROR_MESSAGE);
-									}else{
-										textArea_2.setText(q.displayResult(st.getStudentID()));
-										panel_1.setVisible(false);
-										panel_4.setVisible(true);
-									}
+								String display = q.displayResult(st.getStudentID());
+								if(display.equals("Not Available")){
+									JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
+											JOptionPane.ERROR_MESSAGE);
+								}else{
+									textArea_2.setText(display);
+									panel_1.setVisible(false);
+									panel_4.setVisible(true);
+								}
 							}
 						});
 
@@ -259,6 +265,8 @@ public class StartGUI{
 						panel_1.add(choice_4);
 
 					}else{
+						panel.setVisible(false);
+						panel_2.setVisible(true);
 
 						admin = new JMenu(ad.getFirstName() + " " + ad.getLastName());
 						admin.add(mntmAdminHome);
@@ -279,8 +287,7 @@ public class StartGUI{
 
 
 						textArea_1.setText(q.displayAvailableCourses(ad.getLastName()));
-						panel.setVisible(false);
-						panel_2.setVisible(true);
+
 
 						btnAddCourse.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
@@ -296,6 +303,7 @@ public class StartGUI{
 										}else{
 											String[] tokens = selected3.split("\\(");
 											q.addCourseDegree(textField_2.getText(), tokens[0]);
+											choice_3.select(0);
 											JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
 													JOptionPane.INFORMATION_MESSAGE);
 										}
@@ -335,8 +343,8 @@ public class StartGUI{
 								}else{
 									q.removeCourse(selected2);
 									choice_5.select(0);
-									
-									
+
+
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
 								}
@@ -362,6 +370,90 @@ public class StartGUI{
 
 						});
 
+						choice_1 = new Choice();
+						choice_1.setBounds(19, 70, 307, 27);
+						choice_1.add("");
+						String select4 = q.displayStudents(ad.getID());
+						String[]tokens_4 = select4.split(",");
+
+						for(int i = 0; i<tokens_4.length;i++){
+							choice_1.add(tokens_4[i]);
+						}
+
+
+
+						choice_1.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected4 = choice_1.getSelectedItem();
+								tokens_5 = selected4.split(" ");
+								String select7 = q.removeSelection(tokens_5[1]);
+								String[]tokens_7 = select7.split(",");
+
+								choice_2 = new Choice();
+								choice_2.setBounds(19, 179, 295, 27);
+								choice_2.add("");
+								for(int i = 0; i<tokens_7.length;i++){
+									choice_2.add(tokens_7[i]);
+								}
+								choice_2.setVisible(false);
+
+								choice_2.addItemListener(new ItemListener(){
+									public void itemStateChanged(ItemEvent ie)
+									{
+										selected5 = choice_2.getSelectedItem();
+										lblExam.setVisible(true);
+										lblCoursework.setVisible(true);
+										lblPercentage.setVisible(true);
+										textField_6.setVisible(true);
+										textField_7.setVisible(true);
+										btnSubmit.setVisible(true);
+										q.getCourseDetails(selected5);
+										lblNewLabel_5 = new JLabel(""+cs.getExamPercentage()+"");
+										lblNewLabel_5.setBounds(127, 351, 61, 16);
+										lblNewLabel_5.setVisible(true);
+										panel_3.add(lblNewLabel_5);
+
+										label = new JLabel(""+cs.getCoursework()+"");
+										label.setBounds(127, 392, 61, 16);
+										label.setVisible(true);
+										panel_3.add(label);
+
+
+										btnSubmit.addActionListener(new ActionListener() {
+											public void actionPerformed(ActionEvent e) {
+												if(textField_6.getText().equals("") || textField_7.getText().equals("")){
+													JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
+												}else{
+													try{
+														int exam = Integer.parseInt(textField_6.getText());
+														int cw = Integer.parseInt(textField_7.getText());
+														if((exam < 0 || exam > 100) || (cw < 0 || cw > 100)){
+															JOptionPane.showMessageDialog(null, "Number greater than 100 or less than 0. Enter numbers between 0 & 100", "Error message", JOptionPane.ERROR_MESSAGE);
+														}else{
+															int overall = q.calculateScore(exam, cw, cs.getCoursework(), cs.getExamPercentage());
+															q.insertCourseScore(overall, selected5, tokens_5[0], tokens_5[1]);
+															JOptionPane.showMessageDialog(null, "Result added", "Window",
+																	JOptionPane.ERROR_MESSAGE);
+														}
+													}catch(NumberFormatException e1){
+														JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
+
+													}
+												}
+											}
+										});
+
+
+									}
+
+								});
+								lblNewLabel_4.setVisible(true);
+								choice_2.setVisible(true);
+								panel_3.add(choice_2);
+							}
+						});
+						panel_3.add(choice_1);
 						panel_2.add(choice_3);
 						panel_2.add(choice_5);
 
@@ -505,66 +597,57 @@ public class StartGUI{
 		lblAddingResults.setBounds(19, 19, 147, 16);
 		panel_3.add(lblAddingResults);
 
-		choice_1 = new Choice();
-		choice_1.setBounds(19, 70, 307, 27);
-		panel_3.add(choice_1);
-
 		JLabel lblSelectTheStudent = new JLabel("Select the student whose result you want to add below");
 		lblSelectTheStudent.setBounds(19, 48, 390, 16);
 		panel_3.add(lblSelectTheStudent);
 
-		JLabel lblNewLabel_4 = new JLabel("Select course you want to add mark for below");
+		lblNewLabel_4 = new JLabel("Select course you want to add mark for below");
 		lblNewLabel_4.setBounds(19, 137, 354, 16);
+		lblNewLabel_4.setVisible(false);
 		panel_3.add(lblNewLabel_4);
 
-		choice_2 = new Choice();
-		choice_2.setBounds(19, 179, 295, 27);
-		panel_3.add(choice_2);
-
-		JLabel lblExam = new JLabel("Exam");
+		lblExam = new JLabel("Exam");
 		lblExam.setBounds(19, 351, 61, 16);
+		lblExam.setVisible(false);
 		panel_3.add(lblExam);
 
-		JLabel lblCoursework = new JLabel("Coursework");
+		lblCoursework = new JLabel("Coursework");
 		lblCoursework.setBounds(19, 392, 81, 16);
+		lblCoursework.setVisible(false);
 		panel_3.add(lblCoursework);
 
-		JLabel lblPercentage = new JLabel("Percentage");
+		lblPercentage = new JLabel("Percentage");
 		lblPercentage.setBounds(127, 319, 81, 16);
+		lblPercentage.setVisible(false);
 		panel_3.add(lblPercentage);
 
 		textField_6 = new JTextField();
 		textField_6.setBounds(217, 346, 66, 26);
+		textField_6.setVisible(false);
 		panel_3.add(textField_6);
 		textField_6.setColumns(10);
 
 		textField_7 = new JTextField();
 		textField_7.setBounds(217, 387, 66, 26);
+		textField_7.setVisible(false);
 		panel_3.add(textField_7);
 		textField_7.setColumns(10);
 
-		JLabel lblNewLabel_5 = new JLabel("");
-		lblNewLabel_5.setBounds(127, 351, 61, 16);
-		panel_3.add(lblNewLabel_5);
-
-		JLabel label = new JLabel("");
-		label.setBounds(127, 392, 61, 16);
-		panel_3.add(label);
-
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(110, 425, 117, 29);
+		btnSubmit = new JButton("Submit");
+		btnSubmit.setBounds(101, 440, 117, 29);
+		btnSubmit.setVisible(false);
 		panel_3.add(btnSubmit);
-		
+
 		panel_4 = new JPanel();
 		frame.getContentPane().add(panel_4, "name_168856079465156");
 		panel_4.setLayout(null);
-		
+
 		textArea_2 = new JTextArea();
 		textArea_2.setBounds(26, 81, 829, 553);
 		textArea_2.setEditable(false);//method to prevent text area from being edited
 		textArea_2.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		panel_4.add(textArea_2, BorderLayout.CENTER);
-		
+
 		JLabel lblResults = new JLabel("Results");
 		lblResults.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		lblResults.setBounds(26, 16, 112, 25);
