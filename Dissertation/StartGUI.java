@@ -106,12 +106,11 @@ public class StartGUI{
 		mntmLogOut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
 				//q.closeConnection();
-				panel.setVisible(true);
-				panel_1.setVisible(false);
-				panel_2.setVisible(false);
-				panel_3.setVisible(false);
-				mnHome.add(mntmExit);
-				displayMenu(mnHome);
+				int result =JOptionPane.showConfirmDialog(frame,"Are you sure you want to log out?",
+						"Log Out", JOptionPane.YES_NO_OPTION);
+				if(result == 0){
+					System.exit(0);
+				}else frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 			}
 		});
 		//closes the whole program
@@ -172,7 +171,6 @@ public class StartGUI{
 					if(us.getType().equals("Student")){
 						panel.setVisible(false);
 						panel_1.setVisible(true);
-						//choice.removeAll();
 						mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
 						mnMain.add(mntmStudentHome);
 						mnMain.add(mntmStudentResults);
@@ -209,6 +207,8 @@ public class StartGUI{
 								}else{
 									q.insertChoice(selected, ((Student)us).getStudentID());
 									choice.select(0);
+									choice.removeAll();
+									choice_4.removeAll();
 									q.displayCourses(((Student)us).getStudentID());
 									q.removeSelection(us.getLastName());
 									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
@@ -218,9 +218,7 @@ public class StartGUI{
 							}
 						});
 
-						choice_4 = new Choice();
-						choice_4.setBounds(22, 623, 281, 27);
-						choice_4.add("");
+						
 						String select1 = q.removeSelection(us.getLastName());
 						String[]tokens_1 = select1.split(",");
 
@@ -244,6 +242,8 @@ public class StartGUI{
 								}else{
 									q.removeChoice(selected1, ((Student)us).getStudentID());
 									choice_4.select(0);
+									choice.removeAll();
+									choice_4.removeAll();
 									q.displayCourses(((Student)us).getStudentID());
 									q.removeSelection(us.getLastName());
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
@@ -349,8 +349,8 @@ public class StartGUI{
 								}else{
 									q.removeCourse(selected2);
 									choice_5.select(0);
-
-
+									choice_5.removeAll();
+									q.removeSelectionAdmin(us.getLastName());
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
 								}
@@ -395,6 +395,7 @@ public class StartGUI{
 								tokens_5 = selected4.split(" ");
 								String select7 = q.removeSelection(tokens_5[1]);
 								String[]tokens_7 = select7.split(",");
+								System.out.print(tokens_7[1]);
 
 								choice_2 = new Choice();
 								choice_2.setBounds(19, 179, 295, 27);
@@ -473,7 +474,6 @@ public class StartGUI{
 					}
 
 				}else{
-					System.out.print("no");
 					JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
 							JOptionPane.ERROR_MESSAGE);
 				}
@@ -526,6 +526,10 @@ public class StartGUI{
 		choice = new Choice();
 		choice.setBounds(22, 495, 264, 27);
 		choice.add("");
+		
+		choice_4 = new Choice();
+		choice_4.setBounds(22, 623, 281, 27);
+		choice_4.add("");
 
 		btnNewButton = new JButton("Add Course");
 
