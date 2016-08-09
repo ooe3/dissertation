@@ -9,95 +9,79 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 public class Queries {
-	DatabaseConnection dc;
+	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
 	private Statement st;
-	private Users us;
-	private Course cs;
-	private Student stu;
-	private Admin ad;
-	private Degree dg;
-	private School sc;
-	private CourseDegree cd;
-	private CourseResult cr;
-	private StudentDegree sd;
-	public Queries(DatabaseConnection d, Users u, Student sts, Admin adm,  Course course, School school, Degree dge, CourseResult crs, StudentDegree sds, CourseDegree cds){
+	/**
+	 * The class which has all queries all possible methods
+	 *  to be used in the functioning of the system
+	 * @param d
+	 */
+	
+	//provides the access to the database
+	public Queries(DatabaseConnection d){
 		dc = d;
-		us = u;
-		stu = sts;
-		ad = adm;
-		this.cs = course;
-		this.dg = dge;
-		this.sc = school;
-		this.cd = cds;
-		this.cr = crs;
-		this.sd = sds;
 		conn = d.connectToDatabase();
 
 	}
-
-	public String LogIn(String matric, String password){
+	
+	//Log in method using the matric number and password
+	//Matric gotten from textfield
+	public Users LogIn(String matric, String password){
+		Users us = null;
 		String check = "";
+		//checks to see if matric & password exists
 		try{
 			String query = "SELECT * FROM USER WHERE MATRICNO = '"+matric+"' AND PASSWORD = '"+password+"'";
-
 			st = conn.createStatement();
 			ResultSet rs = st.executeQuery(query);	
 
 			while(rs.next()){
 				check +="Success";
-				String type = rs.getString("USERTYPE");
-				int id = rs.getInt("ID");
+				//stores user details in the following variables
+				String type = rs.getString("USERTYPE");//type stores 
+				int id = rs.getInt("ID");//id stores
 				String matricno = rs.getString("MATRICNO");
-				String pass = rs.getString("PASSWORD");
-
-
-				us.setType(type);
-				us.setMatric(matricno);
-				us.setPassword(pass);
-				us.setID(id);
-
+//				String pass = rs.getString("PASSWORD");
+//				us.setType(type);
+//				us.setMatric(matricno);
+//				us.setPassword(pass);
+				
+				
+				//type is checked to see whether we need to query the student or admin table
 				if(type.equals("Student")){
-					String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = '"+us.getMatric()+"'";
+					String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = '"+matric+"'";
 					rs = st.executeQuery(query1);
-
+					
 					while(rs.next()){
+						
 						int studentID = rs.getInt("STUDENTID");
 						String studentf = rs.getString("FIRSTNAME");
 						String studentl = rs.getString("LASTNAME");
 						String studentE = rs.getString("EMAIL");
-						int userid = rs.getInt("USERID");
-
-
-
-						stu.setStudentID(studentID);
-						stu.setFirstName(studentf);
-						stu.setLastName(studentl);
-						stu.setEmail(studentE);
-						stu.setUserID(userid);
-
+						//int userid = rs.getInt("USERID");
+//						us = new Users(id, studentf, studentl, studentE);
+						us = new Student(id, studentID, studentf, studentl, studentE);
+						us.setMatric(matricno);
+						us.setType(type);
 					}
 
 				}else {
-					String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = '"+us.getMatric()+"'";
+					String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = '"+matric+"'";
 					rs = st.executeQuery(query2);
 
 					while(rs.next()){
+						
 						int adminID = rs.getInt("ADMINID");
 						String adminf = rs.getString("FIRSTNAME");
 						String adminl = rs.getString("LASTNAME");
 						String adminE = rs.getString("EMAIL");
-						int userid = rs.getInt("USERID");
+						//int userid = rs.getInt("USERID");
 						String schoolref = rs.getString("SCHOOLREF");
-
-
-						ad.setFirstName(adminf);
-						ad.setLastName(adminl);
-						ad.setEmail(adminE);
-						ad.setAdminID(adminID);
-						ad.setSchoolName(schoolref);
-						ad.setUserID(userid);
-
+//						us = new Users(id, adminf, adminl, adminE);
+						us = new Admin(id, adminID, adminf, adminl, adminE, schoolref);
+						us.setType(type);
+						us.setMatric(matricno);
 					}
 
 				}
@@ -108,15 +92,17 @@ public class Queries {
 		}catch(Exception e1){
 			e1.printStackTrace();
 		} 
-		return check;
+		return us;
 	}
-
+	//gets the student courses to be displayed on the GUI
+	//String s supplies the lastname of the student
 	public String displayStudentCourses(String s){
+		StringBuilder sb = new StringBuilder("");
 		String courses = "";
 		String display = String.format(" %s\n", "Chosen Courses");
-		courses+=display;
-		courses+="\n";
-		String t = "", t1 = "";
+		sb.append(display);
+		sb.append("\n");
+		
 		try{
 			String query = "SELECT c.COURSE FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID WHERE st.LASTNAME = '"+s+"'";
 			st = conn.createStatement();
@@ -125,13 +111,14 @@ public class Queries {
 			while(rs.next()){
 				check+=1;
 				String chosen = rs.getString("COURSE");
-				t1 = String.format(" %s\n", chosen);
-				courses+=t1;
-				courses+="\n";
+				String t1 = String.format(" %s\n", chosen);
+				sb.append(t1);
+				sb.append("\n");
 			}
+			//returns a string to show that no courses have been selected
 			if(check == 0){
-				t = String.format(" %s\n", "No Courses Selected yet. Add a course below");
-				courses+=t;
+				String t = String.format(" %s\n", "No Courses Selected yet. Add a course below");
+				sb.append(t);
 			}
 			rs.close();
 			st.close();
@@ -139,15 +126,15 @@ public class Queries {
 			e.printStackTrace();
 		}
 
-		return courses;
+		return sb.toString();
 	}
-
+	//return strings that contains courses available
+	//String s passes the admin lastname as a parameter
 	public String displayAvailableCourses(String s){
-		String courses = "";
+		StringBuilder sb = new StringBuilder("");
 		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Courses","Credit","Exam","Coursework");
-		courses+=display;
-		courses+="\n";
-		String t = "", t1 = "";
+		sb.append(display);
+		sb.append("\n");
 		try{
 			String queryx = "SELECT * FROM COURSES INNER JOIN COURSEDEGREE ON COURSES.COURSENAME = COURSEDEGREE.COURSE_NAME INNER JOIN "
 					+ "DEGREE ON DEGREE.DEGREEID = COURSEDEGREE.DEGREE_ID INNER JOIN SCHOOL ON SCHOOL.SCHOOLNAME = DEGREE.SCHOOL_REF INNER JOIN "
@@ -164,24 +151,25 @@ public class Queries {
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
 
-				t1 = String.format(" %-50.50s %-10d %-10d %-10d\n", course,credit,exam,cw);
-				courses+=t1;
-				courses+="\n";
+				String t1 = String.format(" %-50.50s %-10d %-10d %-10d\n", course,credit,exam,cw);
+				sb.append(t1);
+				sb.append("\n");
 			}
 			if(check == 0){
-				t = String.format(" %s\n", "No courses available for selection Add a course below");
-				courses+=t;
+				String t = String.format(" %s\n", "No courses available for selection Add a course below");
+				sb.append(t);
 			}
 			rs.close();
 			st.close();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return courses;
+		return sb.toString();
 	}
-
+	
+	//To return user details for display
 	public String displayDetails(String s, String s1){
-		String school = "";
+		StringBuilder sb = new StringBuilder("");
 		ResultSet rs;
 		try{
 			if(s.equals("Student")){
@@ -193,9 +181,9 @@ public class Queries {
 					String degree = rs.getString("DEGREENAME");
 					String degreetype = rs.getString("DEGREETYPE");
 
-					school+=degreetype;
-					school+=" ";
-					school+=degree;
+					sb.append(degreetype);
+					sb.append(" ");
+					sb.append(degree);
 				}
 
 			}else{
@@ -205,11 +193,11 @@ public class Queries {
 				while(rs.next()){
 					String schoolref = rs.getString("SCHOOLREF");
 					if(schoolref.equals("Dental") || schoolref.equals("Adam Smith Business")){
-						school+=schoolref;
-						school+=" School";
+						sb.append(schoolref);
+						sb.append(" School");
 					}else{
-						school+="School of ";
-						school+= schoolref;
+						sb.append("School of ");
+						sb.append(schoolref);
 					}
 				}
 
@@ -219,9 +207,9 @@ public class Queries {
 		}catch (Exception e){
 			e.printStackTrace();
 		} 
-		return school;
+		return sb.toString();
 	}
-
+	//Insert course selected by student
 	public void insertChoice(String s, int d){
 		try{
 			st = conn.createStatement();
@@ -232,7 +220,9 @@ public class Queries {
 		}
 
 	}
-
+	//Remove course selected by student
+	//String s passes the course to be removed
+	//int d passes the studentID
 	public void removeChoice(String s, int d){
 		try{
 			st = conn.createStatement();
@@ -242,7 +232,7 @@ public class Queries {
 			e.printStackTrace();
 		}
 	}
-
+	//Insert new courses into the system by admin
 	public String insertCourse(String s, int d, int d1, int d2){
 		String check = "";
 		ResultSet rs;
@@ -267,7 +257,8 @@ public class Queries {
 		}
 		return check;
 	}
-
+	
+	//To insert the specific course and the degree it belongs to
 	public void addCourseDegree(String course, String degree){
 		ResultSet rs;
 		try{
@@ -285,7 +276,7 @@ public class Queries {
 			e.printStackTrace();
 		}
 	}
-
+	//Remove course from the system
 	public void removeCourse(String s){
 		try{
 			st = conn.createStatement();
@@ -297,10 +288,10 @@ public class Queries {
 			e.printStackTrace();
 		}
 	}
-
+	//Display courses available for selection
+	//int s takes the studentID
 	public String displayCourses(int s){
-
-		String choice="";
+		StringBuilder sb = new StringBuilder("");
 		ResultSet rs;
 		try{
 			String query = "SELECT COURSE_NAME FROM COURSEDEGREE WHERE COURSE_NAME NOT IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = '"+s+"') AND DEGREE_ID = (SELECT DEGREE FROM STUDENT_DEGREE WHERE STUDENT = '"+s+"')";
@@ -308,21 +299,21 @@ public class Queries {
 			rs = st.executeQuery(query);
 			while(rs.next()){
 				String name = rs.getString("COURSE_NAME");
-				choice+=name;
-				choice+=",";
+				sb.append(name);
+				sb.append(",");
 			}
 			rs.close();
 			st.close();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return choice;
+		return sb.toString();
 
 
 	}
-
+	//display courses that can be removed for student
 	public String removeSelection(String s){
-		String choice="";
+		StringBuilder sb = new StringBuilder("");
 		ResultSet rs;
 
 		try{
@@ -332,17 +323,17 @@ public class Queries {
 
 			while(rs.next()){
 				String name = rs.getString("COURSE");
-				choice+=name;
-				choice+=",";
+				sb.append(name);
+				sb.append(",");
 			}
 			rs.close();
 			st.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return choice;
+		return sb.toString();
 	}
-
+	//
 	public String removeSelectionAdmin(String s){
 		String choice="";
 		ResultSet rs;
@@ -482,6 +473,7 @@ public class Queries {
 			rs = st.executeQuery(query);
 
 			while(rs.next()){
+				Course cs = new Course();
 				String coursename = rs.getString("COURSENAME");
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
@@ -519,7 +511,9 @@ public class Queries {
 		}
 
 	}
-
+	//Calculate the score of a course
+	//Method to be called in the GUI and int result returned to pass as one
+	//of the parameters in insertCourseScore
 	public int calculateScore(int exam, int coursework, int courseMark, int examMark){
 		double e = (double)exam/100;
 		double c = (double)coursework/100;
@@ -534,6 +528,16 @@ public class Queries {
 
 		finalscore+=Math.round(score);
 		return finalscore;
+	}
+	
+	public void closeConnection(){
+		if(conn != null){
+			try{
+				conn.close();
+			}catch(Exception e){
+				e.getMessage();
+			}
+		}
 	}
 
 

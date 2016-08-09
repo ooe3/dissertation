@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JMenuBar;
@@ -22,6 +23,19 @@ import java.sql.*;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import java.awt.List;
+
+/**
+ * This class is the view class. Contains all the interface functions
+ * Methods are called from the queries class in order to show the updates on the GUI
+ * It has an initialize method where all the GUI is created
+ * Constructor calls the initialize method as well creating an instance of the Query class in order to execute
+ * the queries
+ * Also contains a method which helps display a menu bar at the end
+ * One JFrame is created. This frame contains more than one panel to display the information for that panel
+ * Each panel has its own information
+ * @author ooemuwa
+ *
+ */
 public class StartGUI{
 
 	private JFrame frame;
@@ -34,15 +48,15 @@ public class StartGUI{
 	private JMenuBar menuBar;
 	private JMenu mnMain, admin, mnHome;
 	private JMenuItem mntmLogOut, mntmExit, mntmResults, mntmAdminHome, mntmPassword, mntmStudentResults, mntmStudentHome;
-	private String studentf, studentl, studentE,selected,adminSchool,selected1,selected2, selected3,selected4,selected5, tokens_5[];
-	private int studentID;
+	private String studentf, studentl, studentE,selected,adminSchool,selected1,selected2, selected3,selected4,selected5, tokens_5[], tokens[], select;
+	private int studentID, clicked=0;
 	private Queries q;
 	private JTextField textField_8;
 	private Choice choice, choice_1, choice_2;
 	private Choice choice_3, choice_4, choice_5;
 	private Users us;
-	private Student st;
-	private Admin ad;
+//	private Student us;
+//	private Admin us;
 	private Course cs;
 	private School sc;
 	private Degree dg;
@@ -50,25 +64,16 @@ public class StartGUI{
 	private StudentDegree sd;
 	private CourseDegree cd;
 	private JPanel panel_4;
+	private boolean check;
+	private Connection conn = null;
 
 
 	/**
 	 * Create the application.
 	 */
-	public StartGUI(Queries qu, Users u, Student stu, Admin adm, Course course, School school, Degree dge, CourseResult crs, StudentDegree sds, CourseDegree cds) {
-		initialize();
+	public StartGUI(Queries qu){
 		q = qu;
-		us = u;
-		st = stu;
-		ad = adm;
-		this.cs= course;
-		this.sc = school;
-		this.dg = dge;
-		this.cr= crs;
-		this.sd = sds;
-		this.cd = cds;
-
-
+		initialize();
 
 	}
 
@@ -76,6 +81,7 @@ public class StartGUI{
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
 		frame = new JFrame("University Record System");
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -94,26 +100,28 @@ public class StartGUI{
 		textField.setBounds(477, 193, 147, 26);
 		panel.add(textField);
 		textField.setColumns(10);
-
+		//log out menu item
+		//sets the required to be shown
 		mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
-
+				//q.closeConnection();
 				panel.setVisible(true);
 				panel_1.setVisible(false);
 				panel_2.setVisible(false);
 				panel_3.setVisible(false);
+				mnHome.add(mntmExit);
 				displayMenu(mnHome);
 			}
 		});
-
+		//closes the whole program
 		mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
 				System.exit(0);
 			}
 		});
-
+		//add result menu item
 		mntmResults = new JMenuItem("Add Result");
 		mntmResults.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
@@ -121,7 +129,7 @@ public class StartGUI{
 				panel_3.setVisible(true);
 			}
 		});
-
+		//admin home
 		mntmAdminHome = new JMenuItem("Home");
 		mntmAdminHome.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
@@ -129,6 +137,8 @@ public class StartGUI{
 				panel_3.setVisible(false);
 			}
 		});
+
+		//Student home
 		mntmStudentHome = new JMenuItem("Home");
 		mntmStudentHome.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
@@ -137,9 +147,10 @@ public class StartGUI{
 			}
 		});
 
+		//view results menu item
 		mntmStudentResults = new JMenuItem("View Results");
 
-
+		//change password menu item
 		mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e1){
@@ -147,19 +158,22 @@ public class StartGUI{
 			}
 		});
 
-
+		//log in button
+		//The action listener much contains all the functions of the system
+		//Can't access the system without logging in
 		btnLogIn = new JButton("Log In");
 		btnLogIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				String uName = textField.getText();
 				String pass = new String(passwordField.getPassword());
-				if(q.LogIn(uName, pass).equals("Success")){
+				us = q.LogIn(uName, pass);
+				if(us!=null){
+					
 					if(us.getType().equals("Student")){
 						panel.setVisible(false);
 						panel_1.setVisible(true);
-
-						mnMain = new JMenu(st.getFirstName() + " " + st.getLastName());
+						//choice.removeAll();
+						mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
 						mnMain.add(mntmStudentHome);
 						mnMain.add(mntmStudentResults);
 						mnMain.add(mntmPassword);
@@ -167,25 +181,13 @@ public class StartGUI{
 						mnMain.add(mntmExit);
 						displayMenu(mnMain);
 
-						label_1 = new JLabel(q.displayDetails(us.getType(), us.getMatric()));
-						label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-						label_1.setBounds(175, 6, 400, 28);
-						panel_1.add(label_1);
+						label_1.setText(q.displayDetails(us.getType(), us.getMatric()));
 
-						label = new JLabel(st.getEmail());
-						label.setBounds(219, 58, 276, 16);
-						panel_1.add(label);
+						label.setText(us.getEmail());
+						textArea.setText(q.displayStudentCourses(us.getLastName()));
 
-
-						textArea.setText(q.displayStudentCourses(st.getLastName()));
-
-
-
-						choice = new Choice();
-						choice.setBounds(22, 495, 264, 27);
-						choice.add("");
-						String select = q.displayCourses(st.getStudentID());
-						String[]tokens = select.split(",");
+						select = q.displayCourses(((Student)us).getStudentID());
+						tokens = select.split(",");
 
 						for(int i = 0; i<tokens.length;i++){
 							choice.add(tokens[i]);
@@ -205,8 +207,10 @@ public class StartGUI{
 									JOptionPane.showMessageDialog(null, "No course selected", "Window",
 											JOptionPane.ERROR_MESSAGE);
 								}else{
-									q.insertChoice(selected, st.getStudentID());
+									q.insertChoice(selected, ((Student)us).getStudentID());
 									choice.select(0);
+									q.displayCourses(((Student)us).getStudentID());
+									q.removeSelection(us.getLastName());
 									JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
 											JOptionPane.INFORMATION_MESSAGE);
 
@@ -217,7 +221,7 @@ public class StartGUI{
 						choice_4 = new Choice();
 						choice_4.setBounds(22, 623, 281, 27);
 						choice_4.add("");
-						String select1 = q.removeSelection(st.getLastName());
+						String select1 = q.removeSelection(us.getLastName());
 						String[]tokens_1 = select1.split(",");
 
 						for(int i = 0; i<tokens_1.length;i++){
@@ -238,8 +242,10 @@ public class StartGUI{
 									JOptionPane.showMessageDialog(null, "No course selected", "Window",
 											JOptionPane.ERROR_MESSAGE);
 								}else{
-									q.removeChoice(selected1, st.getStudentID());
+									q.removeChoice(selected1, ((Student)us).getStudentID());
 									choice_4.select(0);
+									q.displayCourses(((Student)us).getStudentID());
+									q.removeSelection(us.getLastName());
 									JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 											JOptionPane.ERROR_MESSAGE);
 
@@ -249,7 +255,7 @@ public class StartGUI{
 
 						mntmStudentResults.addActionListener(new ActionListener(){
 							public void actionPerformed(ActionEvent e1){
-								String display = q.displayResult(st.getStudentID());
+								String display = q.displayResult(((Student)us).getStudentID());
 								if(display.equals("Not Available")){
 									JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
 											JOptionPane.ERROR_MESSAGE);
@@ -268,7 +274,7 @@ public class StartGUI{
 						panel.setVisible(false);
 						panel_2.setVisible(true);
 
-						admin = new JMenu(ad.getFirstName() + " " + ad.getLastName());
+						admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 						admin.add(mntmAdminHome);
 						admin.add(mntmResults);
 						admin.add(mntmPassword);
@@ -281,12 +287,12 @@ public class StartGUI{
 						label_2.setBounds(177, 16, 400, 28);
 						panel_2.add(label_2);
 
-						label_3 = new JLabel(ad.getEmail());
+						label_3 = new JLabel(us.getEmail());
 						label_3.setBounds(227, 83, 276, 16);
 						panel_2.add(label_3);
 
 
-						textArea_1.setText(q.displayAvailableCourses(ad.getLastName()));
+						textArea_1.setText(q.displayAvailableCourses(us.getLastName()));
 
 
 						btnAddCourse.addActionListener(new ActionListener() {
@@ -318,7 +324,7 @@ public class StartGUI{
 						choice_5.setBounds(18, 695, 507, 27);
 						choice_5.add("");
 
-						String select2 = q.removeSelectionAdmin(ad.getLastName());
+						String select2 = q.removeSelectionAdmin(us.getLastName());
 						String[]tokens_2 = select2.split(",");
 
 						for(int i = 0; i<tokens_2.length;i++){
@@ -355,7 +361,7 @@ public class StartGUI{
 						choice_3.setBounds(177, 603, 348, 27);
 						choice_3.add("");
 
-						String select3 = q.displayDegree(ad.getSchoolName());
+						String select3 = q.displayDegree(((Admin)us).getSchoolName());
 						String[]tokens_3 = select3.split(",");
 
 						for(int i = 0; i<tokens_3.length;i++){
@@ -373,7 +379,7 @@ public class StartGUI{
 						choice_1 = new Choice();
 						choice_1.setBounds(19, 70, 307, 27);
 						choice_1.add("");
-						String select4 = q.displayStudents(ad.getID());
+						String select4 = q.displayStudents(us.getID());
 						String[]tokens_4 = select4.split(",");
 
 						for(int i = 0; i<tokens_4.length;i++){
@@ -433,6 +439,13 @@ public class StartGUI{
 														}else{
 															int overall = q.calculateScore(exam, cw, cs.getCoursework(), cs.getExamPercentage());
 															q.insertCourseScore(overall, selected5, tokens_5[0], tokens_5[1]);
+															lblExam.setVisible(false);
+															lblCoursework.setVisible(false);
+															lblPercentage.setVisible(false);
+															textField_6.setVisible(false);
+															textField_7.setVisible(false);
+															btnSubmit.setVisible(false);
+															choice_2.setVisible(false);
 															JOptionPane.showMessageDialog(null, "Result added", "Window",
 																	JOptionPane.ERROR_MESSAGE);
 														}
@@ -460,13 +473,17 @@ public class StartGUI{
 					}
 
 				}else{
+					System.out.print("no");
 					JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
 							JOptionPane.ERROR_MESSAGE);
 				}
 				textField.setText("");
 				passwordField.setText("");
-			}
 
+
+
+
+			}
 
 
 		});
@@ -497,6 +514,18 @@ public class StartGUI{
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		panel_1.add(textArea, BorderLayout.CENTER);
 
+		label = new JLabel();
+		label.setBounds(219, 58, 276, 16);
+		panel_1.add(label);
+
+		label_1 = new JLabel();
+		label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
+		label_1.setBounds(175, 6, 400, 28);
+		panel_1.add(label_1);
+
+		choice = new Choice();
+		choice.setBounds(22, 495, 264, 27);
+		choice.add("");
 
 		btnNewButton = new JButton("Add Course");
 
