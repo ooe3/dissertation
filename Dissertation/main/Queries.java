@@ -1,17 +1,23 @@
+package main;
 import java.sql.*;
 import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
+import gui.StartGUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 public class Queries {
-	DatabaseConnection dc;//Databaseconnection object
+//	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
 	private Statement st;
+	Users us;
+	Course cs;
+	
+	private static Queries q;
 	/**
 	 * The class which has all queries all possible methods
 	 *  to be used in the functioning of the system
@@ -19,16 +25,32 @@ public class Queries {
 	 */
 
 	//provides the access to the database
-	public Queries(DatabaseConnection d){
-		dc = d;
-		conn = d.connectToDatabase();
+	private Queries(){
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					conn = DatabaseConnection.connectToDatabase();
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 
+	}
+	
+	public static Queries getQueries(){
+		if(q==null)
+			q = new Queries();
+		return q;
+		
 	}
 
 	//Log in method using the matric number and password
 	//Matric gotten from textfield
 	public Users LogIn(String matric, String password){
-		Users us = null;
+		us = null;
 		//checks to see if matric & password exists
 		try{
 			String query = "SELECT * FROM USER WHERE MATRICNO = '"+matric+"' AND PASSWORD = '"+password+"'";
@@ -88,10 +110,6 @@ public class Queries {
 	//String s supplies the lastname of the student
 	public String displayStudentCourses(String s){
 		StringBuilder sb = new StringBuilder("");
-		String courses = "";
-		String display = String.format(" %s\n", "Chosen Courses");
-		sb.append(display);
-		sb.append("\n");
 
 		try{
 			String query = "SELECT c.COURSE FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID WHERE st.LASTNAME = '"+s+"'";
@@ -107,7 +125,7 @@ public class Queries {
 			}
 			//returns a string to show that no courses have been selected
 			if(check == 0){
-				String t = String.format(" %s\n", "No Courses Selected yet. Add a course below");
+				String t = String.format(" %s\n", "No courses enrolled in. Enroll in a course below");
 				sb.append(t);
 			}
 			rs.close();
@@ -146,7 +164,7 @@ public class Queries {
 				sb.append("\n");
 			}
 			if(check == 0){
-				String t = String.format(" %s\n", "No courses available for selection Add a course below");
+				String t = String.format(" %s\n", "No courses available for selection.Create a course below");
 				sb.append(t);
 			}
 			rs.close();
@@ -462,7 +480,7 @@ public class Queries {
 			rs = st.executeQuery(query);
 
 			if(rs.next()){
-				Course cs = new Course();
+				cs = new Course();
 				String coursename = rs.getString("COURSENAME");
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
@@ -527,6 +545,18 @@ public class Queries {
 				e.getMessage();
 			}
 		}
+	}
+	
+	public Users getUser(){
+		return us;
+	}
+	
+	public int getCwPercentage(){
+		return cs.getCoursework();
+	}
+	
+	public int getExamPercentage(){
+		return cs.getExamPercentage();
 	}
 
 

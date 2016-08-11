@@ -1,3 +1,4 @@
+package main;
 
 public class CourseDegree {
 	private String course;

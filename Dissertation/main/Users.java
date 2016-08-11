@@ -1,3 +1,4 @@
+package main;
 /**
  * Users class created to store user information from the database
  * @author ooemuwa
