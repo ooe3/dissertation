@@ -30,13 +30,35 @@ public class AddListener implements ActionListener{
 						ad.textField_6().setText("");
 						ad.textField_7().setText("");
 					}else{
+						
 						int overall = q.calculateScore(exam, cw, q.getCwPercentage(), q.getExamPercentage());
 						q.insertCourseScore(overall, ad.selected5(), ad.getNames()[0], ad.getNames()[1]);
 						JOptionPane.showMessageDialog(null, "Result added", "Window",
 								JOptionPane.ERROR_MESSAGE);
+						if((q.checkResults(ad.getNames()[0], ad.getNames()[1])).equals("No")){
 						AdminAdd aa = new AdminAdd();
 						aa.setVisible(true);
 						ad.dispose();
+						}else{
+							int show = JOptionPane.showConfirmDialog(null, "Do you want calculate & add the overall mark for this student?");
+							if(show == 0){
+								String s = q.getResult(ad.getNames()[0], ad.getNames()[1]);
+								q.insertOverall(s, ad.getNames()[0], ad.getNames()[1]);
+								JOptionPane.showMessageDialog(null, "Overall added", "Window",
+										JOptionPane.ERROR_MESSAGE);
+								AdminAdd aa = new AdminAdd();
+								aa.setVisible(true);
+								ad.dispose();
+							}else if(show == 1){
+								AdminAdd aa = new AdminAdd();
+								aa.setVisible(true);
+								ad.dispose();
+							}else {
+							AdminAdd aad = new AdminAdd();
+							aad.setVisible(true);
+							ad.dispose();
+							}
+						}
 					}
 				}catch(NumberFormatException e1){
 					JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
@@ -61,7 +83,22 @@ public class AddListener implements ActionListener{
 			AdminAdd ada = new AdminAdd();
 			ada.setVisible(true);
 			ad.dispose();
-		}else{
+		}else if(e.getActionCommand().equals("Calculate")){
+			if((q.checkResults(ad.getNameCalc()[0], ad.getNameCalc()[1])).equals("No")){
+				JOptionPane.showMessageDialog(null, "All results for this student has not been entered. Add results on the left", "Error message", JOptionPane.ERROR_MESSAGE);
+			}else {
+				String s = q.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
+				q.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
+				JOptionPane.showMessageDialog(null, "Overall add", "Window",
+						JOptionPane.ERROR_MESSAGE);
+				
+			}
+			AdminAdd ada = new AdminAdd();
+			ada.setVisible(true);
+			ad.dispose();
+		}
+		
+		else{
 			System.exit(0);
 		}
 	

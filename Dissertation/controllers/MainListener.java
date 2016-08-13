@@ -28,6 +28,10 @@ public class MainListener implements ActionListener{
 					int cw = Integer.parseInt(mn.getTextField_8().getText());
 					if(q.insertCourse(mn.getTextField_2().getText(), credit, exam, cw).equals("Error")){
 						JOptionPane.showMessageDialog(null, "Course already exists", "Error message", JOptionPane.ERROR_MESSAGE);
+						mn.getTextField_2().setText("");
+						mn.getTextField_3().setText("");
+						mn.getTextField_4().setText("");
+						mn.getTextField_8().setText("");
 					}else{
 						String[] tokens = mn.getSelected3().split("\\(");
 						q.addCourseDegree(mn.getTextField_2().getText(), tokens[0]);

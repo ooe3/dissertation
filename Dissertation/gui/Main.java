@@ -16,11 +16,13 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import controllers.StudentMainListener;
 import main.*;
 import controllers.*;
+import javax.swing.JScrollBar;
 
 public class Main extends JFrame{
 	Users us;
@@ -69,10 +71,15 @@ public class Main extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new MainListener(this));
+		
+		JMenuItem mntmView = new JMenuItem("View Results");
+		mntmView.setActionCommand("View");
+		mntmView.addActionListener(new MainListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmView);
 		admin.add(mntmPassword);
 		admin.add(mntmLogOut);
 		admin.add(mntmExit);
@@ -92,7 +99,6 @@ public class Main extends JFrame{
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
 		textArea_1.setText(q.displayAvailableCourses(us.getLastName()));
-		panel.add(textArea_1, BorderLayout.CENTER);
 
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -196,6 +202,10 @@ public class Main extends JFrame{
 		JLabel lblDegree = new JLabel("Degree");
 		lblDegree.setBounds(18, 607, 61, 16);
 		panel.add(lblDegree);
+		
+		JScrollPane scrollPane = new JScrollPane(textArea_1);
+		scrollPane.setBounds(6, 111, 976, 335);
+		panel.add(scrollPane, BorderLayout.CENTER);
 
 	}
 	
@@ -230,5 +240,4 @@ public class Main extends JFrame{
 	public Choice choice5(){
 		return choice_5;
 	}
-
 }

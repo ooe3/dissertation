@@ -17,6 +17,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -81,7 +82,9 @@ public class StudentMain extends JFrame{
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		textArea.setEditable(false);
 		textArea.setText(q.displayStudentCourses(us.getLastName()));
-		panel.add(textArea, BorderLayout.CENTER);
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		scrollPane.setBounds(16, 95, 978, 339);
+		panel.add(scrollPane, BorderLayout.CENTER);
 
 		JLabel label = new JLabel();
 		label.setBounds(219, 58, 276, 16);

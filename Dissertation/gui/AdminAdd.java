@@ -19,31 +19,35 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBoxMenuItem;
+import java.awt.List;
 
 public class AdminAdd extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
-	Choice choice_1, choice_2;
+	Choice choice, choice_1, choice_2;
 	JTextField textField_6, textField_7;
 	JLabel label, lblNewLabel_5;
 	Course cs;
 	JLabel lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4;
 	JButton btnSubmit;
-	String selected5;
-	String[] tokens_5;
+	String selected5, name_selected;
+	String[] tokens_5, tokens_6;
 	private JLabel lblIfYouWant;
+	private JLabel lblSelectTheStudents;
 	public AdminAdd(){
 		us = q.getUser();
 		initialize();
 	}
-	
+
 	public void initialize(){
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		setSize(1000, 800);
-		
+
 		JPanel panel_3 = new JPanel();
 		getContentPane().add(panel_3, "name_1845822356495898");
 		panel_3.setLayout(null);
@@ -51,7 +55,7 @@ public class AdminAdd extends JFrame{
 		JLabel lblAddingResults = new JLabel("Adding results");
 		lblAddingResults.setBounds(19, 19, 147, 16);
 		panel_3.add(lblAddingResults);
-		
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 
@@ -76,7 +80,7 @@ public class AdminAdd extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new AddListener(this));
-		
+
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
@@ -93,7 +97,7 @@ public class AdminAdd extends JFrame{
 		lblNewLabel_4.setBounds(19, 137, 354, 16);
 		lblNewLabel_4.setVisible(false);
 		panel_3.add(lblNewLabel_4);
-		
+
 		choice_1 = new Choice();
 		choice_1.setBounds(19, 70, 307, 27);
 		choice_1.add("");
@@ -104,14 +108,14 @@ public class AdminAdd extends JFrame{
 			choice_1.add(tokens_4[i]);
 		}
 		panel_3.add(choice_1);
-		
+
 		choice_2 = new Choice();
-		choice_2.setBounds(19, 179, 295, 27);
+		choice_2.setBounds(20, 177, 295, 27);
 		choice_2.add("");
 		panel_3.add(choice_2);
-		
+
 		choice_2.setVisible(false);
-		
+
 		choice_1.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
@@ -124,7 +128,7 @@ public class AdminAdd extends JFrame{
 				for(int i = 0; i<tokens_7.length;i++){
 					choice_2.add(tokens_7[i]);
 				}
-				
+
 
 				choice_2.addItemListener(new ItemListener(){
 					public void itemStateChanged(ItemEvent ie)
@@ -141,12 +145,12 @@ public class AdminAdd extends JFrame{
 						lblNewLabel_5.setVisible(true);
 						label.setText(""+q.getCwPercentage()+"");
 						lblNewLabel_5.setText(""+q.getExamPercentage()+"");
-						
-						
+
+
 					}});
 			}
-			});
-		
+		});
+
 		lblNewLabel_5 = new JLabel();
 		lblNewLabel_5.setBounds(127, 351, 61, 16);
 		lblNewLabel_5.setVisible(false);
@@ -190,32 +194,66 @@ public class AdminAdd extends JFrame{
 		btnSubmit.addActionListener(new AddListener(this));
 		btnSubmit.setActionCommand("Submit");
 		panel_3.add(btnSubmit);
-		
+
 		lblIfYouWant = new JLabel("To change student or course selected, click refresh.");
 		lblIfYouWant.setBounds(421, 48, 326, 16);
 		panel_3.add(lblIfYouWant);
-		
+
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.addActionListener(new AddListener(this));
-		btnSubmit.setActionCommand("Refresh");
+		btnRefresh.setActionCommand("Refresh");
 		btnRefresh.setBounds(421, 68, 117, 29);
 		panel_3.add(btnRefresh);
 
+		lblSelectTheStudents = new JLabel("Select the student's overall average to calculate below");
+		lblSelectTheStudents.setBounds(421, 137, 354, 16);
+		panel_3.add(lblSelectTheStudents);
+
+		choice = new Choice();
+		choice.setBounds(421, 177, 340, 27);
+		choice.add("");
+		for(int i = 0; i<tokens_4.length;i++){
+			choice.add(tokens_4[i]);
+		}
+
+		choice.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				name_selected = choice.getSelectedItem();
+				tokens_6 = name_selected.split(" ");
+				System.out.print(q.checkResults(tokens_6[0], tokens_6[1]));
+			}
+		});
 		
+
+		panel_3.add(choice);
+
+		JButton btnCalculateOverall = new JButton("Calculate Overall");
+		btnCalculateOverall.setBounds(421, 210, 185, 29);
+		btnCalculateOverall.addActionListener(new AddListener(this));
+		btnCalculateOverall.setActionCommand("Calculate");
+		panel_3.add(btnCalculateOverall);
 	}
-	
+	public Choice choice(){
+		return choice;
+	}
+
 	public JTextField textField_6(){
 		return textField_6;
 	}
-	
+
 	public JTextField textField_7(){
 		return textField_7;
 	}
-	
+
 	public String[] getNames(){
 		return tokens_5;
 	}
 	
+	public String[] getNameCalc(){
+		return tokens_6;
+	}
+
 	public String selected5(){
 		return selected5;
 	}
