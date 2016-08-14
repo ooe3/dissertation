@@ -218,15 +218,55 @@ public class Queries {
 		return sb.toString();
 	}
 	//Insert course selected by student
-	public void insertChoice(String s, int d){
+	public String insertChoice(String s, int d){
+		StringBuilder sb = new StringBuilder("");
+		ResultSet rs;
+		int total = 0;
 		try{
+			String query = "SELECT c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+d+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			while(rs.next()){
+			int credit = rs.getInt("CREDIT");
+			
+			total+=credit;
+			
+			}
+			rs.close();
+			st.close();
+			
+			total+=getCredit(s);
+			if(total>180){
+				sb.append("Full");
+			}else {
 			st = conn.createStatement();
 			String sql = "INSERT INTO COURSERESULT (COURSE, STUDENTID) VALUES ('"+s+"','"+d+"')";
 			st.executeUpdate(sql);
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-
+		return sb.toString();
+	}
+	
+	public int getCredit(String course){
+		int cred = 0;
+		ResultSet rs;
+		try{
+			String query = "SELECT CREDIT FROM COURSES WHERE COURSENAME = '"+course+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			if(rs.next()){
+				int credit = rs.getInt("CREDIT");
+				cred+=credit;
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return cred;
 	}
 	//Remove course selected by student
 	//String s passes the course to be removed
@@ -416,6 +456,7 @@ public class Queries {
 				totalpoints+=(res*credit);
 				String s = String.format("%-50.50s %-10d %-10d %-10d\n", course, credit, res, (res*credit));
 				sb.append(s);
+				sb.append("\n");
 				totalcred+=credit;
 				
 			}

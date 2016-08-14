@@ -72,15 +72,20 @@ public class Main extends JFrame{
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new MainListener(this));
 		
-		JMenuItem mntmView = new JMenuItem("View Results");
+		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new MainListener(this));
+		
+		JMenuItem mntmRefresh = new JMenuItem("Refresh");
+		mntmRefresh.setActionCommand("Refresh");
+		mntmRefresh.addActionListener(new MainListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmView);
 		admin.add(mntmPassword);
+		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		admin.add(mntmExit);
 		menuBar.add(admin);
@@ -138,7 +143,7 @@ public class Main extends JFrame{
 
 		choice_3 = new Choice();
 		choice_3.setBounds(177, 603, 348, 27);
-		choice_3.add("");
+		choice_3.add("(select school)");
 
 		String select3 = q.displayDegree(((Admin)us).getSchoolName());
 		String[]tokens_3 = select3.split(",");
@@ -158,7 +163,7 @@ public class Main extends JFrame{
 
 		choice_5 = new Choice();
 		choice_5.setBounds(18, 695, 507, 27);
-		choice_5.add("");
+		choice_5.add("(select course)");
 
 		String select2 = q.removeSelectionAdmin(us.getLastName());
 		String[]tokens_2 = select2.split(",");

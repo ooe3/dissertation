@@ -19,31 +19,35 @@ public class StudentMainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(sm.getChoice().getSelectedItem().equals("")){
+			if(sm.getChoice().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				q.insertChoice(sm.getSelected(), ((Student)us).getStudentID());
-				JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
-						JOptionPane.INFORMATION_MESSAGE);
-				StudentMain mn = new StudentMain();
-				mn.setVisible(true);
-				sm.dispose();
+				if(q.insertChoice(sm.getSelected(), ((Student)us).getStudentID()).equals("Full")){
+					JOptionPane.showMessageDialog(null, "Maximum credits selected. Remove course to be able to add this course", "Window",
+							JOptionPane.ERROR_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+
 
 			}
+			StudentMain mn = new StudentMain();
+			mn.setVisible(true);
+			sm.dispose();
 		}else if(e.getActionCommand().equals("REMOVE") ){
-			if(sm.getChoice_1().getSelectedItem().equals("")){
+			if(sm.getChoice_1().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
 				q.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID());
 				JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 						JOptionPane.ERROR_MESSAGE);
-				StudentMain mn = new StudentMain();
-				mn.setVisible(true);
-				sm.dispose();
-
 			}
+			StudentMain mn = new StudentMain();
+			mn.setVisible(true);
+			sm.dispose();
 		}else if(e.getActionCommand().equals("Home Menu") ){
 			sm.setVisible(true);
 		}else if(e.getActionCommand().equals("Change Password") ){

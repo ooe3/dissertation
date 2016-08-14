@@ -53,7 +53,7 @@ public class AdminAdd extends JFrame{
 		panel_3.setLayout(null);
 
 		JLabel lblAddingResults = new JLabel("Adding results");
-		lblAddingResults.setBounds(19, 19, 147, 16);
+		lblAddingResults.setBounds(19, 54, 147, 16);
 		panel_3.add(lblAddingResults);
 
 		JMenuBar menuBar = new JMenuBar();
@@ -80,17 +80,27 @@ public class AdminAdd extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new AddListener(this));
+		
+		JMenuItem mntmView = new JMenuItem("View Results");
+		mntmView.setActionCommand("View");
+		mntmView.addActionListener(new AddListener(this));
+		
+		JMenuItem mntmRefresh = new JMenuItem("Refresh");
+		mntmRefresh.setActionCommand("Refresh");
+		mntmRefresh.addActionListener(new AddListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmView);
 		admin.add(mntmPassword);
+		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		admin.add(mntmExit);
 		menuBar.add(admin);
 
 		JLabel lblSelectTheStudent = new JLabel("Select the student whose result you want to add below");
-		lblSelectTheStudent.setBounds(19, 48, 390, 16);
+		lblSelectTheStudent.setBounds(19, 82, 390, 16);
 		panel_3.add(lblSelectTheStudent);
 
 		lblNewLabel_4 = new JLabel("Select course you want to add mark for below");
@@ -99,8 +109,8 @@ public class AdminAdd extends JFrame{
 		panel_3.add(lblNewLabel_4);
 
 		choice_1 = new Choice();
-		choice_1.setBounds(19, 70, 307, 27);
-		choice_1.add("");
+		choice_1.setBounds(19, 104, 307, 27);
+		choice_1.add("(select student)");
 		String select4 = q.displayStudents(us.getID());
 		String[]tokens_4 = select4.split(",");
 
@@ -111,7 +121,7 @@ public class AdminAdd extends JFrame{
 
 		choice_2 = new Choice();
 		choice_2.setBounds(20, 177, 295, 27);
-		choice_2.add("");
+		choice_2.add("(select course)");
 		panel_3.add(choice_2);
 
 		choice_2.setVisible(false);
@@ -152,66 +162,60 @@ public class AdminAdd extends JFrame{
 		});
 
 		lblNewLabel_5 = new JLabel();
-		lblNewLabel_5.setBounds(127, 351, 61, 16);
+		lblNewLabel_5.setBounds(127, 305, 61, 16);
 		lblNewLabel_5.setVisible(false);
 		panel_3.add(lblNewLabel_5);
 
 		label = new JLabel();
-		label.setBounds(127, 392, 61, 16);
+		label.setBounds(127, 343, 61, 16);
 		label.setVisible(false);
 		panel_3.add(label);
 
 		lblExam = new JLabel("Exam");
-		lblExam.setBounds(19, 351, 61, 16);
+		lblExam.setBounds(19, 305, 61, 16);
 		lblExam.setVisible(false);
 		panel_3.add(lblExam);
 
 		lblCoursework = new JLabel("Coursework");
-		lblCoursework.setBounds(19, 392, 81, 16);
+		lblCoursework.setBounds(19, 343, 81, 16);
 		lblCoursework.setVisible(false);
 		panel_3.add(lblCoursework);
 
 		lblPercentage = new JLabel("Percentage");
-		lblPercentage.setBounds(127, 319, 81, 16);
+		lblPercentage.setBounds(127, 265, 81, 16);
 		lblPercentage.setVisible(false);
 		panel_3.add(lblPercentage);
 
 		textField_6 = new JTextField();
-		textField_6.setBounds(217, 346, 66, 26);
+		textField_6.setBounds(217, 300, 66, 26);
 		textField_6.setVisible(false);
 		panel_3.add(textField_6);
 		textField_6.setColumns(10);
 
 		textField_7 = new JTextField();
-		textField_7.setBounds(217, 387, 66, 26);
+		textField_7.setBounds(217, 338, 66, 26);
 		textField_7.setVisible(false);
 		panel_3.add(textField_7);
 		textField_7.setColumns(10);
 
 		btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(101, 440, 117, 29);
+		btnSubmit.setBounds(99, 366, 117, 29);
 		btnSubmit.setVisible(false);
 		btnSubmit.addActionListener(new AddListener(this));
 		btnSubmit.setActionCommand("Submit");
 		panel_3.add(btnSubmit);
 
-		lblIfYouWant = new JLabel("To change student or course selected, click refresh.");
-		lblIfYouWant.setBounds(421, 48, 326, 16);
+		lblIfYouWant = new JLabel("*To change student or course selected, click refresh in the menu.*");
+		lblIfYouWant.setBounds(19, 6, 428, 16);
 		panel_3.add(lblIfYouWant);
 
-		JButton btnRefresh = new JButton("Refresh");
-		btnRefresh.addActionListener(new AddListener(this));
-		btnRefresh.setActionCommand("Refresh");
-		btnRefresh.setBounds(421, 68, 117, 29);
-		panel_3.add(btnRefresh);
-
 		lblSelectTheStudents = new JLabel("Select the student's overall average to calculate below");
-		lblSelectTheStudents.setBounds(421, 137, 354, 16);
+		lblSelectTheStudents.setBounds(421, 82, 354, 16);
 		panel_3.add(lblSelectTheStudents);
 
 		choice = new Choice();
-		choice.setBounds(421, 177, 340, 27);
-		choice.add("");
+		choice.setBounds(421, 104, 340, 27);
+		choice.add("(select student)");
 		for(int i = 0; i<tokens_4.length;i++){
 			choice.add(tokens_4[i]);
 		}
@@ -229,7 +233,7 @@ public class AdminAdd extends JFrame{
 		panel_3.add(choice);
 
 		JButton btnCalculateOverall = new JButton("Calculate Overall");
-		btnCalculateOverall.setBounds(421, 210, 185, 29);
+		btnCalculateOverall.setBounds(418, 132, 185, 29);
 		btnCalculateOverall.addActionListener(new AddListener(this));
 		btnCalculateOverall.setActionCommand("Calculate");
 		panel_3.add(btnCalculateOverall);

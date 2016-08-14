@@ -19,7 +19,7 @@ public class MainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("")){
+			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice3().getSelectedItem().equals("(select school)")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
@@ -46,7 +46,7 @@ public class MainListener implements ActionListener{
 				}
 			}
 		}else if(e.getActionCommand().equals("Remove") ){
-			if(mn.choice5().getSelectedItem().equals("")){
+			if(mn.choice5().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -64,6 +64,10 @@ public class MainListener implements ActionListener{
 		}else if(e.getActionCommand().equals("LogOut")){
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
+			mn.dispose();
+		}else if(e.getActionCommand().equals("View")){
+			ViewResult vr = new ViewResult();
+			vr.setVisible(true);
 			mn.dispose();
 		}else
 		{

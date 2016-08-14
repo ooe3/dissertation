@@ -68,11 +68,16 @@ public class StudentMain extends JFrame{
 		JMenuItem mntmStudentHome = new JMenuItem("Home");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
+		
+		JMenuItem mntmRefresh = new JMenuItem("Refresh");
+		mntmRefresh.setActionCommand("Home Menu");
+		mntmRefresh.addActionListener(new StudentMainListener(this));
 
 		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
 		mnMain.add(mntmStudentHome);
 		mnMain.add(mntmStudentResults);
 		mnMain.add(mntmPassword);
+		mnMain.add(mntmRefresh);
 		mnMain.add(mntmLogOut);
 		mnMain.add(mntmExit);
 		menuBar.add(mnMain);
@@ -104,12 +109,12 @@ public class StudentMain extends JFrame{
 
 		choice = new Choice();
 		choice.setBounds(22, 495, 264, 27);
-		choice.add("");
+		choice.add("(select course)");
 		panel.add(choice);
 
 		choice_4 = new Choice();
 		choice_4.setBounds(22, 623, 281, 27);
-		choice_4.add("");
+		choice_4.add("(select course)");
 		panel.add(choice_4);
 
 		String select1 = q.removeSelection(us.getLastName());
@@ -130,7 +135,7 @@ public class StudentMain extends JFrame{
 		select = q.displayCourses(((Student)us).getStudentID());
 		String[]tokens = select.split(",");
 
-		for(int i = 0; i<tokens.length;i++){
+		for(int i = 0; i<tokens.length-1;i++){
 			choice.add(tokens[i]);
 		}
 
