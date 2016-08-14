@@ -25,8 +25,11 @@ import javax.swing.JScrollBar;
 public class ViewResult extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
-	String selected3;
+	String selected3, selected2;
 	Choice choice, choice_1;
+	JTextArea textArea;
+	JLabel lblNewLabel;
+	JScrollPane scrollPane;
 	final String choice1 = "View a particular students result", choice2 = "View overall results of a particular degree", 
 			choice3 = "View overall results for a particular course", choice4 = "View overall results for the school";
 	public ViewResult(){
@@ -50,7 +53,7 @@ public class ViewResult extends JFrame{
 		panel.add(lblSelectTheOption);
 		
 		choice = new Choice();
-		choice.setBounds(22, 28, 306, 27);
+		choice.setBounds(22, 28, 395, 27);
 		choice.add("(select option)");
 		choice.add(choice1);
 		choice.add(choice2);
@@ -61,9 +64,51 @@ public class ViewResult extends JFrame{
 			{
 				selected3 = choice.getSelectedItem();
 				if(selected3.equals(choice1)){
-					
+					lblNewLabel.setText("Select the student result you want to view");
+					lblNewLabel.setVisible(true);
+					choice_1.add("(select student)");
+					String select4 = q.displayStudents(us.getID());
+					String[]tokens_4 = select4.split(",");
+
+					for(int i = 0; i<tokens_4.length;i++){
+						choice_1.add(tokens_4[i]);
+					}
+					choice_1.setVisible(true);
+					choice_1.addItemListener(new ItemListener(){
+						public void itemStateChanged(ItemEvent ie)
+						{
+							selected2 = choice_1.getSelectedItem();
+							String[] tokens_5 = selected2.split(" ");
+							String display = q.showResult(tokens_5[0], tokens_5[1]);
+							textArea.setText(display);
+							scrollPane.setVisible(true);
+						}
+					});
 				}else if(selected3.equals(choice2)){
-					
+						lblNewLabel.setText("Select the degree results you want to view");
+						lblNewLabel.setVisible(true);
+						choice_1.add("(select degree)");
+						String select3 = q.displayDegree(((Admin)us).getSchoolName());
+						String[]tokens_3 = select3.split(",");
+
+						for(int i = 0; i<tokens_3.length;i++){
+							choice_1.add(tokens_3[i]);
+						}
+						choice_1.setVisible(true);
+						choice_1.addItemListener(new ItemListener(){
+							public void itemStateChanged(ItemEvent ie)
+							{
+								selected2 = choice_1.getSelectedItem();
+								String[] tokens = selected2.split("\\(");
+								String display = q.degreeResult(tokens[0]);
+								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
+									textArea.setText("No result available for this degree or no degree slected");
+								}else{
+								textArea.setText(display);
+								}
+								scrollPane.setVisible(true);
+							}
+						});
 				}else if(selected3.equals(choice3)){
 					
 				}else if(selected3.equals(choice4)){
@@ -73,21 +118,22 @@ public class ViewResult extends JFrame{
 			});
 		panel.add(choice);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setBounds(22, 61, 216, 16);
+		lblNewLabel = new JLabel("");
+		lblNewLabel.setBounds(22, 61, 434, 16);
 		lblNewLabel.setVisible(false);
 		panel.add(lblNewLabel);
 		
 		choice_1 = new Choice();
-		choice_1.setBounds(22, 86, 230, 27);
+		choice_1.setBounds(22, 86, 395, 27);
 		choice_1.setVisible(false);
 		panel.add(choice_1);
 		
-		JTextArea textArea = new JTextArea();
+		textArea = new JTextArea();
 		textArea.setBounds(22, 148, 972, 555);
 		textArea.setEditable(false);
-		textArea.setVisible(false);
-		JScrollPane scrollPane = new JScrollPane(textArea);
+		textArea.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
+		scrollPane = new JScrollPane(textArea);
+		scrollPane.setVisible(false);
 		scrollPane.setBounds(22, 148, 972, 555);
 		panel.add(scrollPane, BorderLayout.CENTER);
 

@@ -227,28 +227,28 @@ public class Queries {
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			while(rs.next()){
-			int credit = rs.getInt("CREDIT");
-			
-			total+=credit;
-			
+				int credit = rs.getInt("CREDIT");
+
+				total+=credit;
+
 			}
 			rs.close();
 			st.close();
-			
+
 			total+=getCredit(s);
 			if(total>180){
 				sb.append("Full");
 			}else {
-			st = conn.createStatement();
-			String sql = "INSERT INTO COURSERESULT (COURSE, STUDENTID) VALUES ('"+s+"','"+d+"')";
-			st.executeUpdate(sql);
+				st = conn.createStatement();
+				String sql = "INSERT INTO COURSERESULT (COURSE, STUDENTID) VALUES ('"+s+"','"+d+"')";
+				st.executeUpdate(sql);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return sb.toString();
 	}
-	
+
 	public int getCredit(String course){
 		int cred = 0;
 		ResultSet rs;
@@ -256,7 +256,7 @@ public class Queries {
 			String query = "SELECT CREDIT FROM COURSES WHERE COURSENAME = '"+course+"'";
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
-			
+
 			if(rs.next()){
 				int credit = rs.getInt("CREDIT");
 				cred+=credit;
@@ -453,12 +453,12 @@ public class Queries {
 				if(res == 0){
 					return "Not Available";
 				}else
-				totalpoints+=(res*credit);
+					totalpoints+=(res*credit);
 				String s = String.format("%-50.50s %-10d %-10d %-10d\n", course, credit, res, (res*credit));
 				sb.append(s);
 				sb.append("\n");
 				totalcred+=credit;
-				
+
 			}
 			average+=((double)totalpoints/totalcred);
 
@@ -479,6 +479,63 @@ public class Queries {
 		}
 		return sb.toString();
 
+	}
+
+	public String showResult(String fname, String lname){
+		StringBuilder sb = new StringBuilder("");
+		int totalcred = 0, totalpoints = 0;
+		double average = 0;
+		int count = 0;
+		int id = getStudent(fname, lname);
+		String names = String.format("%s %s\n", fname, lname);
+		sb.append(names+"\n");
+		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Overall Mark", "Credit x Overall");
+		sb.append(display);
+		sb.append("\n");
+		ResultSet rs;
+
+		try{
+			String query = "SELECT cr.COURSE, cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+id+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			while(rs.next()){
+				count+=1;
+
+				String course = rs.getString("COURSE");
+				int res = rs.getInt("RESULT");
+				int credit = rs.getInt("CREDIT"); 
+				if(res == 0){
+					res = 0;
+				}
+
+
+				String s = String.format(" %-50.50s %-10s %-10s %-10s\n", course, credit, res, (res*credit));
+				sb.append(s);
+				sb.append("\n");
+				if(res != 0){
+					totalpoints+=(res*credit);
+					totalcred+=credit;
+				}
+
+			}
+			average+=((double)totalpoints/totalcred);
+
+			if (count == 0){
+				return "Not Available";
+			}
+			String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
+			sb.append(s2);
+			sb.append("\n");
+			String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, average);
+			sb.append(s1);
+
+			rs.close();
+			st.close();
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
 	}
 
 	public void insertOverall(String mark, String fname, String lname){
@@ -613,8 +670,8 @@ public class Queries {
 				int credit = rs.getInt("CREDIT"); 
 				totalpoints+=(res*credit);
 				totalcred+=credit;
-				
-				
+
+
 			}
 			average+=((double)totalpoints/totalcred);
 			String s1 = String.format("%.3f", average);
@@ -645,7 +702,45 @@ public class Queries {
 		}
 		return id;
 	}
-
+	
+	public String degreeResult(String s){
+		Double score = 0.0;
+		StringBuilder sb = new StringBuilder("");
+		String degree = String.format("%s\n", s);
+		sb.append(degree + "\n");
+		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
+		sb.append(display);
+		int count = 0; int other = 0;
+		ResultSet rs;
+		try{
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE d.DEGREENAME = '"+s+"' AND sd.RESULT IS NOT NULL";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			if(rs.next()){
+				count+=1;
+				String fname = rs.getString("FIRSTNAME");
+				String lname = rs.getString("LASTNAME");
+				String result = rs.getString("RESULT");
+				
+				String name = fname +" "+ lname;
+				Double res = Double.parseDouble(result);
+				String names = String.format(" %-50.50s %-10.3f\n", name, res);
+				sb.append(names+"\n");
+				score+=res;
+				
+			}
+			String average = String.format("The average score for this degree is %.3f", score/count);
+			sb.append(average);
+			
+			if(count == 0){
+				return "No results for that degree";
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
 
 	public void closeConnection(){
 		if(conn != null){
