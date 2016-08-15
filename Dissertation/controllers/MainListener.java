@@ -19,7 +19,7 @@ public class MainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice3().getSelectedItem().equals("(select school)")){
+			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice3().getSelectedItem().equals("(select degree)")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
@@ -69,9 +69,12 @@ public class MainListener implements ActionListener{
 			ViewResult vr = new ViewResult();
 			vr.setVisible(true);
 			mn.dispose();
-		}else
-		{
-			System.exit(0);
+		}else if(e.getActionCommand().equals("Home Menu")){
+			mn.setVisible(true);
+		}else{
+			CreateStudent c = new CreateStudent();
+			c.setVisible(true);
+			mn.dispose();
 		}
 
 	}

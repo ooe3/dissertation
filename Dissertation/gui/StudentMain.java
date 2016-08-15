@@ -50,10 +50,6 @@ public class StudentMain extends JFrame{
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("Log Out");
 		mntmLogOut.addActionListener(new StudentMainListener(this));
-		//closes the whole program
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setActionCommand("Exit");
-		mntmExit.addActionListener(new StudentMainListener(this));
 		//add result menu item
 
 		JMenuItem mntmStudentResults = new JMenuItem("View Results");
@@ -70,7 +66,7 @@ public class StudentMain extends JFrame{
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
 		
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Home Menu");
+		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new StudentMainListener(this));
 
 		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
@@ -79,7 +75,6 @@ public class StudentMain extends JFrame{
 		mnMain.add(mntmPassword);
 		mnMain.add(mntmRefresh);
 		mnMain.add(mntmLogOut);
-		mnMain.add(mntmExit);
 		menuBar.add(mnMain);
 
 		JTextArea textArea = new JTextArea();
@@ -135,7 +130,7 @@ public class StudentMain extends JFrame{
 		select = q.displayCourses(((Student)us).getStudentID());
 		String[]tokens = select.split(",");
 
-		for(int i = 0; i<tokens.length-1;i++){
+		for(int i = 0; i<tokens.length;i++){
 			choice.add(tokens[i]);
 		}
 

@@ -1,6 +1,7 @@
 package main;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
@@ -734,13 +735,10 @@ public class Queries {
 					sb.append("\n");
 					totalpoints+=res;
 				}else{
-					res = 0;
-					return "Not Available";
+					count+=1;
 				}
-				
 
 			}
-			
 			average+=((double)totalpoints/numOfStudents);
 			
 			String s1 = String.format("The overall result for this course %.3f", average);
@@ -755,17 +753,21 @@ public class Queries {
 		return sb.toString();
 	}
 	
+	public String allStudents(int id){
+		return "";
+	}
+	
 	public String overallSchool(int id){
 		Double score = 0.0;
 		StringBuilder sb = new StringBuilder("");
 		String degree = String.format("%s\n", "Overall average for School");
 		sb.append(degree + "\n");
-		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
+		String display = String.format(" %-40.40s %-30.30s %-10s\n", "Name","Degree" ,"Result");
 		sb.append(display);
 		int count = 0;
 		ResultSet rs;
 		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = '"+id+"' AND sd.RESULT IS NOT NULL";
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, d.DEGREENAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = '"+id+"' AND sd.RESULT IS NOT NULL";
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
 			
@@ -773,11 +775,12 @@ public class Queries {
 				count+=1;
 				String fname = rs.getString("FIRSTNAME");
 				String lname = rs.getString("LASTNAME");
+				String degreename = rs.getString("DEGREENAME");
 				String result = rs.getString("RESULT");
 				
 				String name = fname +" "+ lname;
 				Double res = Double.parseDouble(result);
-				String names = String.format(" %-50.50s %-10.3f\n", name, res);
+				String names = String.format(" %-40.40s %-30.30s %-10.3f\n", name, degreename, res);
 				sb.append(names+"\n");
 				score+=res;
 				
@@ -830,6 +833,80 @@ public class Queries {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		return sb.toString();
+	}
+	
+	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
+		StringBuilder sb = new StringBuilder("");
+		ResultSet rs;
+		try{
+			String query ="SELECT * FROM USER WHERE MATRICNO = '"+matric+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			if(rs.next()){
+				sb.append("Error");
+			}else{
+				String sql = "INSERT INTO USER VALUES ('"+countUsers()+"', '"+matric+"', '"+matric+"', 'Student')";
+				st.executeUpdate(sql);
+				
+				String sql1 = "INSERT INTO STUDENT VALUES ('"+countStudents()+"', '"+name+"', '"+lname+"', '"+email+"', '"+address+"', (SELECT ID FROM USER WHERE MATRICNO = '"+matric+"'))";
+				st.executeUpdate(sql1);
+				
+				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = '"+matric+"'), (SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = '"+degree+"'))";
+				st.executeUpdate(sql2);
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
+	public int countUsers(){
+		ResultSet rs;
+		try{
+			String query = "SELECT COUNT (*) FROM USER";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			while(rs.next()){
+				return rs.getInt(1)+1;
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	
+	public int countStudents(){
+		ResultSet rs;
+		try{
+			String query = "SELECT COUNT (*) FROM STUDENT";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			while(rs.next()){
+				return rs.getInt(1)+1;
+			}
+			rs.close();
+			st.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	public String getUnique(){
+		StringBuilder sb = new StringBuilder("");
+		final String initial = "2";
+		sb.append(initial);
+		
+		Random r = new Random();
+		int val = r.nextInt(999999) + 100000;
+		sb.append(val);
 		return sb.toString();
 	}
 

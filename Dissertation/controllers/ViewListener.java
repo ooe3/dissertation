@@ -24,6 +24,22 @@ public class ViewListener implements ActionListener{
 			ViewResult vrt = new ViewResult();
 			vrt.setVisible(true);
 			vr.dispose();
+		}else if(e.getActionCommand().equals("Home Menu")){
+			Main mn = new Main();
+			mn.setVisible(true);
+			vr.dispose();
+		}else if(e.getActionCommand().equals("View")){
+			vr.setVisible(true);
+			
+		}else if(e.getActionCommand().equals("Add")){
+			AdminAdd ad = new AdminAdd();
+			ad.setVisible(true);
+			vr.dispose();
+		}else if(e.getActionCommand().equals("Change Password")){
+			
+			
+		}else{
+			
 		}
 	
 	}

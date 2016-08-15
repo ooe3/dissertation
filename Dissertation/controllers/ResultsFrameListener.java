@@ -29,9 +29,6 @@ public class ResultsFrameListener implements ActionListener{
 		sg.setVisible(true);
 		rf.dispose();
 	}
-	else {
-		System.exit(0);
-	}
 	
 	}
 }

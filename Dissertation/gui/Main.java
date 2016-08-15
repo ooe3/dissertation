@@ -54,11 +54,6 @@ public class Main extends JFrame{
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new MainListener(this));
 
-		//closes the whole program
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setActionCommand("Exit");
-		mntmExit.addActionListener(new MainListener(this));
-
 		JMenuItem mntmResults = new JMenuItem("Add Result");
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new MainListener(this));
@@ -79,15 +74,19 @@ public class Main extends JFrame{
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new MainListener(this));
+		
+		JMenuItem mntmCreate = new JMenuItem("Add Student");
+		mntmCreate.setActionCommand("Add Student");
+		mntmCreate.addActionListener(new MainListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmCreate);
 		admin.add(mntmView);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
-		admin.add(mntmExit);
 		menuBar.add(admin);
 
 		JLabel label = new JLabel(q.displayDetails(us.getType(), us.getMatric()));
@@ -143,7 +142,7 @@ public class Main extends JFrame{
 
 		choice_3 = new Choice();
 		choice_3.setBounds(177, 603, 348, 27);
-		choice_3.add("(select school)");
+		choice_3.add("(select degree)");
 
 		String select3 = q.displayDegree(((Admin)us).getSchoolName());
 		String[]tokens_3 = select3.split(",");

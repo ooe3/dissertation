@@ -44,10 +44,6 @@ public class ResultsFrame extends JFrame{
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("Log Out");
 		mntmLogOut.addActionListener(new ResultsFrameListener(this));
-		//closes the whole program
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setActionCommand("Exit");
-		mntmExit.addActionListener(new ResultsFrameListener(this));
 		//add result menu item
 
 		JMenuItem mntmStudentResults = new JMenuItem("View Results");
@@ -68,7 +64,6 @@ public class ResultsFrame extends JFrame{
 		mnMain.add(mntmStudentResults);
 		mnMain.add(mntmPassword);
 		mnMain.add(mntmLogOut);
-		mnMain.add(mntmExit);
 		menuBar.add(mnMain);
 		JPanel panel_4 = new JPanel();
 		getContentPane().add(panel_4, "name_168856079465156");

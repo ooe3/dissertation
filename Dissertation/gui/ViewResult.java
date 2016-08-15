@@ -172,11 +172,6 @@ public class ViewResult extends JFrame{
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new ViewListener(this));
 
-		//closes the whole program
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setActionCommand("Exit");
-		mntmExit.addActionListener(new ViewListener(this));
-
 		JMenuItem mntmResults = new JMenuItem("Add Result");
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new ViewListener(this));
@@ -197,15 +192,19 @@ public class ViewResult extends JFrame{
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new ViewListener(this));
+		
+		JMenuItem mntmCreate = new JMenuItem("Add Student");
+		mntmCreate.setActionCommand("Add Student");
+		mntmCreate.addActionListener(new ViewListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmCreate);
 		admin.add(mntmView);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
-		admin.add(mntmExit);
 		menuBar.add(admin);
 		
 	}

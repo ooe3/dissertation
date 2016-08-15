@@ -97,10 +97,6 @@ public class AddListener implements ActionListener{
 			ada.setVisible(true);
 			ad.dispose();
 		}
-		
-		else{
-			System.exit(0);
-		}
 	
 	}
 

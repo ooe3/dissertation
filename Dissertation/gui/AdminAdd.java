@@ -63,11 +63,6 @@ public class AdminAdd extends JFrame{
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new AddListener(this));
 
-		//closes the whole program
-		JMenuItem mntmExit = new JMenuItem("Exit");
-		mntmExit.setActionCommand("Exit");
-		mntmExit.addActionListener(new AddListener(this));
-
 		JMenuItem mntmResults = new JMenuItem("Add Result");
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new AddListener(this));
@@ -96,7 +91,6 @@ public class AdminAdd extends JFrame{
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
-		admin.add(mntmExit);
 		menuBar.add(admin);
 
 		JLabel lblSelectTheStudent = new JLabel("Select the student whose result you want to add below");
