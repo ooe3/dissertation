@@ -102,7 +102,7 @@ public class ViewResult extends JFrame{
 								String[] tokens = selected2.split("\\(");
 								String display = q.degreeResult(tokens[0]);
 								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
-									textArea.setText("No result available for this degree or no degree slected");
+									textArea.setText("No result available for this degree or no degree selected");
 								}else{
 								textArea.setText(display);
 								}
@@ -110,9 +110,37 @@ public class ViewResult extends JFrame{
 							}
 						});
 				}else if(selected3.equals(choice3)){
-					
+					lblNewLabel.setText("Select the course results you want to view");
+					lblNewLabel.setVisible(true);
+					choice_1.add("(select course)");
+					String select2 = q.removeSelectionAdmin(us.getLastName());
+					String[]tokens_2 = select2.split(",");
+
+					for(int i = 0; i<tokens_2.length;i++){
+						choice_1.add(tokens_2[i]);
+					}
+					choice_1.setVisible(true);
+					choice_1.addItemListener(new ItemListener(){
+						public void itemStateChanged(ItemEvent ie)
+						{
+							selected2 = choice_1.getSelectedItem();
+							String display = q.overallCourse(selected2);
+							if(display.equals("Not Available") || selected2.equals("(select course)")){
+								textArea.setText("No result available for this course or no course slected");
+							}else{
+							textArea.setText(display);
+							}
+							scrollPane.setVisible(true);
+						}
+					});
 				}else if(selected3.equals(choice4)){
-					
+					String display = q.overallSchool(((Admin)us).getID());
+					if(display.equals("No results for this school")){
+						textArea.setText("No students in this school yet. Add students");
+					}else{
+						textArea.setText(display);
+					}
+					scrollPane.setVisible(true);
 				}
 			}
 			});

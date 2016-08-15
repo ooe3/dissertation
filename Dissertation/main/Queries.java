@@ -703,6 +703,97 @@ public class Queries {
 		return id;
 	}
 	
+	public String overallCourse(String s){
+		StringBuilder sb = new StringBuilder("");
+		int totalpoints = 0;
+		double average = 0;
+		int count = 0;
+		int numOfStudents = 0;
+		String degree = String.format("%s\n", s);
+		sb.append(degree + "\n");
+		String display = String.format(" %-50.50s %-10s\n", "Name", "Overall Mark");
+		sb.append(display);
+		sb.append("\n");
+		ResultSet rs;
+
+		try{
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, cr.RESULT FROM COURSERESULT AS cr INNER JOIN STUDENT AS s ON s.STUDENTID = cr.STUDENTID WHERE cr.COURSE = '"+s+"'";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			while(rs.next()){
+				
+				String fname = rs.getString("FIRSTNAME");
+				String lname = rs.getString("LASTNAME");
+				int res = rs.getInt("RESULT");
+				 
+				if(res != 0){
+					String name = fname +" "+ lname;
+					numOfStudents+=1;
+					String s1 = String.format(" %-50.50s %-10d\n", name, res);
+					sb.append(s1);
+					sb.append("\n");
+					totalpoints+=res;
+				}else{
+					res = 0;
+					return "Not Available";
+				}
+				
+
+			}
+			
+			average+=((double)totalpoints/numOfStudents);
+			
+			String s1 = String.format("The overall result for this course %.3f", average);
+			sb.append(s1);
+
+			rs.close();
+			st.close();
+
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
+	public String overallSchool(int id){
+		Double score = 0.0;
+		StringBuilder sb = new StringBuilder("");
+		String degree = String.format("%s\n", "Overall average for School");
+		sb.append(degree + "\n");
+		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
+		sb.append(display);
+		int count = 0;
+		ResultSet rs;
+		try{
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = '"+id+"' AND sd.RESULT IS NOT NULL";
+			st = conn.createStatement();
+			rs = st.executeQuery(query);
+			
+			if(rs.next()){
+				count+=1;
+				String fname = rs.getString("FIRSTNAME");
+				String lname = rs.getString("LASTNAME");
+				String result = rs.getString("RESULT");
+				
+				String name = fname +" "+ lname;
+				Double res = Double.parseDouble(result);
+				String names = String.format(" %-50.50s %-10.3f\n", name, res);
+				sb.append(names+"\n");
+				score+=res;
+				
+			}
+			String average = String.format("The average score for this school is %.3f", score/count);
+			sb.append(average);
+			
+			if(count == 0){
+				return "No results for this school";
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
 	public String degreeResult(String s){
 		Double score = 0.0;
 		StringBuilder sb = new StringBuilder("");
@@ -710,7 +801,7 @@ public class Queries {
 		sb.append(degree + "\n");
 		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
 		sb.append(display);
-		int count = 0; int other = 0;
+		int count = 0;
 		ResultSet rs;
 		try{
 			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE d.DEGREENAME = '"+s+"' AND sd.RESULT IS NOT NULL";
