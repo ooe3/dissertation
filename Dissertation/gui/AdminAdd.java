@@ -126,7 +126,7 @@ public class AdminAdd extends JFrame{
 				String selected4 = choice_1.getSelectedItem();
 				lblNewLabel_4.setVisible(true);
 				tokens_5 = selected4.split(" ");
-				String select7 = q.removeSelection(tokens_5[1]);
+				String select7 = q.removeSelection(tokens_5[0], tokens_5[1]);
 				String[]tokens_7 = select7.split(",");
 				choice_2.setVisible(true);
 				for(int i = 0; i<tokens_7.length;i++){

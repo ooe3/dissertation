@@ -23,13 +23,14 @@ import controllers.StudentMainListener;
 import main.*;
 import controllers.*;
 import javax.swing.JScrollBar;
+import java.awt.Button;
 
 public class Main extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
 	JTextField textField_2, textField_3, textField_4, textField_8;
-	Choice choice_3, choice_5;
-	String selected3, selected2;
+	Choice choice_3, choice_5, choice, choice_1;
+	String selected3, selected2, selected4, selected5;
 	public Main(){
 		initialize();
 
@@ -102,7 +103,7 @@ public class Main extends JFrame{
 		textArea_1.setBounds(6, 111, 976, 335);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(q.displayAvailableCourses(us.getLastName()));
+		textArea_1.setText(q.displayAvailableCourses(us.getMatric()));
 
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -121,27 +122,27 @@ public class Main extends JFrame{
 		panel.add(lblCourseCredit);
 
 		textField_2 = new JTextField();
-		textField_2.setBounds(177, 481, 348, 26);
+		textField_2.setBounds(177, 481, 259, 26);
 		panel.add(textField_2);
 		textField_2.setColumns(10);
 
 		textField_3 = new JTextField();
-		textField_3.setBounds(177, 512, 348, 26);
+		textField_3.setBounds(177, 512, 259, 26);
 		panel.add(textField_3);
 		textField_3.setColumns(10);
 
 		textField_4 = new JTextField();
-		textField_4.setBounds(177, 543, 348, 26);
+		textField_4.setBounds(177, 543, 259, 26);
 		panel.add(textField_4);
 		textField_4.setColumns(10);
 
 		textField_8 = new JTextField();
-		textField_8.setBounds(177, 571, 348, 26);
+		textField_8.setBounds(177, 571, 259, 26);
 		panel.add(textField_8);
 		textField_8.setColumns(10);
 
 		choice_3 = new Choice();
-		choice_3.setBounds(177, 603, 348, 27);
+		choice_3.setBounds(533, 514, 348, 27);
 		choice_3.add("(select degree)");
 
 		String select3 = q.displayDegree(((Admin)us).getSchoolName());
@@ -164,7 +165,7 @@ public class Main extends JFrame{
 		choice_5.setBounds(18, 695, 507, 27);
 		choice_5.add("(select course)");
 
-		String select2 = q.removeSelectionAdmin(us.getLastName());
+		String select2 = q.removeSelectionAdmin(us.getMatric());
 		String[]tokens_2 = select2.split(",");
 
 		for(int i = 0; i<tokens_2.length;i++){
@@ -180,7 +181,7 @@ public class Main extends JFrame{
 		});
 		panel.add(choice_5);
 		JButton btnAddCourse = new JButton("Create Course");
-		btnAddCourse.setBounds(533, 512, 117, 29);
+		btnAddCourse.setBounds(9, 632, 117, 29);
 		btnAddCourse.setActionCommand("ADD");
 		btnAddCourse.addActionListener(new MainListener(this));
 		panel.add(btnAddCourse);
@@ -204,12 +205,61 @@ public class Main extends JFrame{
 		panel.add(lblCourseworkPercentage);
 
 		JLabel lblDegree = new JLabel("Degree");
-		lblDegree.setBounds(18, 607, 61, 16);
+		lblDegree.setBounds(464, 520, 61, 16);
 		panel.add(lblDegree);
 		
 		JScrollPane scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 976, 335);
 		panel.add(scrollPane, BorderLayout.CENTER);
+		
+		JLabel lblAddCourseTo = new JLabel("Add course to degree");
+		lblAddCourseTo.setBounds(464, 458, 188, 16);
+		panel.add(lblAddCourseTo);
+		
+		JLabel lblCourse = new JLabel("Course");
+		lblCourse.setBounds(464, 486, 61, 16);
+		panel.add(lblCourse);
+		
+		choice = new Choice();
+		choice.setBounds(533, 480, 348, 27);
+		choice.add("(select course)");
+		for(int i = 0; i<tokens_2.length;i++){
+			choice.add(tokens_2[i]);
+		}
+
+		choice.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selected4 = choice.getSelectedItem();
+			}
+			});
+		panel.add(choice);
+		
+		JButton btnAddToDegree = new JButton("Add to Degree");
+		btnAddToDegree.setActionCommand("Degree");
+		btnAddToDegree.addActionListener(new MainListener(this));
+		btnAddToDegree.setBounds(691, 571, 117, 29);
+		panel.add(btnAddToDegree);
+		
+		JLabel lblDegree_1 = new JLabel("Degree");
+		lblDegree_1.setBounds(18, 604, 61, 16);
+		panel.add(lblDegree_1);
+		
+		choice_1 = new Choice();
+		choice_1.setBounds(177, 603, 259, 27);
+		choice_1.add("(select course)");
+		for(int i = 0; i<tokens_3.length;i++){
+			choice_1.add(tokens_3[i]);
+		}
+
+
+		choice_1.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selected5 = choice_1.getSelectedItem();
+			}
+			});
+		panel.add(choice_1);
 
 	}
 	
@@ -243,5 +293,20 @@ public class Main extends JFrame{
 	
 	public Choice choice5(){
 		return choice_5;
+	}
+	
+	public Choice choice(){
+		return choice;
+	}
+	public Choice choice1(){
+		return choice_1;
+	}
+	
+	public String getSelected4(){
+		return selected4;
+	}
+	
+	public String selected5(){
+		return selected5;
 	}
 }

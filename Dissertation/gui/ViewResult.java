@@ -113,7 +113,7 @@ public class ViewResult extends JFrame{
 					lblNewLabel.setText("Select the course results you want to view");
 					lblNewLabel.setVisible(true);
 					choice_1.add("(select course)");
-					String select2 = q.removeSelectionAdmin(us.getLastName());
+					String select2 = q.removeSelectionAdmin(us.getMatric());
 					String[]tokens_2 = select2.split(",");
 
 					for(int i = 0; i<tokens_2.length;i++){

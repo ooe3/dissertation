@@ -19,7 +19,7 @@ public class MainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice3().getSelectedItem().equals("(select degree)")){
+			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice1().getSelectedItem().equals("(select degree")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
@@ -33,10 +33,16 @@ public class MainListener implements ActionListener{
 						mn.getTextField_4().setText("");
 						mn.getTextField_8().setText("");
 					}else{
-						String[] tokens = mn.getSelected3().split("\\(");
-						q.addCourseDegree(mn.getTextField_2().getText(), tokens[0]);
+						String[] tokens = mn.selected5().split("\\(");
+						String degree = q.addCourseDegree(mn.getTextField_2().getText(), tokens[0]);
+						if(degree.equals("Error")){
+							JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
+									JOptionPane.ERROR_MESSAGE);
+						}else{
+							
 						JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
+						}
 						Main m = new Main();
 						m.setVisible(true);
 						mn.dispose();
@@ -71,7 +77,30 @@ public class MainListener implements ActionListener{
 			mn.dispose();
 		}else if(e.getActionCommand().equals("Home Menu")){
 			mn.setVisible(true);
-		}else{
+		}else if(e.getActionCommand().equals("Degree")){
+			if(mn.choice3().getSelectedItem().equals("(select degree)") || mn.choice().getSelectedItem().equals("(select school)")){
+				JOptionPane.showMessageDialog(null, "No course or school selected", "Window",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+			String[] tokens = mn.getSelected3().split("\\(");
+			String degree = q.addCourseDegree(mn.getSelected4(), tokens[0]);
+			if(degree.equals("Error")){
+				JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				JOptionPane.showMessageDialog(null, "Course added to degree succesfully", "Window",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
+			Main m = new Main();
+			m.setVisible(true);
+			mn.dispose();
+			}
+		}else if(e.getActionCommand().equals("Refresh")){
+			Main m = new Main();
+			m.setVisible(true);
+			mn.dispose();
+		}
+		else{
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			mn.dispose();

@@ -69,7 +69,9 @@ public class StudentMainListener implements ActionListener{
 			sg.setVisible(true);
 			sm.dispose();
 		}else {
-			System.exit(0);
+			StudentMain smn = new StudentMain();
+			smn.setVisible(true);
+			sm.dispose();
 		}
 
 	}
