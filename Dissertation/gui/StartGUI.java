@@ -25,16 +25,10 @@ import java.sql.*;
 import javax.swing.JMenuItem;
 import javax.swing.JMenu;
 import java.awt.List;
+import javax.swing.ImageIcon;
 
 /**
- * This class is the view class. Contains all the interface functions
- * Methods are called from the queries class in order to show the updates on the GUI
- * It has an initialize method where all the GUI is created
- * Constructor calls the initialize method as well creating an instance of the Query class in order to execute
- * the queries
- * Also contains a method which helps display a menu bar at the end
- * One JFrame is created. This frame contains more than one panel to display the information for that panel
- * Each panel has its own information
+ * This class is the view class.
  * @author ooemuwa
  *
  */
@@ -80,8 +74,9 @@ public class StartGUI extends JFrame{
 		textField.setColumns(10);
 		
 
-		lblLogInPage = new JLabel("Log In Page");
-		lblLogInPage.setBounds(362, 68, 209, 61);
+		lblLogInPage = new JLabel("");
+		lblLogInPage.setIcon(new ImageIcon("/Users/ooemuwa/git/Dissertation/Dissertation/glasgowuni-logo.jpg"));
+		lblLogInPage.setBounds(352, 43, 277, 113);
 		lblLogInPage.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		panel.add(lblLogInPage);
 		
