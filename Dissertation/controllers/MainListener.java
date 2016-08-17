@@ -39,9 +39,9 @@ public class MainListener implements ActionListener{
 							JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 									JOptionPane.ERROR_MESSAGE);
 						}else{
-							
-						JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
-								JOptionPane.INFORMATION_MESSAGE);
+
+							JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
+									JOptionPane.INFORMATION_MESSAGE);
 						}
 						Main m = new Main();
 						m.setVisible(true);
@@ -82,30 +82,33 @@ public class MainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course or school selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-			String[] tokens = mn.getSelected3().split("\\(");
-			String degree = q.addCourseDegree(mn.getSelected4(), tokens[0]);
-			if(degree.equals("Error")){
-				JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
-				JOptionPane.showMessageDialog(null, "Course added to degree succesfully", "Window",
-						JOptionPane.INFORMATION_MESSAGE);
-			}
-			Main m = new Main();
-			m.setVisible(true);
-			mn.dispose();
+				String[] tokens = mn.getSelected3().split("\\(");
+				String degree = q.addCourseDegree(mn.getSelected4(), tokens[0]);
+				if(degree.equals("Error")){
+					JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
+							JOptionPane.ERROR_MESSAGE);
+				}else{
+					JOptionPane.showMessageDialog(null, "Course added to degree succesfully", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+				}
+				Main m = new Main();
+				m.setVisible(true);
+				mn.dispose();
 			}
 		}else if(e.getActionCommand().equals("Refresh")){
 			Main m = new Main();
 			m.setVisible(true);
 			mn.dispose();
 		}
-		else{
+		else if(e.getActionCommand().equals("Add Student")){
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			mn.dispose();
+		}else{
+			ViewStudents vs = new ViewStudents();
+			vs.setVisible(true);
+			mn.dispose();
 		}
-
 	}
 
 }

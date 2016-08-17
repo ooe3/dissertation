@@ -76,18 +76,28 @@ public class AdminAdd extends JFrame{
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new AddListener(this));
 		
-		JMenuItem mntmView = new JMenuItem("View Results");
+		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new AddListener(this));
+		
+		JMenuItem mntmCreate = new JMenuItem("Add Student");
+		mntmCreate.setActionCommand("Add Student");
+		mntmCreate.addActionListener(new AddListener(this));
 		
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new AddListener(this));
 
+		JMenuItem mntmViewStudent = new JMenuItem("View Students");
+		mntmViewStudent.setActionCommand("ViewS");
+		mntmViewStudent.addActionListener(new AddListener(this));
+
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmCreate);
 		admin.add(mntmView);
+		admin.add(mntmViewStudent);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
@@ -219,7 +229,6 @@ public class AdminAdd extends JFrame{
 			{
 				name_selected = choice.getSelectedItem();
 				tokens_6 = name_selected.split(" ");
-				System.out.print(q.checkResults(tokens_6[0], tokens_6[1]));
 			}
 		});
 		

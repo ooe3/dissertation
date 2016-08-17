@@ -96,6 +96,10 @@ public class AddListener implements ActionListener{
 			AdminAdd ada = new AdminAdd();
 			ada.setVisible(true);
 			ad.dispose();
+		}else if(e.getActionCommand().equals("Add Student")){
+			CreateStudent cs = new CreateStudent();
+			cs.setVisible(true);
+			ad.dispose();
 		}
 	
 	}

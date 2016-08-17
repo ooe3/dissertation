@@ -769,11 +769,11 @@ public class Queries {
 	public String allStudents(int id){
 		ResultSet rs;
 		StringBuilder sb = new StringBuilder("");
-		String display = String.format(" %-40.40s %-10s %-10s %-10s\n", "Name","Matric Number","Degree" ,"Email");
+		String display = String.format(" %-40.40s %-20s %-40.40s %-10s\n", "Name","Matric Number","Degree" ,"Email");
 		sb.append(display);
 		
 		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.DEGREE, s.EMAIL FROM STUDENT AS s INNER JOIN STUDENT_DEGREE AS sd "
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, d.DEGREENAME, s.EMAIL FROM STUDENT AS s INNER JOIN STUDENT_DEGREE AS sd "
 				+ "ON sd.STUDENT = s.STUDENTID INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS ad ON ad.SCHOOLREF = d.SCHOOL_REF WHERE ad.ADMINID = '"+id+"'";
 			st = conn.createStatement();
 			rs = st.executeQuery(query);
@@ -781,13 +781,13 @@ public class Queries {
 			while(rs.next()){
 				String fname = rs.getString("FIRSTNAME");
 				String lname = rs.getString("LASTNAME");
-				String degree = rs.getString("DEGREE");
+				String degree = rs.getString("DEGREENAME");
 				String email = rs.getString("EMAIL");
 				
 				String matric = matric(fname, lname);
 				String name = fname+" "+lname;
 				
-				String area = String.format(" %-40.40s %-10s %-10s %-10s\n", name, matric, degree, email);
+				String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
 				sb.append(area+"\n");
 			}
 			rs.close();

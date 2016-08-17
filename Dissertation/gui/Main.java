@@ -79,12 +79,17 @@ public class Main extends JFrame{
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new MainListener(this));
+		
+		JMenuItem mntmViewStudent = new JMenuItem("View Students");
+		mntmViewStudent.setActionCommand("ViewS");
+		mntmViewStudent.addActionListener(new MainListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
+		admin.add(mntmViewStudent);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
@@ -104,7 +109,7 @@ public class Main extends JFrame{
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
 		textArea_1.setText(q.displayAvailableCourses(us.getMatric()));
-
+		
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
 		panel.add(lblAddACourse);
