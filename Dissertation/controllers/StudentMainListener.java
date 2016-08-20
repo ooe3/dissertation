@@ -19,7 +19,7 @@ public class StudentMainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(sm.getChoice().getSelectedItem().equals("(select course)")){
+			if(sm.getChoice().getSelectedItem().equals("(select course)") || sm.getChoice().getSelectedItem().equals("")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -37,13 +37,17 @@ public class StudentMainListener implements ActionListener{
 			mn.setVisible(true);
 			sm.dispose();
 		}else if(e.getActionCommand().equals("REMOVE") ){
-			if(sm.getChoice_1().getSelectedItem().equals("(select course)")){
+			if(sm.getChoice_1().getSelectedItem().equals("(select course)") || sm.getChoice_1().getSelectedItem().equals("")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				q.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID());
+				if(q.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID()).equals("Exists")){
+					JOptionPane.showMessageDialog(null, "This course already has mark and can't be removed.", "Window",
+							JOptionPane.ERROR_MESSAGE);
+				}else{
 				JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 						JOptionPane.ERROR_MESSAGE);
+				}
 			}
 			StudentMain mn = new StudentMain();
 			mn.setVisible(true);

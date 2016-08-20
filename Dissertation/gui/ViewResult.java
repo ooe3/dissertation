@@ -63,6 +63,7 @@ public class ViewResult extends JFrame{
 			public void itemStateChanged(ItemEvent ie)
 			{
 				selected3 = choice.getSelectedItem();
+				
 				if(selected3.equals(choice1)){
 					lblNewLabel.setText("Select the student result you want to view");
 					lblNewLabel.setVisible(true);
@@ -136,7 +137,7 @@ public class ViewResult extends JFrame{
 				}else if(selected3.equals(choice4)){
 					String display = q.overallSchool(((Admin)us).getID());
 					if(display.equals("No results for this school")){
-						textArea.setText("No students in this school yet. Add students");
+						textArea.setText("No results set for this school yet or no students.");
 					}else{
 						textArea.setText(display);
 					}

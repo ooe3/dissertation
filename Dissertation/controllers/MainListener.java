@@ -19,22 +19,34 @@ public class MainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(mn.getTextField_2().getText().equals("") || mn.getTextField_3().getText().equals("") || mn.getTextField_4().getText().equals("") || mn.getTextField_8().getText().equals("") || mn.choice1().getSelectedItem().equals("(select degree")){
+			String credits = mn.getTextField_3().getText().trim();
+			String exams = mn.getTextField_4().getText().trim();
+			String cwks = mn.getTextField_8().getText().trim();
+			String name = mn.getTextField_2().getText().trim();
+			if(name.equals("") || credits.equals("") || exams.equals("") || cwks.equals("") || mn.choice1().getSelectedItem().equals("(select degree)") || mn.choice1().getSelectedItem().equals("")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
-					int credit = Integer.parseInt(mn.getTextField_3().getText());
-					int exam = Integer.parseInt(mn.getTextField_4().getText());
-					int cw = Integer.parseInt(mn.getTextField_8().getText());
-					if(q.insertCourse(mn.getTextField_2().getText(), credit, exam, cw).equals("Error")){
+					int credit = Integer.parseInt(credits);
+					int exam = Integer.parseInt(exams);
+					int cw = Integer.parseInt(cwks);
+					if(q.insertCourse(name, credit, exam, cw).equals("Error")){
 						JOptionPane.showMessageDialog(null, "Course already exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						mn.getTextField_2().setText("");
 						mn.getTextField_3().setText("");
 						mn.getTextField_4().setText("");
 						mn.getTextField_8().setText("");
 					}else{
+						if(q.checkString(name).equals("Exists")){
+							JOptionPane.showMessageDialog(null, "Special characters not accepted for the name.", "Window",
+									JOptionPane.ERROR_MESSAGE);
+						}else{
+							if(exam > 100 || cw > 100 || credit > 60){
+								JOptionPane.showMessageDialog(null, "Number greater than 100 or less than 0 or credits greater than 60", "Error message", JOptionPane.ERROR_MESSAGE);
+								
+							}else{
 						String[] tokens = mn.selected5().split("\\(");
-						String degree = q.addCourseDegree(mn.getTextField_2().getText(), tokens[0]);
+						String degree = q.addCourseDegree(name, tokens[0]);
 						if(degree.equals("Error")){
 							JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 									JOptionPane.ERROR_MESSAGE);
@@ -42,23 +54,30 @@ public class MainListener implements ActionListener{
 
 							JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
 									JOptionPane.INFORMATION_MESSAGE);
+							Main m = new Main();
+							m.setVisible(true);
+							mn.dispose();
+							}
+							}
 						}
-						Main m = new Main();
-						m.setVisible(true);
-						mn.dispose();
+						
 					}
 				}catch (NumberFormatException e1){
 					JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		}else if(e.getActionCommand().equals("Remove") ){
-			if(mn.choice5().getSelectedItem().equals("(select course)")){
+			if(mn.choice5().getSelectedItem().equals("(select course)") || mn.choice5().getSelectedItem().equals("")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				q.removeCourse(mn.getSelected2());
+				if(q.removeCourse(mn.getSelected2()).equals("Exists")){
+					JOptionPane.showMessageDialog(null, "Course already selected by student and can't be removed.", "Window",
+							JOptionPane.ERROR_MESSAGE);
+				}else{
 				JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 						JOptionPane.ERROR_MESSAGE);
+			}
 				Main m = new Main();
 				m.setVisible(true);
 				mn.dispose();
@@ -78,7 +97,7 @@ public class MainListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Home Menu")){
 			mn.setVisible(true);
 		}else if(e.getActionCommand().equals("Degree")){
-			if(mn.choice3().getSelectedItem().equals("(select degree)") || mn.choice().getSelectedItem().equals("(select school)")){
+			if(mn.choice3().getSelectedItem().equals("(select degree)") || mn.choice().getSelectedItem().equals("(select school)") || mn.choice().getSelectedItem().equals("") || mn.choice3().getSelectedItem().equals("")){
 				JOptionPane.showMessageDialog(null, "No course or school selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{

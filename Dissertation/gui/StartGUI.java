@@ -52,7 +52,6 @@ public class StartGUI extends JFrame{
 	 * Initialize the contents of the 
 	 */
 	private void initialize() {
-
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

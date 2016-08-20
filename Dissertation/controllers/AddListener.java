@@ -19,13 +19,13 @@ public class AddListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 	// TODO Auto-generated method stub
 		if (e.getActionCommand().equals("Submit")){
-			if(ad.textField_6().getText().equals("") || ad.textField_7().getText().equals("")){
+			if(ad.textField_6().getText().trim().equals("") || ad.textField_7().getText().trim().equals("")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
-					int exam = Integer.parseInt(ad.textField_6().getText());
-					int cw = Integer.parseInt(ad.textField_7().getText());
-					if((exam < 0 || exam > 100) || (cw < 0 || cw > 100)){
+					int exam = Integer.parseInt(ad.textField_6().getText().trim());
+					int cw = Integer.parseInt(ad.textField_7().getText().trim());
+					if(exam > 100 || cw > 100){
 						JOptionPane.showMessageDialog(null, "Number greater than 100 or less than 0. Enter numbers between 0 & 100", "Error message", JOptionPane.ERROR_MESSAGE);
 						ad.textField_6().setText("");
 						ad.textField_7().setText("");

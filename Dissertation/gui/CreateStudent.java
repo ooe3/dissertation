@@ -110,11 +110,13 @@ public class CreateStudent extends JFrame{
 		
 		textField_4 = new JTextField();
 		textField_4.setBounds(158, 262, 168, 26);
+		textField_4.setEditable(false);
 		panel.add(textField_4);
 		textField_4.setColumns(10);
 		
 		passwordField = new JPasswordField();
 		passwordField.setBounds(158, 312, 168, 26);
+		passwordField.setEditable(false);
 		panel.add(passwordField);
 		passwordField.setColumns(10);
 		

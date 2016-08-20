@@ -20,8 +20,8 @@ public class ListenerClass implements ActionListener{
 		
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("LOG_IN") ){
-				matricno = sg.matric().getText();
-				password = new String(sg.pass().getPassword());
+				matricno = sg.matric().getText().trim();
+				password = new String(sg.pass().getPassword()).trim();
 				us = q.LogIn(matricno, password);
 				if(us!=null){
 					if(us.getType().equals("Student")){
