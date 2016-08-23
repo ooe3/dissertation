@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 public class StudentMain extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	StudentQueries s = StudentQueries.getMain();
 	String select, selected, selected1;
 	Choice choice, choice_4;
 	public StudentMain(){
@@ -81,7 +82,7 @@ public class StudentMain extends JFrame{
 		textArea.setBounds(16, 95, 978, 339);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		textArea.setEditable(false);
-		textArea.setText(q.displayStudentCourses(us.getMatric()));
+		textArea.setText(s.displayStudentCourses(us.getMatric()));
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setBounds(16, 95, 978, 339);
 		panel.add(scrollPane, BorderLayout.CENTER);
@@ -112,7 +113,7 @@ public class StudentMain extends JFrame{
 		choice_4.add("(select course)");
 		panel.add(choice_4);
 
-		String select1 = q.removeSelection(us.getFirstName(), us.getLastName());
+		String select1 = s.removeSelection(us.getFirstName(), us.getLastName());
 		String[]tokens_1 = select1.split(",");
 
 		for(int i = 0; i<tokens_1.length;i++){
@@ -127,7 +128,7 @@ public class StudentMain extends JFrame{
 
 		});
 
-		select = q.displayCourses(((Student)us).getStudentID());
+		select = s.displayCourses(((Student)us).getStudentID());
 		String[]tokens = select.split(",");
 
 		for(int i = 0; i<tokens.length;i++){

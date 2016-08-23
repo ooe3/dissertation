@@ -25,6 +25,7 @@ import javax.swing.JScrollBar;
 public class ViewResult extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	MainQueries m = MainQueries.getMain();
 	String selected3, selected2;
 	Choice choice, choice_1;
 	JTextArea textArea;
@@ -89,7 +90,7 @@ public class ViewResult extends JFrame{
 						lblNewLabel.setText("Select the degree results you want to view");
 						lblNewLabel.setVisible(true);
 						choice_1.add("(select degree)");
-						String select3 = q.displayDegree(((Admin)us).getSchoolName());
+						String select3 = m.displayDegree(((Admin)us).getSchoolName());
 						String[]tokens_3 = select3.split(",");
 
 						for(int i = 0; i<tokens_3.length;i++){
@@ -114,7 +115,7 @@ public class ViewResult extends JFrame{
 					lblNewLabel.setText("Select the course results you want to view");
 					lblNewLabel.setVisible(true);
 					choice_1.add("(select course)");
-					String select2 = q.removeSelectionAdmin(us.getMatric());
+					String select2 = m.removeSelectionAdmin(us.getMatric());
 					String[]tokens_2 = select2.split(",");
 
 					for(int i = 0; i<tokens_2.length;i++){

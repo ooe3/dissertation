@@ -25,6 +25,7 @@ import javax.swing.JScrollBar;
 public class CreateStudent extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	MainQueries m = MainQueries.getMain();
 	String selected3;
 	Choice choice;
 	private JTextField textField;
@@ -123,7 +124,7 @@ public class CreateStudent extends JFrame{
 		choice = new Choice();
 		choice.setBounds(158, 348, 278, 27);
 		choice.add("(select degree)");
-		String select3 = q.displayDegree(((Admin)us).getSchoolName());
+		String select3 = m.displayDegree(((Admin)us).getSchoolName());
 		String[]tokens_3 = select3.split(",");
 
 		for(int i = 0; i<tokens_3.length;i++){

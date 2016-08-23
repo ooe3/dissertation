@@ -28,6 +28,7 @@ import java.awt.Button;
 public class Main extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	MainQueries m = MainQueries.getMain();
 	JTextField textField_2, textField_3, textField_4, textField_8;
 	Choice choice_3, choice_5, choice, choice_1;
 	String selected3, selected2, selected4, selected5;
@@ -108,7 +109,7 @@ public class Main extends JFrame{
 		textArea_1.setBounds(6, 111, 976, 335);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(q.displayAvailableCourses(us.getMatric()));
+		textArea_1.setText(m.displayAvailableCourses(us.getMatric()));
 		
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -150,7 +151,7 @@ public class Main extends JFrame{
 		choice_3.setBounds(533, 514, 348, 27);
 		choice_3.add("(select degree)");
 
-		String select3 = q.displayDegree(((Admin)us).getSchoolName());
+		String select3 = m.displayDegree(((Admin)us).getSchoolName());
 		String[]tokens_3 = select3.split(",");
 
 		for(int i = 0; i<tokens_3.length;i++){
@@ -170,7 +171,7 @@ public class Main extends JFrame{
 		choice_5.setBounds(18, 695, 507, 27);
 		choice_5.add("(select course)");
 
-		String select2 = q.removeSelectionAdmin(us.getMatric());
+		String select2 = m.removeSelectionAdmin(us.getMatric());
 		String[]tokens_2 = select2.split(",");
 
 		for(int i = 0; i<tokens_2.length;i++){

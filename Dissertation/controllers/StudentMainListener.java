@@ -9,6 +9,7 @@ import main.*;
 public class StudentMainListener implements ActionListener{
 	StudentMain sm;
 	Queries q = Queries.getQueries();
+	StudentQueries sq = StudentQueries.getMain();
 	Users us;
 	public StudentMainListener(StudentMain smn){
 		this.sm = smn;
@@ -23,7 +24,7 @@ public class StudentMainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				if(q.insertChoice(sm.getSelected(), ((Student)us).getStudentID()).equals("Full")){
+				if(sq.insertChoice(sm.getSelected(), ((Student)us).getStudentID()).equals("Full")){
 					JOptionPane.showMessageDialog(null, "Maximum credits selected. Remove course to be able to add this course", "Window",
 							JOptionPane.ERROR_MESSAGE);
 				}else {
@@ -41,7 +42,7 @@ public class StudentMainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				if(q.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID()).equals("Exists")){
+				if(sq.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID()).equals("Exists")){
 					JOptionPane.showMessageDialog(null, "This course already has mark and can't be removed.", "Window",
 							JOptionPane.ERROR_MESSAGE);
 				}else{
@@ -57,7 +58,7 @@ public class StudentMainListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Change Password") ){
 
 		}else if(e.getActionCommand().equals("View") ){
-			String display = q.displayResult(((Student)us).getStudentID());
+			String display = sq.displayResult(((Student)us).getStudentID());
 			if(display.equals("Not Available")){
 				JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
 						JOptionPane.ERROR_MESSAGE);

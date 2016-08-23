@@ -10,6 +10,7 @@ public class MainListener implements ActionListener{
 	Main mn;
 	Users us;
 	Queries q = Queries.getQueries();
+	MainQueries m = MainQueries.getMain();
 
 	public MainListener(Main min){
 		mn = min;
@@ -30,7 +31,7 @@ public class MainListener implements ActionListener{
 					int credit = Integer.parseInt(credits);
 					int exam = Integer.parseInt(exams);
 					int cw = Integer.parseInt(cwks);
-					if(q.insertCourse(name, credit, exam, cw).equals("Error")){
+					if(m.insertCourse(name, credit, exam, cw).equals("Error")){
 						JOptionPane.showMessageDialog(null, "Course already exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						mn.getTextField_2().setText("");
 						mn.getTextField_3().setText("");
@@ -46,7 +47,7 @@ public class MainListener implements ActionListener{
 								
 							}else{
 						String[] tokens = mn.selected5().split("\\(");
-						String degree = q.addCourseDegree(name, tokens[0]);
+						String degree = m.addCourseDegree(name, tokens[0]);
 						if(degree.equals("Error")){
 							JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 									JOptionPane.ERROR_MESSAGE);
@@ -71,7 +72,7 @@ public class MainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				if(q.removeCourse(mn.getSelected2()).equals("Exists")){
+				if(m.removeCourse(mn.getSelected2()).equals("Exists")){
 					JOptionPane.showMessageDialog(null, "Course already selected by student and can't be removed.", "Window",
 							JOptionPane.ERROR_MESSAGE);
 				}else{
@@ -102,7 +103,7 @@ public class MainListener implements ActionListener{
 						JOptionPane.ERROR_MESSAGE);
 			}else{
 				String[] tokens = mn.getSelected3().split("\\(");
-				String degree = q.addCourseDegree(mn.getSelected4(), tokens[0]);
+				String degree = m.addCourseDegree(mn.getSelected4(), tokens[0]);
 				if(degree.equals("Error")){
 					JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 							JOptionPane.ERROR_MESSAGE);

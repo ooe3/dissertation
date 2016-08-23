@@ -22,21 +22,23 @@ import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBoxMenuItem;
 import java.awt.List;
-
+/*
+ * The AdminAdd class that displays GUI for the admin to add results of students 
+ * and calculate overall mark
+ */
 public class AdminAdd extends JFrame{
 	Users us;
+	//creates an object of the queries class
 	Queries q = Queries.getQueries();
+	StudentQueries sq = StudentQueries.getMain();
 	Choice choice, choice_1, choice_2;
 	JTextField textField_6, textField_7;
-	JLabel label, lblNewLabel_5;
-	Course cs;
-	JLabel lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4;
 	JButton btnSubmit;
 	String selected5, name_selected;
 	String[] tokens_5, tokens_6;
-	private JLabel lblIfYouWant;
-	private JLabel lblSelectTheStudents;
+	private JLabel lblSelectTheStudents, label, lblNewLabel_5, lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4,lblIfYouWant;
 	public AdminAdd(){
+		//initialize user object to get the current user
 		us = q.getUser();
 		initialize();
 	}
@@ -55,10 +57,15 @@ public class AdminAdd extends JFrame{
 		JLabel lblAddingResults = new JLabel("Adding results");
 		lblAddingResults.setBounds(19, 54, 147, 16);
 		panel_3.add(lblAddingResults);
-
+		
+		//Object of the JMenuBar
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
+		/*
+		 * JMenuItems added to the JMenuBar
+		 * Add result, log out, view general results, change password, add student, refresh, view student
+		 * All created as menu items
+		 */
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new AddListener(this));
@@ -92,7 +99,7 @@ public class AdminAdd extends JFrame{
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new AddListener(this));
 
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());//get users first name & last name and makes it a JMenu
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
@@ -111,43 +118,46 @@ public class AdminAdd extends JFrame{
 		lblNewLabel_4.setBounds(19, 137, 354, 16);
 		lblNewLabel_4.setVisible(false);
 		panel_3.add(lblNewLabel_4);
-
+		
+		//Choice object which consists a dropdown of lists
+		//Contains a lists of students
 		choice_1 = new Choice();
 		choice_1.setBounds(19, 104, 307, 27);
 		choice_1.add("(select student)");
-		String select4 = q.displayStudents(us.getID());
-		String[]tokens_4 = select4.split(",");
-
+		String select4 = q.displayStudents(us.getID());//stores the result from the displayStudents into select4
+		String[]tokens_4 = select4.split(",");//splits select4 after each comma
+		//add the elements in the tokens_4 array as options in the dropdwon
 		for(int i = 0; i<tokens_4.length;i++){
 			choice_1.add(tokens_4[i]);
 		}
 		panel_3.add(choice_1);
-
+		//Choice that contains a dropdown list of courses
 		choice_2 = new Choice();
 		choice_2.setBounds(20, 177, 295, 27);
 		choice_2.add("(select course)");
 		panel_3.add(choice_2);
 
 		choice_2.setVisible(false);
-
+		//itemlistener for the choice containing the dropdown list of courses
 		choice_1.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
-				String selected4 = choice_1.getSelectedItem();
+				String selected4 = choice_1.getSelectedItem();//store the selected item in selected4
 				lblNewLabel_4.setVisible(true);
-				tokens_5 = selected4.split(" ");
-				String select7 = q.removeSelection(tokens_5[0], tokens_5[1]);
-				String[]tokens_7 = select7.split(",");
+				tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
+				String select7 = sq.removeSelection(tokens_5[0], tokens_5[1]);//store the remove selection which takes the tokens as parameters in select7
+				String[]tokens_7 = select7.split(",");//split after each comma
 				choice_2.setVisible(true);
 				for(int i = 0; i<tokens_7.length;i++){
-					choice_2.add(tokens_7[i]);
+					choice_2.add(tokens_7[i]);//store the elements of tokens_7 into the dropdown list
 				}
 
-
+				//itemlistener for choice_2
 				choice_2.addItemListener(new ItemListener(){
 					public void itemStateChanged(ItemEvent ie)
 					{
 						selected5 = choice_2.getSelectedItem();
+						//once the selecteditem is chosen, the components below become visible
 						lblExam.setVisible(true);
 						lblCoursework.setVisible(true);
 						lblPercentage.setVisible(true);
@@ -216,7 +226,9 @@ public class AdminAdd extends JFrame{
 		lblSelectTheStudents = new JLabel("Select the student's overall average to calculate below");
 		lblSelectTheStudents.setBounds(421, 82, 354, 16);
 		panel_3.add(lblSelectTheStudents);
-
+		
+		//choice containing a drop down list of students
+		//this is used by the calculate overall button
 		choice = new Choice();
 		choice.setBounds(421, 104, 340, 27);
 		choice.add("(select student)");

@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import gui.*;
-
+//The listener class for the StartGUI
 public class ListenerClass implements ActionListener{
 	StartGUI sg;
 	Queries q = Queries.getQueries();
