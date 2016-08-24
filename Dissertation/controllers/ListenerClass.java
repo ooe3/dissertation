@@ -1,10 +1,12 @@
-package main;
+package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import gui.*;
+import main.Queries;
+import main.Users;
 //The listener class for the StartGUI
 public class ListenerClass implements ActionListener{
 	StartGUI sg;

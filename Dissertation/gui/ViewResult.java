@@ -26,6 +26,7 @@ public class ViewResult extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
+	ViewResultQueries v = ViewResultQueries.getMain();
 	String selected3, selected2;
 	Choice choice, choice_1;
 	JTextArea textArea;
@@ -81,7 +82,7 @@ public class ViewResult extends JFrame{
 						{
 							selected2 = choice_1.getSelectedItem();
 							String[] tokens_5 = selected2.split(" ");
-							String display = q.showResult(tokens_5[0], tokens_5[1]);
+							String display = v.showResult(tokens_5[0], tokens_5[1]);
 							textArea.setText(display);
 							scrollPane.setVisible(true);
 						}
@@ -102,7 +103,7 @@ public class ViewResult extends JFrame{
 							{
 								selected2 = choice_1.getSelectedItem();
 								String[] tokens = selected2.split("\\(");
-								String display = q.degreeResult(tokens[0]);
+								String display = v.degreeResult(tokens[0]);
 								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
 									textArea.setText("No result available for this degree or no degree selected");
 								}else{
@@ -126,7 +127,7 @@ public class ViewResult extends JFrame{
 						public void itemStateChanged(ItemEvent ie)
 						{
 							selected2 = choice_1.getSelectedItem();
-							String display = q.overallCourse(selected2);
+							String display = v.overallCourse(selected2);
 							if(display.equals("Not Available") || selected2.equals("(select course)")){
 								textArea.setText("No result available for this course or no course slected");
 							}else{
@@ -136,7 +137,7 @@ public class ViewResult extends JFrame{
 						}
 					});
 				}else if(selected3.equals(choice4)){
-					String display = q.overallSchool(((Admin)us).getID());
+					String display = v.overallSchool(((Admin)us).getID());
 					if(display.equals("No results for this school")){
 						textArea.setText("No results set for this school yet or no students.");
 					}else{

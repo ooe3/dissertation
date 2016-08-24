@@ -31,6 +31,7 @@ public class AdminAdd extends JFrame{
 	//creates an object of the queries class
 	Queries q = Queries.getQueries();
 	StudentQueries sq = StudentQueries.getMain();
+	AddQueries aq = AddQueries.getMain();
 	Choice choice, choice_1, choice_2;
 	JTextField textField_6, textField_7;
 	JButton btnSubmit;
@@ -164,11 +165,11 @@ public class AdminAdd extends JFrame{
 						textField_6.setVisible(true);
 						textField_7.setVisible(true);
 						btnSubmit.setVisible(true);
-						q.getCourseDetails(selected5);
+						aq.getCourseDetails(selected5);
 						label.setVisible(true);
 						lblNewLabel_5.setVisible(true);
-						label.setText(""+q.getCwPercentage()+"");
-						lblNewLabel_5.setText(""+q.getExamPercentage()+"");
+						label.setText(""+aq.getCwPercentage()+"");
+						lblNewLabel_5.setText(""+aq.getExamPercentage()+"");
 
 
 					}});

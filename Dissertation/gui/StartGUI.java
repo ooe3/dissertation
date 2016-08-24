@@ -9,7 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
-import main.ListenerClass;
+import controllers.ListenerClass;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.JMenuBar;

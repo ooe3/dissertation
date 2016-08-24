@@ -18,7 +18,6 @@ public class Queries {
 	private Connection conn = null;
 	private Statement st;
 	Users us;
-	Course cs;
 
 	private static Queries q;
 	/**
@@ -156,85 +155,6 @@ public class Queries {
 		return sb.toString();
 	}
 
-	public String showResult(String fname, String lname){
-		StringBuilder sb = new StringBuilder("");
-		int totalcred = 0, totalpoints = 0;
-		double average = 0;
-		int count = 0;
-		int p = 0;
-		String score = "";
-		String total = "";
-		int id = getStudent(fname, lname);
-		String names = String.format("%s %s\n", fname, lname);
-		sb.append(names+"\n");
-		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Overall Mark", "Credit x Overall");
-		sb.append(display);
-		sb.append("\n");
-		ResultSet rs;
-
-		try{
-			String query = "SELECT cr.COURSE, cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+id+"' ORDER BY cr.COURSE ASC";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-			while(rs.next()){
-				count+=1;
-
-				String course = rs.getString("COURSE");
-				int res = rs.getInt("RESULT");
-				int credit = rs.getInt("CREDIT"); 
-				int r = res * credit;
-				p+=res;
-				if(res == 0){
-					score = "";
-					total = "";
-				}else{
-					score = getScore(res);
-					total = ""+(r)+"";
-					totalcred+=credit;
-				}
-				String s = String.format(" %-50.50s %-10d %-10s %-10s\n", course, credit, score, total);
-				sb.append(s);
-				sb.append("\n");
-				totalpoints+=(r);
-
-
-			}
-			average+=((double)totalpoints/totalcred);
-
-			if (count == 0){
-				return "No courses selected.";
-			}
-
-			if(p != 0){
-				String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
-				sb.append(s2);
-				sb.append("\n");
-				String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, average);
-				sb.append(s1);
-			}
-
-			rs.close();
-			st.close();
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-
-	public void insertOverall(String mark, String fname, String lname){
-		ResultSet rs;
-		try{
-			int id = getStudent(fname, lname);
-			st = conn.createStatement();
-			String sql = "UPDATE STUDENT_DEGREE SET RESULT = '"+mark+"' WHERE STUDENT = '"+id+"'";
-			st.executeUpdate(sql);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-
-	}
-
 	public String displayStudents(int id){
 		StringBuilder sb = new StringBuilder("");
 		ResultSet rs;
@@ -258,63 +178,7 @@ public class Queries {
 		}
 		return sb.toString();
 	}
-
-	public void getCourseDetails(String course){
-		ResultSet rs;
-
-		try{
-			String query = "SELECT * FROM COURSES WHERE COURSENAME = '"+course+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-
-			if(rs.next()){
-				cs = new Course();
-				String coursename = rs.getString("COURSENAME");
-				int credit = rs.getInt("CREDIT");
-				int exam = rs.getInt("EXAM");
-				int cw = rs.getInt("COURSEWORK");
-
-				cs.setCourse(coursename);
-				cs.setCredit(credit);
-				cs.setExam(exam);
-				cs.setCoursework(cw);
-			}
-			rs.close();
-			st.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
-	public void insertCourseScore(int overall, String coursename, String fname, String lname){
-		ResultSet rs;
-		try{
-			int id = getStudent(fname, lname);
-			String sql = "UPDATE COURSERESULT SET RESULT = '"+overall+"' WHERE COURSE = '"+coursename+"' AND STUDENTID = '"+id+"'";
-			st.executeUpdate(sql);
-		}catch(Exception e){ 
-			e.printStackTrace();
-		}
-
-	}
-	//Calculate the score of a course
-	//Method to be called in the GUI and int result returned to pass as one
-	//of the parameters in insertCourseScore
-	public int calculateScore(int exam, int coursework, int courseMark, int examMark){
-		double e = (double)exam/100;
-		double c = (double)coursework/100;
-		final int maxcredit = 22;
-		int finalscore = 0;
-
-		e*=examMark;
-		c*=courseMark;
-		double score = e+c;
-		score/=100;
-		score*=maxcredit;
-
-		finalscore+=Math.round(score);
-		return finalscore;
-	}
+	
 
 	public String checkResults(String fname, String lname){
 		StringBuilder sb = new StringBuilder("");
@@ -341,37 +205,6 @@ public class Queries {
 		return sb.toString();
 	}
 
-	public String getResult(String fname, String lname){
-		StringBuilder sb = new StringBuilder("");
-		int totalcred = 0, totalpoints = 0;
-		double average = 0;
-		ResultSet rs;
-		try{
-			int id = getStudent(fname, lname);
-			String query = "SELECT cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+id+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-			while(rs.next()){
-				int res = rs.getInt("RESULT");
-				int credit = rs.getInt("CREDIT"); 
-				totalpoints+=(res*credit);
-				totalcred+=credit;
-
-
-			}
-			average+=((double)totalpoints/totalcred);
-			String s1 = String.format("%.3f", average);
-			sb.append(s1);
-			rs.close();
-			st.close();
-
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-
 	public int getStudent(String fname, String lname){
 		ResultSet rs;
 		int id = 0;
@@ -387,58 +220,6 @@ public class Queries {
 			e.printStackTrace();
 		}
 		return id;
-	}
-
-	public String overallCourse(String s){
-		StringBuilder sb = new StringBuilder("");
-		int totalpoints = 0;
-		double average = 0;
-		int count = 0;
-		int numOfStudents = 0;
-		String degree = String.format("%s\n", s);
-		sb.append(degree + "\n");
-		String display = String.format(" %-40.40s %-10s\n", "Name", "Overall Mark");
-		sb.append(display);
-		sb.append("\n");
-		ResultSet rs;
-
-		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, cr.RESULT FROM COURSERESULT AS cr INNER JOIN STUDENT AS s ON s.STUDENTID = cr.STUDENTID WHERE cr.COURSE = '"+s+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-			while(rs.next()){
-
-				String fname = rs.getString("FIRSTNAME");
-				String lname = rs.getString("LASTNAME");
-				int res = rs.getInt("RESULT");
-				count+=res;
-				if(res != 0){
-					String name = fname +" "+ lname;
-					numOfStudents+=1;
-					String mark = getScore(res);
-					String s1 = String.format(" %-40.40s %-10s\n", name, mark);
-					sb.append(s1);
-					sb.append("\n");
-					totalpoints+=res;
-				}
-
-			}
-
-			if(count !=0){
-				average+=((double)totalpoints/numOfStudents);
-				String s1 = String.format("The overall average for this course is %.3f", average);
-				sb.append(s1);
-			}else{
-				sb.append("No marks available yet.");
-			}
-
-			rs.close();
-			st.close();
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
 	}
 
 	public String allStudents(int id){
@@ -469,86 +250,6 @@ public class Queries {
 			st.close();
 		}catch(Exception e){
 
-		}
-		return sb.toString();
-	}
-
-	public String overallSchool(int id){
-		Double score = 0.0;
-		StringBuilder sb = new StringBuilder("");
-		String degree = String.format("%s\n", "Overall average for School");
-		sb.append(degree + "\n");
-		String display = String.format(" %-40.40s %-30.30s %-10s\n", "Name","Degree" ,"Result");
-		sb.append(display);
-		int count = 0;
-		ResultSet rs;
-		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, d.DEGREENAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d "
-					+ "ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = '"+id+"' AND sd.RESULT IS NOT NULL";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-
-			if(rs.next()){
-				count+=1;
-				String fname = rs.getString("FIRSTNAME");
-				String lname = rs.getString("LASTNAME");
-				String degreename = rs.getString("DEGREENAME");
-				String result = rs.getString("RESULT");
-
-				String name = fname +" "+ lname;
-				Double res = Double.parseDouble(result);
-				String names = String.format(" %-40.40s %-30.30s %-10.3f\n", name, degreename, res);
-				sb.append(names+"\n");
-				score+=res;
-
-			}
-			String average = String.format("The average score for this school is %.3f", score/count);
-			sb.append(average);
-
-			if(count == 0){
-				return "No results for this school";
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-
-	public String degreeResult(String s){
-		Double score = 0.0;
-		StringBuilder sb = new StringBuilder("");
-		String degree = String.format("%s\n", s);
-		sb.append(degree + "\n");
-		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
-		sb.append(display);
-		int count = 0;
-		ResultSet rs;
-		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE d.DEGREENAME = '"+s+"' AND sd.RESULT IS NOT NULL";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
-
-			if(rs.next()){
-				count+=1;
-				String fname = rs.getString("FIRSTNAME");
-				String lname = rs.getString("LASTNAME");
-				String result = rs.getString("RESULT");
-
-				String name = fname +" "+ lname;
-				Double res = Double.parseDouble(result);
-				String names = String.format(" %-50.50s %-10.3f\n", name, res);
-				sb.append(names+"\n");
-				score+=res;
-
-			}
-			String average = String.format("The average score for this degree is %.3f", score/count);
-			sb.append(average);
-
-			if(count == 0){
-				return "No results for that degree";
-			}
-		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return sb.toString();
 	}
@@ -624,19 +325,7 @@ public class Queries {
 		}
 		return 0;
 	}
-
-	public String getScore(int id){
-		String s = "";
-		String[] score = {"A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
-		int[] mark = {22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
-		for(int i = 0; i<score.length;i++){
-			if(id == mark[i]){
-				s+=score[i];
-			}
-		}
-
-		return s;
-	}
+	
 	public String getUnique(){
 		StringBuilder sb = new StringBuilder("");
 		final String initial = "2";
@@ -714,14 +403,6 @@ public class Queries {
 
 	public Users getUser(){
 		return us;
-	}
-
-	public int getCwPercentage(){
-		return cs.getCoursework();
-	}
-
-	public int getExamPercentage(){
-		return cs.getExamPercentage();
 	}
 	
 

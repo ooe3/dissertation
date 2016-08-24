@@ -12,6 +12,7 @@ public class AddListener implements ActionListener{
 	AdminAdd ad;
 	Users us;
 	Queries q = Queries.getQueries();//Object of the Queries class
+	AddQueries aq = AddQueries.getMain();
 	public AddListener(AdminAdd am){
 		ad = am;
 		us = q.getUser();//get the user currently logged in
@@ -34,9 +35,9 @@ public class AddListener implements ActionListener{
 					}else{
 						//call the calculatescore method to store the result in overall
 						//It takes the number stored in the exam, cw and the percentage for both the coursework & exam of the course selected
-						int overall = q.calculateScore(exam, cw, q.getCwPercentage(), q.getExamPercentage());
+						int overall = aq.calculateScore(exam, cw, aq.getCwPercentage(), aq.getExamPercentage());
 						//calls the insertCourseScore method taking the overall, selected course and name of the student
-						q.insertCourseScore(overall, ad.selected5(), ad.getNames()[0], ad.getNames()[1]);
+						aq.insertCourseScore(overall, ad.selected5(), ad.getNames()[0], ad.getNames()[1]);
 						JOptionPane.showMessageDialog(null, "Result added", "Window",
 								JOptionPane.ERROR_MESSAGE);
 						//calls the checkResults method to check if the student has all their results entered
@@ -47,8 +48,8 @@ public class AddListener implements ActionListener{
 						}else{
 							int show = JOptionPane.showConfirmDialog(null, "Do you want calculate & add the overall mark for this student?");//dialog box to ask if admin wants to calculate overall mark
 							if(show == 0){//if yes, store the result in the datatabase
-								String s = q.getResult(ad.getNames()[0], ad.getNames()[1]);
-								q.insertOverall(s, ad.getNames()[0], ad.getNames()[1]);
+								String s = aq.getResult(ad.getNames()[0], ad.getNames()[1]);
+								aq.insertOverall(s, ad.getNames()[0], ad.getNames()[1]);
 								JOptionPane.showMessageDialog(null, "Overall added", "Window",
 										JOptionPane.ERROR_MESSAGE);
 								AdminAdd aa = new AdminAdd();
@@ -97,8 +98,8 @@ public class AddListener implements ActionListener{
 					JOptionPane.showMessageDialog(null, "All results for this student has not been entered. Add results on the left", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else {
 				//calculate the overall score of the student if all results have been stored
-					String s = q.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
-					q.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
+					String s = aq.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
+					aq.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
 					JOptionPane.showMessageDialog(null, "Overall add", "Window",
 							JOptionPane.ERROR_MESSAGE);
 				}

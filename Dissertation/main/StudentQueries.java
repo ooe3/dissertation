@@ -93,6 +93,19 @@ public class StudentQueries {
 		return sb.toString();
 	}
 	
+	public String getScore(int id){
+		String s = "";
+		String[] score = {"A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
+		int[] mark = {22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
+		for(int i = 0; i<score.length;i++){
+			if(id == mark[i]){
+				s+=score[i];
+			}
+		}
+
+		return s;
+	}
+	
 //display courses that can be removed for student
 	public String removeSelection(String s, String s1){
 		StringBuilder sb = new StringBuilder("");
@@ -210,7 +223,8 @@ public class StudentQueries {
 					return "Not Available";
 				}else
 					totalpoints+=(res*credit);
-				String s = String.format("%-50.50s %-10d %-10d %-10d\n", course, credit, res, (res*credit));
+				String mark = getScore(res);
+				String s = String.format("%-50.50s %-10d %-10s %-10d\n", course, credit, mark, (res*credit));
 				sb.append(s);
 				sb.append("\n");
 				totalcred+=credit;
