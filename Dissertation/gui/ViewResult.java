@@ -32,6 +32,7 @@ public class ViewResult extends JFrame{
 	JTextArea textArea;
 	JLabel lblNewLabel;
 	JScrollPane scrollPane;
+	int count = 0;
 	final String choice1 = "View a particular students result", choice2 = "View overall results of a particular degree", 
 			choice3 = "View overall results for a particular course", choice4 = "View overall results for the school";
 	public ViewResult(){
@@ -144,6 +145,18 @@ public class ViewResult extends JFrame{
 						textArea.setText(display);
 					}
 					scrollPane.setVisible(true);
+				}
+				if(ie.getStateChange() == ItemEvent.SELECTED){
+					count+=1;
+				}
+				
+				if(count > 1){
+					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+						ViewResult vr = new ViewResult();
+						vr.setVisible(true);
+						dispose();
+					
 				}
 			}
 			});

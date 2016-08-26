@@ -75,9 +75,9 @@ public class ResultsFrame extends JFrame{
 		textArea_2.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		panel_4.add(textArea_2, BorderLayout.CENTER);
 
-		JLabel lblResults = new JLabel("Results");
+		JLabel lblResults = new JLabel("Results - "+q.displayDetails(us.getType(), us.getMatric()));
 		lblResults.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		lblResults.setBounds(26, 16, 112, 25);
+		lblResults.setBounds(26, 16, 829, 25);
 		panel_4.add(lblResults);
 	}
 	

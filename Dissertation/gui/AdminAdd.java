@@ -37,6 +37,7 @@ public class AdminAdd extends JFrame{
 	JButton btnSubmit;
 	String selected5, name_selected;
 	String[] tokens_5, tokens_6;
+	int count = 0;
 	private JLabel lblSelectTheStudents, label, lblNewLabel_5, lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4,lblIfYouWant;
 	public AdminAdd(){
 		//initialize user object to get the current user
@@ -146,8 +147,8 @@ public class AdminAdd extends JFrame{
 				String selected4 = choice_1.getSelectedItem();//store the selected item in selected4
 				lblNewLabel_4.setVisible(true);
 				tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
-				String select7 = sq.removeSelection(tokens_5[0], tokens_5[1]);//store the remove selection which takes the tokens as parameters in select7
-				String[]tokens_7 = select7.split(",");//split after each comma
+				String select7 = aq.removeSelection(tokens_5[0], tokens_5[1]);//store the remove selection which takes the tokens as parameters in select7
+				String[]tokens_7 = select7.split(",");//split after each comma 
 				choice_2.setVisible(true);
 				for(int i = 0; i<tokens_7.length;i++){
 					choice_2.add(tokens_7[i]);//store the elements of tokens_7 into the dropdown list
@@ -157,6 +158,7 @@ public class AdminAdd extends JFrame{
 				choice_2.addItemListener(new ItemListener(){
 					public void itemStateChanged(ItemEvent ie)
 					{
+						
 						selected5 = choice_2.getSelectedItem();
 						//once the selecteditem is chosen, the components below become visible
 						lblExam.setVisible(true);
@@ -165,7 +167,12 @@ public class AdminAdd extends JFrame{
 						textField_6.setVisible(true);
 						textField_7.setVisible(true);
 						btnSubmit.setVisible(true);
-						aq.getCourseDetails(selected5);
+						String[] tokens = selected5.split("\\(");
+						if(tokens.length>1){
+						aq.getCourseDetails(tokens[0]);
+						}else{
+							aq.getCourseDetails(selected5);
+						}
 						label.setVisible(true);
 						lblNewLabel_5.setVisible(true);
 						label.setText(""+aq.getCwPercentage()+"");
@@ -173,6 +180,17 @@ public class AdminAdd extends JFrame{
 
 
 					}});
+				if(ie.getStateChange() == ItemEvent.SELECTED){
+					count+=1;
+				}
+				
+				if(count > 1){
+					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+					AdminAdd add = new AdminAdd();
+					add.setVisible(true);
+					dispose();
+				}
 			}
 		});
 

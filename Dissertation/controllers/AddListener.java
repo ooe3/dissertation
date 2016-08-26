@@ -39,7 +39,7 @@ public class AddListener implements ActionListener{
 						//calls the insertCourseScore method taking the overall, selected course and name of the student
 						aq.insertCourseScore(overall, ad.selected5(), ad.getNames()[0], ad.getNames()[1]);
 						JOptionPane.showMessageDialog(null, "Result added", "Window",
-								JOptionPane.ERROR_MESSAGE);
+								JOptionPane.INFORMATION_MESSAGE);
 						//calls the checkResults method to check if the student has all their results entered
 						if((q.checkResults(ad.getNames()[0], ad.getNames()[1])).equals("No")){
 							AdminAdd aa = new AdminAdd();
@@ -51,7 +51,7 @@ public class AddListener implements ActionListener{
 								String s = aq.getResult(ad.getNames()[0], ad.getNames()[1]);
 								aq.insertOverall(s, ad.getNames()[0], ad.getNames()[1]);
 								JOptionPane.showMessageDialog(null, "Overall added", "Window",
-										JOptionPane.ERROR_MESSAGE);
+										JOptionPane.INFORMATION_MESSAGE);
 								AdminAdd aa = new AdminAdd();
 								aa.setVisible(true);
 								ad.dispose();
@@ -101,7 +101,7 @@ public class AddListener implements ActionListener{
 					String s = aq.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
 					aq.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
 					JOptionPane.showMessageDialog(null, "Overall add", "Window",
-							JOptionPane.ERROR_MESSAGE);
+							JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 			AdminAdd ada = new AdminAdd();

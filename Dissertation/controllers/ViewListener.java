@@ -15,7 +15,7 @@ public class ViewListener implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-	// TODO Auto-generated method stub
+		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("LogOut")){
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
@@ -30,18 +30,18 @@ public class ViewListener implements ActionListener{
 			vr.dispose();
 		}else if(e.getActionCommand().equals("View")){
 			vr.setVisible(true);
-			
+
 		}else if(e.getActionCommand().equals("Add")){
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			vr.dispose();
 		}else if(e.getActionCommand().equals("Change Password")){
-			
-			
+
+
 		}else{
-			
+
 		}
-	
+
 	}
 
 }

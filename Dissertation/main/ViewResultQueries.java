@@ -6,7 +6,7 @@ import java.sql.*;
 public class ViewResultQueries {
 	private Connection conn = null;
 	private Statement st;
-	
+	private PreparedStatement ps = null;
 	private static ViewResultQueries vrq;
 	
 	private ViewResultQueries(){
@@ -32,15 +32,16 @@ public class ViewResultQueries {
 		int id = getStudent(fname, lname);
 		String names = String.format("%s %s\n", fname, lname);
 		sb.append(names+"\n");
-		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Overall Mark", "Credit x Overall");
+		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Mark", "Total");
 		sb.append(display);
 		sb.append("\n");
-		ResultSet rs;
+		ResultSet rs = null;
 
 		try{
-			String query = "SELECT cr.COURSE, cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = '"+id+"' ORDER BY cr.COURSE ASC";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+			String query = "SELECT cr.COURSE, cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = ? ORDER BY cr.COURSE ASC";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
 			while(rs.next()){
 				count+=1;
 
@@ -79,7 +80,7 @@ public class ViewResultQueries {
 			}
 
 			rs.close();
-			st.close();
+			ps.close();
 
 		}catch(Exception e){
 			e.printStackTrace();
@@ -101,12 +102,14 @@ public class ViewResultQueries {
 	}
 	
 	public int getStudent(String fname, String lname){
-		ResultSet rs;
+		ResultSet rs = null;
 		int id = 0;
 		try{
-			String query = "SELECT STUDENTID FROM STUDENT WHERE FIRSTNAME = '"+fname+"' AND LASTNAME = '"+lname+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+			String query = "SELECT STUDENTID FROM STUDENT WHERE FIRSTNAME = ? AND LASTNAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, fname);
+			ps.setString(2, lname);
+			rs = ps.executeQuery();
 
 			if(rs.next()){
 				id += (rs.getInt("STUDENTID"));
@@ -125,11 +128,12 @@ public class ViewResultQueries {
 		String display = String.format(" %-50.50s %-10s\n", "Name", "Result");
 		sb.append(display);
 		int count = 0;
-		ResultSet rs;
+		ResultSet rs = null;
 		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE d.DEGREENAME = '"+s+"' AND sd.RESULT IS NOT NULL";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE d.DEGREENAME = ? AND sd.RESULT IS NOT NULL";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, s);
+			rs = ps.executeQuery();
 
 			if(rs.next()){
 				count+=1;
@@ -150,6 +154,8 @@ public class ViewResultQueries {
 			if(count == 0){
 				return "No results for that degree";
 			}
+			rs.close();
+			ps.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -167,12 +173,13 @@ public class ViewResultQueries {
 		String display = String.format(" %-40.40s %-10s\n", "Name", "Overall Mark");
 		sb.append(display);
 		sb.append("\n");
-		ResultSet rs;
+		ResultSet rs = null;
 
 		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, cr.RESULT FROM COURSERESULT AS cr INNER JOIN STUDENT AS s ON s.STUDENTID = cr.STUDENTID WHERE cr.COURSE = '"+s+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+			String query = "SELECT s.FIRSTNAME, s.LASTNAME, cr.RESULT FROM COURSERESULT AS cr INNER JOIN STUDENT AS s ON s.STUDENTID = cr.STUDENTID WHERE cr.COURSE = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, s);
+			rs = ps.executeQuery();
 			while(rs.next()){
 
 				String fname = rs.getString("FIRSTNAME");
@@ -200,7 +207,7 @@ public class ViewResultQueries {
 			}
 
 			rs.close();
-			st.close();
+			ps.close();
 
 		}catch(Exception e){
 			e.printStackTrace();
@@ -216,12 +223,13 @@ public class ViewResultQueries {
 		String display = String.format(" %-40.40s %-30.30s %-10s\n", "Name","Degree" ,"Result");
 		sb.append(display);
 		int count = 0;
-		ResultSet rs;
+		ResultSet rs = null;
 		try{
 			String query = "SELECT s.FIRSTNAME, s.LASTNAME, d.DEGREENAME, sd.RESULT FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d "
-					+ "ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = '"+id+"' AND sd.RESULT IS NOT NULL";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+					+ "ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS a ON a.SCHOOLREF = d.SCHOOL_REF INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT WHERE a.ADMINID = ? AND sd.RESULT IS NOT NULL";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
 
 			if(rs.next()){
 				count+=1;
@@ -243,10 +251,13 @@ public class ViewResultQueries {
 			if(count == 0){
 				return "No results for this school";
 			}
+			rs.close();
+			ps.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return sb.toString();
 	}
+
 
 }

@@ -39,7 +39,7 @@ public class CreateListener implements ActionListener{
 						JOptionPane.showMessageDialog(null, "Student exists or matric number exists", "Error message", JOptionPane.ERROR_MESSAGE);
 					}else{
 						JOptionPane.showMessageDialog(null, "Student added", "Window",
-								JOptionPane.ERROR_MESSAGE);
+								JOptionPane.INFORMATION_MESSAGE);
 						CreateStudent cst = new CreateStudent();
 						cst.setVisible(true);
 						cs.dispose();

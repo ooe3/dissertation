@@ -47,7 +47,7 @@ public class StudentMainListener implements ActionListener{
 							JOptionPane.ERROR_MESSAGE);
 				}else{
 				JOptionPane.showMessageDialog(null, "Removal successful", "Window",
-						JOptionPane.ERROR_MESSAGE);
+						JOptionPane.INFORMATION_MESSAGE);
 				}
 			}
 			StudentMain mn = new StudentMain();
