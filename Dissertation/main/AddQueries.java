@@ -136,16 +136,12 @@ public void getCourseDetails(String course){
 		rs = ps.executeQuery();
 
 		if(rs.next()){
-			cs = new Course();
+			
 			String coursename = rs.getString("COURSENAME");
 			int credit = rs.getInt("CREDIT");
 			int exam = rs.getInt("EXAM");
 			int cw = rs.getInt("COURSEWORK");
-
-			cs.setCourse(coursename);
-			cs.setCredit(credit);
-			cs.setExam(exam);
-			cs.setCoursework(cw);
+			cs = new Course(coursename, credit, exam, cw);
 		}
 		rs.close();
 		ps.close();

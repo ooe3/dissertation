@@ -1,34 +1,26 @@
 package main;
 
 public class CourseResult {
-	private String course;
-	private int result, student;
+	Course cs;
+	Student st;
+	private int result;
 	
-	public CourseResult(){
+	public CourseResult(Course c, Student s, int res){
 		//default
+		this.cs = c;
+		this.st = s;
+		this.result = res;
 	}
 	
 	public int getResult(){
 		return result;
 	}
 	
-	public void setResult(int results){
-		result = results;
+	public Course getCourseName(){
+		return cs;
 	}
 	
-	public String getCourseName(){
-		return course;
-	}
-	
-	public void setCourseName(String courseName){
-		this.course= courseName;
-	}
-	
-	public int getStudentID(){
-		return student;
-	}
-
-	public void setStudentID(int id){
-		this.student=id;
+	public Student getStudentID(){
+		return st;
 	}
 }

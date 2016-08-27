@@ -24,10 +24,12 @@ import controllers.*;
 public class ResultsFrame extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	StudentDegree sd;
 	JTextArea textArea_2;
 	
 	public ResultsFrame(){
 		us = q.getUser();
+		sd = q.getStudentDegree();
 		initialize();
 	}
 	
@@ -75,7 +77,7 @@ public class ResultsFrame extends JFrame{
 		textArea_2.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		panel_4.add(textArea_2, BorderLayout.CENTER);
 
-		JLabel lblResults = new JLabel("Results - "+q.displayDetails(us.getType(), us.getMatric()));
+		JLabel lblResults = new JLabel("Results - "+sd.getDegree().getDegreeType()+" "+sd.getDegree().getDegreeName());
 		lblResults.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		lblResults.setBounds(26, 16, 829, 25);
 		panel_4.add(lblResults);

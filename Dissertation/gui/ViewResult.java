@@ -24,6 +24,7 @@ import javax.swing.JScrollBar;
 
 public class ViewResult extends JFrame{
 	Users us;
+	School sc;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	ViewResultQueries v = ViewResultQueries.getMain();
@@ -36,11 +37,13 @@ public class ViewResult extends JFrame{
 	final String choice1 = "View a particular students result", choice2 = "View overall results of a particular degree", 
 			choice3 = "View overall results for a particular course", choice4 = "View overall results for the school";
 	public ViewResult(){
+		us = q.getUser();
+		sc = q.getSchool();
 		initialize();
 	}
 	
 	public void initialize(){
-		us = q.getUser();
+		
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,7 +95,7 @@ public class ViewResult extends JFrame{
 						lblNewLabel.setText("Select the degree results you want to view");
 						lblNewLabel.setVisible(true);
 						choice_1.add("(select degree)");
-						String select3 = m.displayDegree(((Admin)us).getSchoolName());
+						String select3 = m.displayDegree(sc.getName());
 						String[]tokens_3 = select3.split(",");
 
 						for(int i = 0; i<tokens_3.length;i++){

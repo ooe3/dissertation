@@ -3,15 +3,12 @@ package main;
 public class School {
 	private String schoolName;
 	
-	public School(){
+	public School(String s){
 		//default
+		this.schoolName = s;
 	}
 	
 	public String getName(){
 		return schoolName;
-	}
-	
-	public void setName(String n){
-		this.schoolName=n;
 	}
 }

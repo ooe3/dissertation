@@ -13,6 +13,7 @@ public class Student extends Users {
 	//private String matric;
 	String firstName, lastName, email;
 	int studentID, userID;
+	StudentDegree sd;
 
 
 
@@ -24,6 +25,14 @@ public class Student extends Users {
 
 	public int getStudentID(){
 		return studentID;
+	}
+	
+	public void setDegree(StudentDegree s){
+		this.sd = s;
+	}
+	
+	public StudentDegree getDegree(){
+		return sd;
 	}
 
 }

@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -27,14 +28,18 @@ public class StudentMain extends JFrame{
 	StudentQueries s = StudentQueries.getMain();
 	String select, selected, selected1;
 	Choice choice, choice_4;
+	StudentDegree sd;
+	List<CourseResult> cr;
 	public StudentMain(){
 		us = q.getUser();
+		sd = q.getStudentDegree();
+		cr = q.getDetails();
 		initialize();
-		
+
 	}
 
 	public void initialize(){
-		
+
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,7 +70,7 @@ public class StudentMain extends JFrame{
 		JMenuItem mntmStudentHome = new JMenuItem("Home");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
-		
+
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new StudentMainListener(this));
@@ -91,17 +96,14 @@ public class StudentMain extends JFrame{
 		label.setBounds(219, 58, 276, 16);
 		label.setText(us.getEmail());
 		panel.add(label);
-
 		JLabel lblEmail = new JLabel("Email:");
 		lblEmail.setBounds(175, 58, 45, 16);
 		panel.add(lblEmail);
-
 		JLabel label_1 = new JLabel();
 		label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		label_1.setBounds(175, 6, 400, 28);
-		label_1.setText(q.displayDetails(us.getType(), us.getMatric()));
+		label_1.setText(sd.getDegree().getDegreeType()+" "+sd.getDegree().getDegreeName());
 		panel.add(label_1);
-
 
 		choice = new Choice();
 		choice.setBounds(22, 495, 264, 27);
@@ -113,11 +115,9 @@ public class StudentMain extends JFrame{
 		choice_4.add("(select course)");
 		panel.add(choice_4);
 
-		String select1 = s.removeSelection(us.getFirstName(), us.getLastName());
-		String[]tokens_1 = select1.split(",");
+		for(int i = 0; i<cr.size();i++){
 
-		for(int i = 0; i<tokens_1.length;i++){
-			choice_4.add(tokens_1[i]);
+			choice_4.add(cr.get(i).getCourseName().getCourse());
 		}
 
 		choice_4.addItemListener(new ItemListener(){
@@ -162,7 +162,7 @@ public class StudentMain extends JFrame{
 		JLabel lblEnterCourseCode = new JLabel("Select course you want to remove below");
 		lblEnterCourseCode.setBounds(22, 601, 281, 16);
 		panel.add(lblEnterCourseCode);
-		
+
 		JLabel lblEnrolledCourses = new JLabel("Enrolled Courses");
 		lblEnrolledCourses.setBounds(22, 77, 129, 16);
 		lblEnrolledCourses.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -173,7 +173,7 @@ public class StudentMain extends JFrame{
 		return choice;
 
 	}
-	
+
 	public Choice getChoice_1(){
 		return choice_4;
 	}

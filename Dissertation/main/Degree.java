@@ -2,11 +2,15 @@ package main;
 
 public class Degree {
 	private int degreeID;
-	private String degreeName, degreeType, schoolName;
+	private String degreeName, degreeType;
 	private School sc;
 	
-	public Degree(){
+	public Degree(int id, String name, String type, School s){
 		//default
+		this.degreeID=id;
+		this.degreeName=name;
+		this.degreeType = type;
+		this.sc = s;
 	}
 	
 	public int getDegreeID(){
@@ -21,23 +25,7 @@ public class Degree {
 		return degreeType;
 	}
 	
-	public String getName(){
-		return schoolName;
-	}
-	
-	public void setSchoolName(String s){
-		this.schoolName = s;
-	}
-	
-	public void setType(String d){
-		this.degreeType = d;
-	}
-	
-	public void setID(int ID){
-		this.degreeID = ID;
-	}
-	
-	public void setName(String n){
-		this.degreeName = n;
+	public School getSchool(){
+		return sc;
 	}
 }

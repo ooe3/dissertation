@@ -1,33 +1,26 @@
 package main;
 
 public class StudentDegree {
-	private int result, studenID, degreeID;
+	private String result;
+	private Student st;
+	private Degree dg;
 	
-	public StudentDegree(){
+	public StudentDegree(Student s, Degree d, String res){
 		//default
+		this.st = s;
+		this.dg = d;
+		this.result = res;
 	}
 	
-	public int getID(){
-		return studenID;
-	}
-	
-	public void setID(int sid){
-		this.studenID=sid;
-	}
-	
-	public int getDegreeID(){
-		return degreeID;
-	}
-	
-	public void setDegreeID(int did){
-		this.degreeID=did;
-	}
-	
-	public int getResult(){
+	public String getResult(){
 		return result;
 	}
 	
-	public void setResult(int results){
-		result = results;
+	public Student getStudent(){
+		return st;
+	}
+	
+	public Degree getDegree(){
+		return dg;
 	}
 }

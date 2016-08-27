@@ -4,8 +4,11 @@ public class Course {
 	private String courseName;
 	private int credit, exam, courseWork;
 	
-	public Course(){
-		
+	public Course(String cs, int cred, int exam, int cw){
+		this.courseName = cs;
+		this.credit = cred;
+		this.exam = exam;
+		this.courseWork = cw;
 		
 	}
 	
@@ -24,21 +27,5 @@ public class Course {
 	
 	public int getCoursework(){
 		return courseWork;
-	}
-	
-	public void setCourse(String s){
-		courseName = s;
-	}
-	
-	public void setCredit(int c){
-		credit = c;
-	}
-	
-	public void setExam(int e){
-		exam = e;
-	}
-	
-	public void setCoursework(int cw){
-		courseWork = cw;
 	}
 }

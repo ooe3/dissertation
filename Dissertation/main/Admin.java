@@ -1,13 +1,12 @@
 package main;
 import java.sql.*;
 public class Admin extends Users {
-	String schoolName;
 	int adminID;
+	School sc;
 
-	public Admin(int userID, int ID, String fn, String ln, String email, String schoolName){
+	public Admin(int userID, int ID, String fn, String ln, String email){
 		super(userID, fn, ln, email);
 		this.adminID = ID;
-		this.schoolName = schoolName;
 		//default
 		
 	}
@@ -15,9 +14,13 @@ public class Admin extends Users {
 	public int getID(){
 		return adminID;
 	}
+	
+	public void setSchool(School sc){
+		this.sc = sc;
+	}
 
-	public String getSchoolName(){
-		return schoolName;
+	public School getSchoolName(){
+		return sc;
 	}
 	
 	

@@ -29,16 +29,19 @@ public class Main extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
+	School sc;
 	JTextField textField_2, textField_3, textField_4, textField_8;
 	Choice choice_3, choice_5, choice, choice_1;
 	String selected3, selected2, selected4, selected5;
 	public Main(){
+		us = q.getUser();
+		sc = q.getSchool();
 		initialize();
 
 	}
 
 	public void initialize(){
-		us = q.getUser();
+
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -68,19 +71,19 @@ public class Main extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new MainListener(this));
-		
+
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new MainListener(this));
-		
+
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new MainListener(this));
-		
+
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new MainListener(this));
-		
+
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new MainListener(this));
@@ -96,9 +99,15 @@ public class Main extends JFrame{
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
 
-		JLabel label = new JLabel(q.displayDetails(us.getType(), us.getMatric()));
+		JLabel label = new JLabel();
 		label.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		label.setBounds(177, 16, 400, 28);
+		String school = sc.getName();
+		if(school.equals("Dental") || school.equals("Adam Smith Business")){
+			label.setText(school+" School");
+		}else{
+			label.setText("School of "+school);
+		}
 		panel.add(label);
 
 		JLabel label_3 = new JLabel(us.getEmail());
@@ -110,7 +119,7 @@ public class Main extends JFrame{
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
 		textArea_1.setText(m.displayAvailableCourses(us.getMatric()));
-		
+
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
 		panel.add(lblAddACourse);
@@ -151,7 +160,7 @@ public class Main extends JFrame{
 		choice_3.setBounds(533, 514, 348, 27);
 		choice_3.add("(select degree)");
 
-		String select3 = m.displayDegree(((Admin)us).getSchoolName());
+		String select3 = m.displayDegree(sc.getName());
 		String[]tokens_3 = select3.split(",");
 
 		for(int i = 0; i<tokens_3.length;i++){
@@ -213,19 +222,19 @@ public class Main extends JFrame{
 		JLabel lblDegree = new JLabel("Degree");
 		lblDegree.setBounds(464, 520, 61, 16);
 		panel.add(lblDegree);
-		
+
 		JScrollPane scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 976, 335);
 		panel.add(scrollPane, BorderLayout.CENTER);
-		
+
 		JLabel lblAddCourseTo = new JLabel("Add course to degree");
 		lblAddCourseTo.setBounds(464, 458, 188, 16);
 		panel.add(lblAddCourseTo);
-		
+
 		JLabel lblCourse = new JLabel("Course");
 		lblCourse.setBounds(464, 486, 61, 16);
 		panel.add(lblCourse);
-		
+
 		choice = new Choice();
 		choice.setBounds(533, 480, 348, 27);
 		choice.add("(select course)");
@@ -238,19 +247,19 @@ public class Main extends JFrame{
 			{
 				selected4 = choice.getSelectedItem();
 			}
-			});
+		});
 		panel.add(choice);
-		
+
 		JButton btnAddToDegree = new JButton("Add to Degree");
 		btnAddToDegree.setActionCommand("Degree");
 		btnAddToDegree.addActionListener(new MainListener(this));
 		btnAddToDegree.setBounds(691, 571, 117, 29);
 		panel.add(btnAddToDegree);
-		
+
 		JLabel lblDegree_1 = new JLabel("Degree");
 		lblDegree_1.setBounds(18, 604, 61, 16);
 		panel.add(lblDegree_1);
-		
+
 		choice_1 = new Choice();
 		choice_1.setBounds(177, 603, 259, 27);
 		choice_1.add("(select course)");
@@ -264,15 +273,15 @@ public class Main extends JFrame{
 			{
 				selected5 = choice_1.getSelectedItem();
 			}
-			});
+		});
 		panel.add(choice_1);
 
 	}
-	
+
 	public JTextField getTextField_2(){
 		return textField_2;
 	}
-	
+
 	public JTextField getTextField_3(){
 		return textField_3;
 	}
@@ -284,34 +293,34 @@ public class Main extends JFrame{
 	public JTextField getTextField_8(){
 		return textField_8;
 	}
-	
+
 	public String getSelected3(){
 		return selected3;
 	}
-	
+
 	public String getSelected2(){
 		return selected2;
 	}
-	
+
 	public Choice choice3(){
 		return choice_3;
 	}
-	
+
 	public Choice choice5(){
 		return choice_5;
 	}
-	
+
 	public Choice choice(){
 		return choice;
 	}
 	public Choice choice1(){
 		return choice_1;
 	}
-	
+
 	public String getSelected4(){
 		return selected4;
 	}
-	
+
 	public String selected5(){
 		return selected5;
 	}

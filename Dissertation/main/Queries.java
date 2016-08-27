@@ -1,6 +1,7 @@
 package main;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,7 +18,13 @@ public class Queries {
 	//	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
 	private PreparedStatement ps = null;
+	List<CourseResult> courseDetails = new ArrayList<CourseResult>();;
 	Users us;
+	Degree dg;
+	School sc;
+	StudentDegree sd;
+	Course cs;
+	CourseResult cr;
 
 	private static Queries q;
 	/**
@@ -75,7 +82,7 @@ public class Queries {
 				if(type.equals("Student")){
 					String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = ?";
 					ps = conn.prepareStatement(query1);
-					ps.setString(1, matric);
+					ps.setString(1, matricno);
 					rs = ps.executeQuery();
 
 					while(rs.next()){
@@ -87,12 +94,14 @@ public class Queries {
 						us = new Student(id, studentID, studentf, studentl, studentE);
 						us.setMatric(matricno);
 						us.setType(type);
+						((Student)us).setDegree(getSDInfo((Student)us));
+						getDetails((Student)us);
 					}
 
 				}else {
 					String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = ?";
 					ps = conn.prepareStatement(query2);
-					ps.setString(1, matric);
+					ps.setString(1, matricno);
 					rs = ps.executeQuery();
 
 					while(rs.next()){
@@ -102,9 +111,10 @@ public class Queries {
 						String adminl = rs.getString("LASTNAME");
 						String adminE = rs.getString("EMAIL");
 						String schoolref = rs.getString("SCHOOLREF");
-						us = new Admin(id, adminID, adminf, adminl, adminE, schoolref);
+						us = new Admin(id, adminID, adminf, adminl, adminE);
 						us.setType(type);
 						us.setMatric(matricno);
+						((Admin)us).setSchool(getSchoolInfo(schoolref));
 					}
 
 				}
@@ -116,52 +126,6 @@ public class Queries {
 			e1.printStackTrace();
 		} 
 		return us;
-	}
-	
-
-	//To return user details for display
-	public String displayDetails(String s, String s1){
-		StringBuilder sb = new StringBuilder("");
-		ResultSet rs = null;
-		try{
-			if(s.equals("Student")){
-				String query = "SELECT d.DEGREENAME, d.DEGREETYPE FROM DEGREE AS d INNER JOIN STUDENT_DEGREE AS sd ON sd.DEGREE = d.DEGREEID "
-						+ "INNER JOIN STUDENT AS s ON s.STUDENTID = sd.STUDENT INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?";
-				ps = conn.prepareStatement(query);
-				ps.setString(1, s1);
-				rs = ps.executeQuery();
-				while(rs.next()){
-					String degree = rs.getString("DEGREENAME");
-					String degreetype = rs.getString("DEGREETYPE");
-
-					sb.append(degreetype);
-					sb.append(" ");
-					sb.append(degree);
-				}
-
-			}else{
-				String query1 = "SELECT ad.SCHOOLREF FROM ADMIN AS ad INNER JOIN USER AS us ON us.ID = ad.USERID WHERE us.MATRICNO = ?";
-				ps = conn.prepareStatement(query1);
-				ps.setString(1, s1);
-				rs = ps.executeQuery();
-				while(rs.next()){
-					String schoolref = rs.getString("SCHOOLREF");
-					if(schoolref.equals("Dental") || schoolref.equals("Adam Smith Business")){
-						sb.append(schoolref);
-						sb.append(" School");
-					}else{
-						sb.append("School of ");
-						sb.append(schoolref);
-					}
-				}
-
-			}
-			rs.close();
-			ps.close();
-		}catch (Exception e){
-			e.printStackTrace();
-		} 
-		return sb.toString();
 	}
 
 	public String displayStudents(int id){
@@ -434,21 +398,151 @@ public class Queries {
 		}
 		return s1;
 	}
+	
+	public School getSchoolInfo(String s){
+		sc = null;
+		ResultSet rs = null;
+		try{
+			String query = "SELECT * FROM SCHOOL WHERE SCHOOLNAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, s);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String school = rs.getString("SCHOOLNAME");
+				sc = new School(school);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sc;
+	}
+	
+	public Degree getInfo(int ID){
+		dg = null;
+		ResultSet rs = null;
+		
+		try{
+			String query = "SELECT * FROM DEGREE WHERE DEGREEID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, ID);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				int id = rs.getInt("DEGREEID");
+				String name = rs.getString("DEGREENAME");
+				String type = rs.getString("DEGREETYPE");
+				dg = new Degree(id,name,type,sc);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return dg;
+	}
+	
+	public Degree getDegree(){
+		return dg;
+	}
+	
+	public StudentDegree getSDInfo(Student s){
+		sd = null;
+		ResultSet rs = null;
+		try{
+			String query = "SELECT * FROM STUDENT_DEGREE WHERE STUDENT = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, s.getStudentID());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String result = rs.getString("RESULT");
+				int id = rs.getInt("DEGREE");
+				
+				sd = new StudentDegree((Student) us,getInfo(id),result);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sd;
+	}
+	
+	public CourseResult getDetails(Student s){
+		cr = null;
+		ResultSet rs = null;
+		try{
+			String query = "SELECT * FROM COURSERESULT WHERE STUDENTID = ?";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, s.getStudentID());
+			rs = ps.executeQuery();
+
+			while(rs.next()){
+				String name = rs.getString("COURSE");
+				int result = rs.getInt("RESULT");
+				
+				cr = new CourseResult(getCourseDetails(name),(Student)us,result);
+				courseDetails.add(cr);
+				
+			}
+			
+			
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return cr;
+	}
+	
+	public Course getCourseDetails(String course){
+		ResultSet rs = null;
+		cs = null;
+		try{
+			String query = "SELECT * FROM COURSES WHERE COURSENAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, course);
+			rs = ps.executeQuery();
+
+			while(rs.next()){
+				
+				String coursename = rs.getString("COURSENAME");
+				int credit = rs.getInt("CREDIT");
+				int exam = rs.getInt("EXAM");
+				int cw = rs.getInt("COURSEWORK");
+				cs = new Course(coursename, credit, exam, cw);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return cs;
+	}
 
 	public Users getUser(){
 		return us;
 	}
 	
-	public void closeConnection(){
-		try{
-			if(conn!=null){
-				conn.close();
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+	public StudentDegree getStudentDegree(){
+		return sd;
 	}
-
-
+	
+	public School getSchool(){
+		return sc;
+	}
+	
+	public Course getCourse(){
+		return cs;
+	}
+	
+	public CourseResult getInfo(){
+		return cr;
+	}
+	
+	public List<CourseResult> getDetails(){
+		return courseDetails;
+	}
+	
 
 }

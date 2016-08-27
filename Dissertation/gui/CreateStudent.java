@@ -26,6 +26,7 @@ public class CreateStudent extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
+	School sc;
 	String selected3;
 	Choice choice;
 	private JTextField textField;
@@ -35,11 +36,13 @@ public class CreateStudent extends JFrame{
 	private JTextField textField_4;
 	private JPasswordField passwordField;
 	public CreateStudent(){
+		us = q.getUser();
+		sc = q.getSchool();
 		initialize();
 	}
 	
 	public void initialize(){
-		us = q.getUser();
+		
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -124,7 +127,7 @@ public class CreateStudent extends JFrame{
 		choice = new Choice();
 		choice.setBounds(158, 348, 278, 27);
 		choice.add("(select degree)");
-		String select3 = m.displayDegree(((Admin)us).getSchoolName());
+		String select3 = m.displayDegree(sc.getName());
 		String[]tokens_3 = select3.split(",");
 
 		for(int i = 0; i<tokens_3.length;i++){
