@@ -18,13 +18,17 @@ public class Queries {
 	//	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
 	private PreparedStatement ps = null;
-	List<CourseResult> courseDetails = new ArrayList<CourseResult>();;
+	List<CourseResult> courseDetails = new ArrayList<CourseResult>();
+	List<Student> students = new ArrayList<Student>();
 	Users us;
+	//Users usr;
 	Degree dg;
 	School sc;
 	StudentDegree sd;
 	Course cs;
 	CourseResult cr;
+	Student st;
+	Statement stt = null;
 
 	private static Queries q;
 	/**
@@ -95,7 +99,6 @@ public class Queries {
 						us.setMatric(matricno);
 						us.setType(type);
 						((Student)us).setDegree(getSDInfo((Student)us));
-						getDetails((Student)us);
 					}
 
 				}else {
@@ -128,31 +131,6 @@ public class Queries {
 		return us;
 	}
 
-	public String displayStudents(int id){
-		StringBuilder sb = new StringBuilder("");
-		ResultSet rs = null;
-
-		try{
-			String query = "SELECT st.FIRSTNAME, st.LASTNAME FROM STUDENT AS st INNER JOIN STUDENT_DEGREE AS sd ON sd.STUDENT = st.STUDENTID INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS ad ON ad.SCHOOLREF = d.SCHOOL_REF WHERE ad.ADMINID = ?";
-			ps = conn.prepareStatement(query);
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				String firstname = rs.getString("FIRSTNAME");
-				String lastname = rs.getString("LASTNAME");
-
-				sb.append(firstname +" "+ lastname);
-				sb.append(",");
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-	
 
 	public String checkResults(String fname, String lname){
 		StringBuilder sb = new StringBuilder("");
@@ -201,56 +179,90 @@ public class Queries {
 		return id;
 	}
 
-	public String allStudents(int id){
-		ResultSet rs = null;
+	public String allStudents(){
 		StringBuilder sb = new StringBuilder("");
 		String display = String.format(" %-40.40s %-20s %-40.40s %-10s\n", "Name","Matric Number","Degree" ,"Email");
 		sb.append(display+"\n");
-
-		try{
-			String query = "SELECT s.FIRSTNAME, s.LASTNAME, d.DEGREENAME, s.EMAIL FROM STUDENT AS s INNER JOIN STUDENT_DEGREE AS sd "
-					+ "ON sd.STUDENT = s.STUDENTID INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE INNER JOIN ADMIN AS ad ON ad.SCHOOLREF = d.SCHOOL_REF WHERE ad.ADMINID = ?";
-			ps = conn.prepareStatement(query);
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				String fname = rs.getString("FIRSTNAME");
-				String lname = rs.getString("LASTNAME");
-				String degree = rs.getString("DEGREENAME");
-				String email = rs.getString("EMAIL");
-
-				String matric = matric(fname, lname);
-				String name = fname+" "+lname;
-
-				String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
-				sb.append(area+"\n");
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-
+		for(int i = 0; i<students.size(); i++){
+			String name = students.get(i).getFirstName()+" "+students.get(i).getLastName();
+			String matric = students.get(i).getMatric();
+			String degree =students.get(i).getDegree().getDegree().getDegreeName();
+			String email = students.get(i).getEmail();
+			String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
+			sb.append(area+"\n");
 		}
+		if(students.size() == 0){
+			sb.append("No students registered to this school yet. Add a student using the Add student option");
+		}
+
 		return sb.toString();
 	}
+
+	public Student getAll(School sc){
+		ResultSet rs = null;
+		st = null;
+		try{
+			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID WHERE s.STUDENTID IN (SELECT STUDENT FROM STUDENT_DEGREE WHERE DEGREE IN (SELECT DEGREEID FROM DEGREE WHERE SCHOOL_REF = '"+sc.getName()+"')) ";
+			stt = conn.createStatement();
+			rs = stt.executeQuery(query1);
+
+			while(rs.next()){
+				int userid = rs.getInt("USERID");
+				int studentid = rs.getInt("STUDENTID");
+				String fname = rs.getString("FIRSTNAME");
+				String lname = rs.getString("LASTNAME");
+				String email = rs.getString("EMAIL");
+				String matric = rs.getString("MATRICNO");
+
+
+				st = new Student(userid, studentid, fname, lname, email);
+				st.setDegree(getSDInfo(st));
+				st.setMatric(matric);
+				students.add(st);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return st;
+	}
+
+	//	public Users getUsers(int id){
+	//		ResultSet rs = null;
+	//		usr = null;
+	//		try{
+	//			String query = "SELECT * FROM USER WHERE ID = ?";
+	//			ps = conn.prepareStatement(query);
+	//			ps.setInt(1, id);
+	//			rs = ps.executeQuery();
+	//			
+	//			while(rs.next()){
+	//				int userid = rs.getInt("ID");
+	////				String 
+	//				
+	////				st = new Student(userid, studentid, fname, lname, email);
+	////				st.setDegree(getSDInfo(st));
+	////				students.add(st);
+	//			}
+	//		}catch(Exception e){
+	//			e.printStackTrace();
+	//		}
+	//		return usr;
+	//	}
 
 	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
 		final String type = "Student";
-		ResultSet rs = null;
 		try{
-			String query ="SELECT s.FIRSTNAME, s.LASTNAME, us.MATRICNO FROM USER AS us INNER JOIN STUDENT AS s ON s.USERID = us.ID";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				String fname = rs.getString("FIRSTNAME").toLowerCase();
-				String lstname = rs.getString("LASTNAME").toLowerCase();
-				String mat = rs.getString("MATRICNO").toLowerCase();
+			for(int i = 0;i<students.size();i++){
+				String fname = students.get(i).getFirstName().toLowerCase();
+				String lstname = students.get(i).getLastName().toLowerCase();
+				String mat = students.get(i).getMatric().toLowerCase();
 				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lstname)) || matric.toLowerCase().equals(mat)){
 					count+=1;
 					sb.append("Error");
+
 				}
 			}
 			if(count == 0){
@@ -261,10 +273,10 @@ public class Queries {
 				ps.setString(3, matric);
 				ps.setString(4, type);
 				ps.executeUpdate();
-				
+
 				String sql1 = "INSERT INTO STUDENT VALUES (?,?,?,?,? (SELECT ID FROM USER WHERE MATRICNO = ?))";
 				ps = conn.prepareStatement(sql1);
-				ps.setInt(1, countStudents());
+				ps.setInt(1, students.size()+1);
 				ps.setString(2, name);
 				ps.setString(3, lname);
 				ps.setString(4, email);
@@ -278,8 +290,6 @@ public class Queries {
 				ps.setString(2, degree);
 				ps.executeUpdate();
 			}
-			rs.close();
-			ps.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -304,24 +314,6 @@ public class Queries {
 		return 0;
 	}
 
-	public int countStudents(){
-		ResultSet rs = null;
-		try{
-			String query = "SELECT COUNT (*) FROM STUDENT";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				return rs.getInt(1)+1;
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return 0;
-	}
-	
 	public String getUnique(){
 		StringBuilder sb = new StringBuilder("");
 		final String initial = "2";
@@ -331,28 +323,6 @@ public class Queries {
 		int val = r.nextInt(999999) + 100000;
 		sb.append(val);
 		return sb.toString();
-	}
-
-	public String matric(String s, String s1){
-		String m = "";
-		ResultSet rs = null;
-		try{
-			String query = "SELECT us.MATRICNO FROM USER AS us INNER JOIN STUDENT AS s ON s.USERID = us.ID WHERE s.FIRSTNAME = ? AND s.LASTNAME = ?";
-			ps = conn.prepareStatement(query);
-			ps.setString(1, s);
-			ps.setString(2, s1);
-			rs = ps.executeQuery();
-
-			if(rs.next()){
-
-				m+=rs.getString("MATRICNO");
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return m;
 	}
 	//
 	public String checkString(String s){
@@ -398,7 +368,7 @@ public class Queries {
 		}
 		return s1;
 	}
-	
+
 	public School getSchoolInfo(String s){
 		sc = null;
 		ResultSet rs = null;
@@ -418,11 +388,11 @@ public class Queries {
 		}
 		return sc;
 	}
-	
+
 	public Degree getInfo(int ID){
 		dg = null;
 		ResultSet rs = null;
-		
+
 		try{
 			String query = "SELECT * FROM DEGREE WHERE DEGREEID = ?";
 			ps = conn.prepareStatement(query);
@@ -441,11 +411,11 @@ public class Queries {
 		}
 		return dg;
 	}
-	
+
 	public Degree getDegree(){
 		return dg;
 	}
-	
+
 	public StudentDegree getSDInfo(Student s){
 		sd = null;
 		ResultSet rs = null;
@@ -457,8 +427,11 @@ public class Queries {
 			while(rs.next()){
 				String result = rs.getString("RESULT");
 				int id = rs.getInt("DEGREE");
-				
-				sd = new StudentDegree((Student) us,getInfo(id),result);
+				if(us==null){
+					sd = new StudentDegree((Student) us,getInfo(id),result);
+				}else{
+					sd = new StudentDegree(st,getInfo(id),result);
+				}
 			}
 			rs.close();
 			ps.close();
@@ -467,7 +440,7 @@ public class Queries {
 		}
 		return sd;
 	}
-	
+
 	public CourseResult getDetails(Student s){
 		cr = null;
 		ResultSet rs = null;
@@ -480,13 +453,13 @@ public class Queries {
 			while(rs.next()){
 				String name = rs.getString("COURSE");
 				int result = rs.getInt("RESULT");
-				
+
 				cr = new CourseResult(getCourseDetails(name),(Student)us,result);
 				courseDetails.add(cr);
-				
+
 			}
-			
-			
+
+
 			rs.close();
 			ps.close();
 		}catch(Exception e){
@@ -494,7 +467,7 @@ public class Queries {
 		}
 		return cr;
 	}
-	
+
 	public Course getCourseDetails(String course){
 		ResultSet rs = null;
 		cs = null;
@@ -505,7 +478,7 @@ public class Queries {
 			rs = ps.executeQuery();
 
 			while(rs.next()){
-				
+
 				String coursename = rs.getString("COURSENAME");
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
@@ -523,26 +496,26 @@ public class Queries {
 	public Users getUser(){
 		return us;
 	}
-	
+
 	public StudentDegree getStudentDegree(){
 		return sd;
 	}
-	
+
 	public School getSchool(){
 		return sc;
 	}
-	
+
 	public Course getCourse(){
 		return cs;
 	}
-	
-	public CourseResult getInfo(){
-		return cr;
-	}
-	
+
 	public List<CourseResult> getDetails(){
 		return courseDetails;
 	}
-	
+
+	public List<Student> getStudents(){
+		return students;
+	}
+
 
 }

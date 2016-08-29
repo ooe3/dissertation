@@ -1,6 +1,7 @@
 package controllers;
 
 import java.awt.event.ActionEvent;
+import java.util.*;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import gui.*;
@@ -12,10 +13,17 @@ public class AddListener implements ActionListener{
 	AdminAdd ad;
 	Users us;
 	Queries q = Queries.getQueries();//Object of the Queries class
+	MainQueries m = MainQueries.getMain();//MainQueries object created to access methods in the MainQueries class
 	AddQueries aq = AddQueries.getMain();
+	List<Student> stt;
+	List<Degree> dg;//Create a list containing degree objects
+	List<Course> cdg;
 	public AddListener(AdminAdd am){
 		ad = am;
 		us = q.getUser();//get the user currently logged in
+		dg = m.getList();//initializes list by calling getList method to get all Degrees under the Admin's school
+		cdg = m.getCourseList();
+		stt = q.getStudents();
 	}
 
 	@Override
@@ -42,6 +50,7 @@ public class AddListener implements ActionListener{
 								JOptionPane.INFORMATION_MESSAGE);
 						//calls the checkResults method to check if the student has all their results entered
 						if((q.checkResults(ad.getNames()[0], ad.getNames()[1])).equals("No")){
+							stt.removeAll(stt);
 							AdminAdd aa = new AdminAdd();
 							aa.setVisible(true);
 							ad.dispose();
@@ -55,14 +64,8 @@ public class AddListener implements ActionListener{
 								AdminAdd aa = new AdminAdd();
 								aa.setVisible(true);
 								ad.dispose();
-							}else if(show == 1){
-								AdminAdd aa = new AdminAdd();//create a new adminAdd object
-								aa.setVisible(true);
-								ad.dispose();//dispose the previous adminAdd object
 							}else {
-								AdminAdd aad = new AdminAdd();
-								aad.setVisible(true);
-								ad.dispose();
+								ad.setVisible(true);
 							}
 						}
 					}
@@ -76,16 +79,23 @@ public class AddListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Add") ){//calls this method if the ActionCommand is "Add"
 			ad.setVisible(true);
 		}else if(e.getActionCommand().equals("Home Menu") ){//calls this method if the ActionCommand is "Home Menu"
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
+			stt.removeAll(stt);
 			Main mn = new Main();
 			mn.setVisible(true);
 			ad.dispose();
 		}else if(e.getActionCommand().equals("Change Password") ){//calls this method if the ActionCommand is "Change Password"
 
 		}else if(e.getActionCommand().equals("LogOut")){//calls this method if the ActionCommand is "LogOut"
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
+			stt.removeAll(stt);
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			ad.dispose();
 		}else if(e.getActionCommand().equals("Refresh")){
+			stt.removeAll(stt);
 			AdminAdd ada = new AdminAdd();
 			ada.setVisible(true);
 			ad.dispose();
@@ -97,17 +107,20 @@ public class AddListener implements ActionListener{
 				if((q.checkResults(ad.getNameCalc()[0], ad.getNameCalc()[1])).equals("No")){
 					JOptionPane.showMessageDialog(null, "All results for this student has not been entered. Add results on the left", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else {
-				//calculate the overall score of the student if all results have been stored
+					//calculate the overall score of the student if all results have been stored
 					String s = aq.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
 					aq.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
 					JOptionPane.showMessageDialog(null, "Overall add", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
+					stt.removeAll(stt);
+					AdminAdd ada = new AdminAdd();
+					ada.setVisible(true);
+					ad.dispose();
 				}
 			}
-			AdminAdd ada = new AdminAdd();
-			ada.setVisible(true);
-			ad.dispose();
+			
 		}else if(e.getActionCommand().equals("Add Student")){
+			dg.removeAll(dg);
 			CreateStudent cs = new CreateStudent();
 			cs.setVisible(true);
 			ad.dispose();

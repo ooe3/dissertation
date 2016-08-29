@@ -1,26 +1,21 @@
 package main;
 
 public class CourseDegree {
-	private String course;
-	private int degree;
+	private Course cs;
+	private Degree dg;
 	
-	public CourseDegree(){
+	public CourseDegree(Course cr, Degree d){
 		//default
+		this.cs = cr;
+		this.dg = d;
 	}
 	
-	public String getName(){
-		return course;
+	public Course getName(){
+		return cs;
 	}
 	
-	public int getDegreeID(){
-		return degree;
+	public Degree getDegreeID(){
+		return dg;
 	}
 	
-	public void setName(String n){
-		this.course = n;
-	}
-	
-	public void setID(int id){
-		this.degree=id;
-	}
 }

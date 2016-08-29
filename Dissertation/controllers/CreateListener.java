@@ -1,19 +1,30 @@
 package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
 
-
+/*
+ * The listener class for the CreateStudent class
+ * All button actions perfromed here
+ */
 public class CreateListener implements ActionListener{
-	CreateStudent cs;
-	Users us;
-	Queries q = Queries.getQueries();
+	CreateStudent cs;//CreateStudent object
+	Users us;//Users object
+	Queries q = Queries.getQueries();//Queries object to have access to methods in the Queries class
+	MainQueries mq = MainQueries.getMain();//MainQueries object to have access to methods in MainQueriesClass
 	String matricno, password, initial;
+	List<Degree> dg;//List containing degree object
+	List<Student> stt;
+	List<Course> cdg;
 	public CreateListener(CreateStudent c){
-		cs = c;
-		us = q.getUser();
+		cs = c;//initialize CreateStudent
+		us = q.getUser();//initialize Users object to get the current user
+		dg = mq.getList();//List initialized to get Degree objects
+		stt = q.getStudents();
+		cdg = mq.getCourseList();
 	}
 
 	@Override
@@ -27,66 +38,81 @@ public class CreateListener implements ActionListener{
 			String address = cs.textField2().getText().trim();
 			String email = cs.textField3().getText().trim();
 			String matric = cs.textField4().getText().trim();
-
+			//check if any of the textfields are empty
 			if(name.equals("") || lname.equals("") || address.equals("") || email.equals("") || matric.equals("") || password.equals("") || cs.getSelected().equals("") || cs.getSelected().equals("(select degree)")){
 				JOptionPane.showMessageDialog(null, "No text entered. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
+				//check for special characters in any of the textfields 
 				if(q.checkString(name).equals("Exists") || q.checkLastName(lname).equals("Exists") || q.checkEmail(email).equals("Exists") || q.checkAddress(address).equals("Exists")){
 					JOptionPane.showMessageDialog(null, "Special characters not accepted", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else{
-					String[] tokens = cs.getSelected().split("\\(");
-					if(q.insertStudent(name, lname, email, address, matric, tokens[0]).equals("Error")){
+					String[] tokens = cs.getSelected().split("\\(");//to get the course selected
+					if(q.insertStudent(name, lname, email, address, matric, tokens[0]).equals("Error")){//check if the student or matric exists already
 						JOptionPane.showMessageDialog(null, "Student exists or matric number exists", "Error message", JOptionPane.ERROR_MESSAGE);
 					}else{
 						JOptionPane.showMessageDialog(null, "Student added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
-						CreateStudent cst = new CreateStudent();
+						dg.removeAll(dg);
+						CreateStudent cst = new CreateStudent();//New CreateStudent object created to get updated info
 						cst.setVisible(true);
-						cs.dispose();
+						cs.dispose();//current createStudent object disposed
 					}
 				}
 			}
-		}else if(e.getActionCommand().equals("Generate")){
+		}else if(e.getActionCommand().equals("Generate")){//to generate unique matric number for student
 			String s1 = cs.textField1().getText().trim();
-			if(q.checkLastName(s1).equals("Exists")){
+			if(q.checkLastName(s1).equals("Exists")){//check for special characters
 				JOptionPane.showMessageDialog(null, "Last name contains special characters", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
-				if(s1.equals("")){
+				if(s1.equals("")){//check if a surname has been entered
 					JOptionPane.showMessageDialog(null, "You need surname to generate unique username", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else{
-					String unique = q.getUnique();
+					String unique = q.getUnique();//call getUnique and store generated number into unique
 					initial = s1;
-					String s = initial.substring(0,1);
+					String s = initial.substring(0,1);//to get the first letter to use with generated number
 					String letter = s.toLowerCase();
+					//combine unique & letter to get matric
 					StringBuilder sb = new StringBuilder("");
 					sb.append(unique);
 					sb.append(letter);
 					cs.textField4().setText(sb.toString());
 					cs.passwordField().setText(sb.toString());
-					System.out.print(s1);
 				}
 			}
 
 		}else if(e.getActionCommand().equals("Add") ){
-			AdminAdd ad = new AdminAdd();
+			stt.removeAll(stt);
+			AdminAdd ad = new AdminAdd();//New AdminAdd object created to go to its frame
 			ad.setVisible(true);
-			cs.dispose();
+			cs.dispose();//current disposed
 		}else if(e.getActionCommand().equals("LogOut")){
-			StartGUI sg = new StartGUI();
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
+			stt.removeAll(stt);
+			StartGUI sg = new StartGUI();//New StartGUI object created to go to its frame
 			sg.setVisible(true);
 			cs.dispose();
 		}else if(e.getActionCommand().equals("View")){
-			ViewResult vr = new ViewResult();
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
+			stt.removeAll(stt);
+			ViewResult vr = new ViewResult();//New ViewResult object created to go to its frame
 			vr.setVisible(true);
 			cs.dispose();
 		}else if(e.getActionCommand().equals("Home Menu")){
-			Main mn = new Main();
+			dg.removeAll(dg);
+			cdg.removeAll(cdg);
+			stt.removeAll(stt);
+			Main mn = new Main();//New Main object created to go to its frame
 			mn.setVisible(true);
 			cs.dispose();
 		}else if(e.getActionCommand().equals("Add Student")){
 			cs.setVisible(true);
 		}else{
-
+			stt.removeAll(stt);
+			ViewStudents vs = new ViewStudents();
+			vs.setVisible(true);
+			cs.dispose();
 		}
 
 	}

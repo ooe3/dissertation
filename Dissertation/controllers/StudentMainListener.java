@@ -1,6 +1,7 @@
 package controllers;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import gui.*;
@@ -11,9 +12,13 @@ public class StudentMainListener implements ActionListener{
 	Queries q = Queries.getQueries();
 	StudentQueries sq = StudentQueries.getMain();
 	Users us;
+	List<CourseResult> cr;
+	List<CourseDegree> cd;
 	public StudentMainListener(StudentMain smn){
 		this.sm = smn;
 		us = q.getUser();
+		cr = q.getDetails();
+		cd = sq.getCD();
 	}
 
 	@Override
@@ -30,7 +35,10 @@ public class StudentMainListener implements ActionListener{
 				}else {
 					JOptionPane.showMessageDialog(null, "Course selection successful", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
+
 				}
+				cr.removeAll(cr);
+				cd.removeAll(cd);
 
 
 			}
@@ -42,13 +50,17 @@ public class StudentMainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				if(sq.removeChoice(sm.getSelected_1(), ((Student)us).getStudentID()).equals("Exists")){
-					JOptionPane.showMessageDialog(null, "This course already has mark and can't be removed.", "Window",
-							JOptionPane.ERROR_MESSAGE);
+				int show = JOptionPane.showConfirmDialog(null, "Are you sure you want to remove "+sm.getChoice_1().getSelectedItem()+"?");//dialog box to ask
+				if(show == 0){
+					sq.removeChoice(sm.getChoice_1().getSelectedItem(), ((Student)us).getStudentID());
+					JOptionPane.showMessageDialog(null, "Removal successful", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+					cr.removeAll(cr);
+					cd.removeAll(cd);
 				}else{
-				JOptionPane.showMessageDialog(null, "Removal successful", "Window",
-						JOptionPane.INFORMATION_MESSAGE);
+					sm.setVisible(true);
 				}
+
 			}
 			StudentMain mn = new StudentMain();
 			mn.setVisible(true);
@@ -58,22 +70,19 @@ public class StudentMainListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Change Password") ){
 
 		}else if(e.getActionCommand().equals("View") ){
-			String display = sq.displayResult(((Student)us).getStudentID());
-			if(display.equals("Not Available")){
-				JOptionPane.showMessageDialog(null, "Your results arent available yet. Try again later", "Window",
-						JOptionPane.ERROR_MESSAGE);
-			}else{
-				ResultsFrame rf = new ResultsFrame();
-				rf.getText().setText(display);
-				rf.setVisible(true);
-				sm.dispose();
-
-			}
+			ResultsFrame rf = new ResultsFrame();
+			rf.getText().setText(sq.displayResult());
+			rf.setVisible(true);
+			sm.dispose();
 		}else if(e.getActionCommand().equals("Log Out") ){
+			cr.removeAll(cr);
+			cd.removeAll(cd);
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			sm.dispose();
 		}else {
+			cr.removeAll(cr);
+			cd.removeAll(cd);
 			StudentMain smn = new StudentMain();
 			smn.setVisible(true);
 			sm.dispose();

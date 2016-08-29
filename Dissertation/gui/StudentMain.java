@@ -30,10 +30,16 @@ public class StudentMain extends JFrame{
 	Choice choice, choice_4;
 	StudentDegree sd;
 	List<CourseResult> cr;
+	List<CourseDegree> cd;
+	CourseResult crt;
+	CourseDegree cde;
 	public StudentMain(){
 		us = q.getUser();
 		sd = q.getStudentDegree();
+		crt = q.getDetails((Student)us);
+		cde = s.displayCourses((Student)us);
 		cr = q.getDetails();
+		cd = s.getCD();
 		initialize();
 
 	}
@@ -87,7 +93,7 @@ public class StudentMain extends JFrame{
 		textArea.setBounds(16, 95, 978, 339);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		textArea.setEditable(false);
-		textArea.setText(s.displayStudentCourses(us.getMatric()));
+		textArea.setText(s.displayStudentCourses());
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		scrollPane.setBounds(16, 95, 978, 339);
 		panel.add(scrollPane, BorderLayout.CENTER);
@@ -114,7 +120,7 @@ public class StudentMain extends JFrame{
 		choice_4.setBounds(22, 623, 281, 27);
 		choice_4.add("(select course)");
 		panel.add(choice_4);
-
+		
 		for(int i = 0; i<cr.size();i++){
 
 			choice_4.add(cr.get(i).getCourseName().getCourse());
@@ -127,14 +133,9 @@ public class StudentMain extends JFrame{
 			}
 
 		});
-
-		select = s.displayCourses(((Student)us).getStudentID());
-		String[]tokens = select.split(",");
-
-		for(int i = 0; i<tokens.length;i++){
-			choice.add(tokens[i]);
+		for(int i = 0; i<cd.size();i++){
+			choice.add(cd.get(i).getName().getCourse());
 		}
-
 		choice.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
@@ -167,6 +168,10 @@ public class StudentMain extends JFrame{
 		lblEnrolledCourses.setBounds(22, 77, 129, 16);
 		lblEnrolledCourses.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		panel.add(lblEnrolledCourses);
+
+		JLabel lblCredit = new JLabel("Credit");
+		lblCredit.setBounds(352, 78, 61, 16);
+		panel.add(lblCredit);
 	}
 
 	public Choice getChoice(){

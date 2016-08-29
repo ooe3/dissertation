@@ -1,5 +1,6 @@
 package gui;
 import java.awt.*;
+import java.util.List;
 import javax.swing.*;
 import main.*;
 import controllers.*;
@@ -7,12 +8,20 @@ import controllers.*;
 public class ViewStudents extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	School sc;
+	List<Student> studentList;
+	Student sdt;
 	public ViewStudents(){
+		us = q.getUser();
+		sc = q.getSchool();
+		sdt = q.getAll(sc);
+		studentList = q.getStudents();
+		
 		initialize();
 	}
 	
 	public void initialize(){
-		us = q.getUser();
+		
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,7 +78,7 @@ public class ViewStudents extends JFrame{
 		textArea_1.setBounds(6, 111, 976, 607);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(q.allStudents(((Admin)us).getID()));
+		textArea_1.setText(q.allStudents());
 		
 		JScrollPane scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 976, 607);

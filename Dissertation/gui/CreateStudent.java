@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -29,6 +30,10 @@ public class CreateStudent extends JFrame{
 	School sc;
 	String selected3;
 	Choice choice;
+	List<Degree> dg;
+	List<Student> stt;
+	Degree d;
+	Student sdt;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
@@ -38,11 +43,15 @@ public class CreateStudent extends JFrame{
 	public CreateStudent(){
 		us = q.getUser();
 		sc = q.getSchool();
+		d = m.displayDegree(sc);
+		sdt = q.getAll(sc);
+		dg = m.getList();
+		stt = q.getStudents();
+		
 		initialize();
 	}
 	
 	public void initialize(){
-		
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -127,11 +136,8 @@ public class CreateStudent extends JFrame{
 		choice = new Choice();
 		choice.setBounds(158, 348, 278, 27);
 		choice.add("(select degree)");
-		String select3 = m.displayDegree(sc.getName());
-		String[]tokens_3 = select3.split(",");
-
-		for(int i = 0; i<tokens_3.length;i++){
-			choice.add(tokens_3[i]);
+		for(int i = 0; i<dg.size();i++){
+			choice.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 		}
 
 		choice.addItemListener(new ItemListener(){
@@ -169,6 +175,10 @@ public class CreateStudent extends JFrame{
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new CreateListener(this));
 		
+		JMenuItem mntmViewStudent = new JMenuItem("View Students");
+		mntmViewStudent.setActionCommand("ViewS");
+		mntmViewStudent.addActionListener(new CreateListener(this));
+		
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new CreateListener(this));
@@ -186,6 +196,7 @@ public class CreateStudent extends JFrame{
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
+		admin.add(mntmViewStudent);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);

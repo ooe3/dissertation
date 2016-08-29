@@ -21,7 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBoxMenuItem;
-import java.awt.List;
+import java.util.List;
 /*
  * The AdminAdd class that displays GUI for the admin to add results of students 
  * and calculate overall mark
@@ -37,11 +37,18 @@ public class AdminAdd extends JFrame{
 	JButton btnSubmit;
 	String selected5, name_selected;
 	String[] tokens_5, tokens_6;
+	List<Student> stt;
+	Student sdt;
+	School sc;
 	int count = 0;
 	private JLabel lblSelectTheStudents, label, lblNewLabel_5, lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4,lblIfYouWant;
 	public AdminAdd(){
 		//initialize user object to get the current user
 		us = q.getUser();
+		sc = q.getSchool();
+		sdt = q.getAll(sc);
+		stt = q.getStudents();
+		
 		initialize();
 	}
 
@@ -126,11 +133,9 @@ public class AdminAdd extends JFrame{
 		choice_1 = new Choice();
 		choice_1.setBounds(19, 104, 307, 27);
 		choice_1.add("(select student)");
-		String select4 = q.displayStudents(us.getID());//stores the result from the displayStudents into select4
-		String[]tokens_4 = select4.split(",");//splits select4 after each comma
-		//add the elements in the tokens_4 array as options in the dropdwon
-		for(int i = 0; i<tokens_4.length;i++){
-			choice_1.add(tokens_4[i]);
+		
+		for(int i = 0; i<stt.size();i++){
+			choice_1.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 		}
 		panel_3.add(choice_1);
 		//Choice that contains a dropdown list of courses
@@ -251,8 +256,8 @@ public class AdminAdd extends JFrame{
 		choice = new Choice();
 		choice.setBounds(421, 104, 340, 27);
 		choice.add("(select student)");
-		for(int i = 0; i<tokens_4.length;i++){
-			choice.add(tokens_4[i]);
+		for(int i = 0; i<stt.size();i++){
+			choice.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 		}
 
 		choice.addItemListener(new ItemListener(){

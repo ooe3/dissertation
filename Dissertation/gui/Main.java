@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Choice;
 import java.awt.Font;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -30,12 +31,23 @@ public class Main extends JFrame{
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	School sc;
+	List<Degree> dg;
+	List<Course> cdg;
+	Degree d;
+	Course cd;
+//	Student st;
 	JTextField textField_2, textField_3, textField_4, textField_8;
 	Choice choice_3, choice_5, choice, choice_1;
 	String selected3, selected2, selected4, selected5;
 	public Main(){
 		us = q.getUser();
 		sc = q.getSchool();
+		d = m.displayDegree(sc);
+		cd = m.getCourses(sc);
+//		st = q.getAll(sc);
+		dg = m.getList();
+		cdg = m.getCourseList();
+		
 		initialize();
 
 	}
@@ -118,7 +130,7 @@ public class Main extends JFrame{
 		textArea_1.setBounds(6, 111, 976, 335);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(m.displayAvailableCourses(us.getMatric()));
+		textArea_1.setText(m.displayAvailableCourses());
 
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -156,15 +168,17 @@ public class Main extends JFrame{
 		panel.add(textField_8);
 		textField_8.setColumns(10);
 
+		choice_1 = new Choice();
+		choice_1.setBounds(177, 603, 259, 27);
+		choice_1.add("(select degree)");
+
 		choice_3 = new Choice();
 		choice_3.setBounds(533, 514, 348, 27);
 		choice_3.add("(select degree)");
 
-		String select3 = m.displayDegree(sc.getName());
-		String[]tokens_3 = select3.split(",");
-
-		for(int i = 0; i<tokens_3.length;i++){
-			choice_3.add(tokens_3[i]);
+		for(int i = 0; i<dg.size();i++){
+			choice_3.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
+			choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 		}
 
 		choice_3.addItemListener(new ItemListener(){
@@ -179,13 +193,6 @@ public class Main extends JFrame{
 		choice_5 = new Choice();
 		choice_5.setBounds(18, 695, 507, 27);
 		choice_5.add("(select course)");
-
-		String select2 = m.removeSelectionAdmin(us.getMatric());
-		String[]tokens_2 = select2.split(",");
-
-		for(int i = 0; i<tokens_2.length;i++){
-			choice_5.add(tokens_2[i]);
-		}
 
 		choice_5.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
@@ -238,8 +245,10 @@ public class Main extends JFrame{
 		choice = new Choice();
 		choice.setBounds(533, 480, 348, 27);
 		choice.add("(select course)");
-		for(int i = 0; i<tokens_2.length;i++){
-			choice.add(tokens_2[i]);
+		for(int i = 0;i<cdg.size();i++){
+			choice_5.add(cdg.get(i).getCourse());
+			choice.add(cdg.get(i).getCourse());
+
 		}
 
 		choice.addItemListener(new ItemListener(){
@@ -259,13 +268,6 @@ public class Main extends JFrame{
 		JLabel lblDegree_1 = new JLabel("Degree");
 		lblDegree_1.setBounds(18, 604, 61, 16);
 		panel.add(lblDegree_1);
-
-		choice_1 = new Choice();
-		choice_1.setBounds(177, 603, 259, 27);
-		choice_1.add("(select course)");
-		for(int i = 0; i<tokens_3.length;i++){
-			choice_1.add(tokens_3[i]);
-		}
 
 
 		choice_1.addItemListener(new ItemListener(){

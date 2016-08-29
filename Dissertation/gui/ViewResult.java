@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -28,6 +29,12 @@ public class ViewResult extends JFrame{
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	ViewResultQueries v = ViewResultQueries.getMain();
+	List<Degree> dg;
+	Degree d;
+	Course cd;
+	List<Course> cdg;
+	Student sdt;
+	List<Student> stt;
 	String selected3, selected2;
 	Choice choice, choice_1;
 	JTextArea textArea;
@@ -39,11 +46,17 @@ public class ViewResult extends JFrame{
 	public ViewResult(){
 		us = q.getUser();
 		sc = q.getSchool();
+		d = m.displayDegree(sc);
+		cd = m.getCourses(sc);
+		sdt = q.getAll(sc);
+		stt = q.getStudents();
+		dg = m.getList();
+		cdg = m.getCourseList();
 		initialize();
 	}
-	
+
 	public void initialize(){
-		
+
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,11 +66,11 @@ public class ViewResult extends JFrame{
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
-		
+
 		JLabel lblSelectTheOption = new JLabel("Select the option you want below");
 		lblSelectTheOption.setBounds(22, 6, 230, 16);
 		panel.add(lblSelectTheOption);
-		
+
 		choice = new Choice();
 		choice.setBounds(22, 28, 395, 27);
 		choice.add("(select option)");
@@ -69,16 +82,28 @@ public class ViewResult extends JFrame{
 			public void itemStateChanged(ItemEvent ie)
 			{
 				selected3 = choice.getSelectedItem();
-				
+				if(ie.getStateChange() == ItemEvent.SELECTED){
+					count+=1;
+				}
+
+				if(count > 1){
+					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+					dg.removeAll(dg);
+					cdg.removeAll(cdg);
+					stt.removeAll(stt);
+					ViewResult vr = new ViewResult();
+					vr.setVisible(true);
+					dispose();
+
+				}
+
 				if(selected3.equals(choice1)){
 					lblNewLabel.setText("Select the student result you want to view");
 					lblNewLabel.setVisible(true);
 					choice_1.add("(select student)");
-					String select4 = q.displayStudents(us.getID());
-					String[]tokens_4 = select4.split(",");
-
-					for(int i = 0; i<tokens_4.length;i++){
-						choice_1.add(tokens_4[i]);
+					for(int i = 0; i<stt.size();i++){
+						choice_1.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 					}
 					choice_1.setVisible(true);
 					choice_1.addItemListener(new ItemListener(){
@@ -92,39 +117,34 @@ public class ViewResult extends JFrame{
 						}
 					});
 				}else if(selected3.equals(choice2)){
-						lblNewLabel.setText("Select the degree results you want to view");
-						lblNewLabel.setVisible(true);
-						choice_1.add("(select degree)");
-						String select3 = m.displayDegree(sc.getName());
-						String[]tokens_3 = select3.split(",");
-
-						for(int i = 0; i<tokens_3.length;i++){
-							choice_1.add(tokens_3[i]);
-						}
-						choice_1.setVisible(true);
-						choice_1.addItemListener(new ItemListener(){
-							public void itemStateChanged(ItemEvent ie)
-							{
-								selected2 = choice_1.getSelectedItem();
-								String[] tokens = selected2.split("\\(");
-								String display = v.degreeResult(tokens[0]);
-								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
-									textArea.setText("No result available for this degree or no degree selected");
-								}else{
+					lblNewLabel.setText("Select the degree results you want to view");
+					lblNewLabel.setVisible(true);
+					choice_1.add("(select degree)");
+					for(int i = 0; i<dg.size();i++){
+						choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
+					}
+					choice_1.setVisible(true);
+					choice_1.addItemListener(new ItemListener(){
+						public void itemStateChanged(ItemEvent ie)
+						{
+							selected2 = choice_1.getSelectedItem();
+							String[] tokens = selected2.split("\\(");
+							String display = v.degreeResult(tokens[0]);
+							if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
+								textArea.setText("No result available for this degree or no degree selected");
+							}else{
 								textArea.setText(display);
-								}
-								scrollPane.setVisible(true);
 							}
-						});
+							scrollPane.setVisible(true);
+						}
+					});
 				}else if(selected3.equals(choice3)){
 					lblNewLabel.setText("Select the course results you want to view");
 					lblNewLabel.setVisible(true);
 					choice_1.add("(select course)");
-					String select2 = m.removeSelectionAdmin(us.getMatric());
-					String[]tokens_2 = select2.split(",");
+					for(int i = 0;i<cdg.size();i++){
+						choice_1.add(cdg.get(i).getCourse());
 
-					for(int i = 0; i<tokens_2.length;i++){
-						choice_1.add(tokens_2[i]);
 					}
 					choice_1.setVisible(true);
 					choice_1.addItemListener(new ItemListener(){
@@ -135,7 +155,7 @@ public class ViewResult extends JFrame{
 							if(display.equals("Not Available") || selected2.equals("(select course)")){
 								textArea.setText("No result available for this course or no course slected");
 							}else{
-							textArea.setText(display);
+								textArea.setText(display);
 							}
 							scrollPane.setVisible(true);
 						}
@@ -149,32 +169,21 @@ public class ViewResult extends JFrame{
 					}
 					scrollPane.setVisible(true);
 				}
-				if(ie.getStateChange() == ItemEvent.SELECTED){
-					count+=1;
-				}
 				
-				if(count > 1){
-					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
-							JOptionPane.INFORMATION_MESSAGE);
-						ViewResult vr = new ViewResult();
-						vr.setVisible(true);
-						dispose();
-					
-				}
 			}
-			});
+		});
 		panel.add(choice);
-		
+
 		lblNewLabel = new JLabel("");
 		lblNewLabel.setBounds(22, 61, 434, 16);
 		lblNewLabel.setVisible(false);
 		panel.add(lblNewLabel);
-		
+
 		choice_1 = new Choice();
 		choice_1.setBounds(22, 86, 395, 27);
 		choice_1.setVisible(false);
 		panel.add(choice_1);
-		
+
 		textArea = new JTextArea();
 		textArea.setBounds(22, 148, 972, 555);
 		textArea.setEditable(false);
@@ -203,15 +212,15 @@ public class ViewResult extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new ViewListener(this));
-		
+
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new ViewListener(this));
-		
+
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new ViewListener(this));
-		
+
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new ViewListener(this));
@@ -225,6 +234,6 @@ public class ViewResult extends JFrame{
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
-		
+
 	}
 }

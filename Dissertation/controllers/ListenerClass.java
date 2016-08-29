@@ -7,14 +7,17 @@ import javax.swing.JTextField;
 import gui.*;
 import main.Queries;
 import main.Users;
-//The listener class for the StartGUI
+/*
+ * The listener class for the StartGUI
+ * 
+ */
 public class ListenerClass implements ActionListener{
-	StartGUI sg;
-	Queries q = Queries.getQueries();
+	StartGUI sg;//StartGUI object
+	Queries q = Queries.getQueries();//Queries object to access all methods in Queries class
 	Users us;
 	String matricno, password;
 	public ListenerClass(StartGUI sg){
-		this.sg = sg;
+		this.sg = sg;//Initialize the StartGUI object
 	}
 
 	@Override
@@ -24,14 +27,15 @@ public class ListenerClass implements ActionListener{
 		if(e.getActionCommand().equals("LOG_IN") ){
 				matricno = sg.matric().getText().trim();
 				password = new String(sg.pass().getPassword()).trim();
-				us = q.LogIn(matricno, password);
+				us = q.LogIn(matricno, password);//Initialize the Users object by calling the LogIn method takes the username & password as parameters
 				if(us!=null){
+					//Depending on the type of user, the frames will be display accordingly
 					if(us.getType().equals("Student")){
-						StudentMain mn = new StudentMain();
+						StudentMain mn = new StudentMain();//StudentMain created & displayed
 						mn.setVisible(true);
-						sg.dispose();
+						sg.dispose();//StartGUI disposed
 					}else{
-						Main m = new Main();
+						Main m = new Main();//Main created & displayed
 						m.setVisible(true);
 						sg.dispose();
 					}
