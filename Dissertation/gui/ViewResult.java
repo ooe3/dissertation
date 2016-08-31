@@ -29,12 +29,16 @@ public class ViewResult extends JFrame{
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	ViewResultQueries v = ViewResultQueries.getMain();
+	AddQueries aq = AddQueries.getMain();
 	List<Degree> dg;
+	CourseResult crr;
+	List<CourseResult> cdt;
 	Degree d;
 	Course cd;
 	List<Course> cdg;
 	Student sdt;
 	List<Student> stt;
+	List<StudentDegree> sd;
 	String selected3, selected2;
 	Choice choice, choice_1;
 	JTextArea textArea;
@@ -110,10 +114,16 @@ public class ViewResult extends JFrame{
 						public void itemStateChanged(ItemEvent ie)
 						{
 							selected2 = choice_1.getSelectedItem();
-							String[] tokens_5 = selected2.split(" ");
-							String display = v.showResult(tokens_5[0], tokens_5[1]);
-							textArea.setText(display);
-							scrollPane.setVisible(true);
+							if(!selected2.equals("(select student)")){
+								cdt = aq.getInfo();
+								String[] tokens_5 = selected2.split(" ");
+								Student st = aq.getSelected(tokens_5[0], tokens_5[1]);
+								cdt.removeAll(cdt);
+								crr = aq.getDetails(st.getStudentID());
+								String display = v.showResult();
+								textArea.setText(display);
+								scrollPane.setVisible(true);
+							}
 						}
 					});
 				}else if(selected3.equals(choice2)){
@@ -128,14 +138,19 @@ public class ViewResult extends JFrame{
 						public void itemStateChanged(ItemEvent ie)
 						{
 							selected2 = choice_1.getSelectedItem();
-							String[] tokens = selected2.split("\\(");
-							String display = v.degreeResult(tokens[0]);
-							if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
-								textArea.setText("No result available for this degree or no degree selected");
-							}else{
-								textArea.setText(display);
+							if(!selected2.equals("(select degree)")){
+								sd = v.getStudentDegree();
+								String[] tokens = selected2.split("\\(");
+								sd.removeAll(sd);
+								StudentDegree sd = v.getDegreeInfo(tokens[0]);
+								String display = v.degreeResult();
+								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
+									textArea.setText("No result available for this degree or no degree selected");
+								}else{
+									textArea.setText(display);
+								}
+								scrollPane.setVisible(true);
 							}
-							scrollPane.setVisible(true);
 						}
 					});
 				}else if(selected3.equals(choice3)){
@@ -151,17 +166,25 @@ public class ViewResult extends JFrame{
 						public void itemStateChanged(ItemEvent ie)
 						{
 							selected2 = choice_1.getSelectedItem();
-							String display = v.overallCourse(selected2);
-							if(display.equals("Not Available") || selected2.equals("(select course)")){
-								textArea.setText("No result available for this course or no course slected");
-							}else{
-								textArea.setText(display);
+							if(!selected2.equals("(select course)")){
+								List<CourseResult> getCourses = v.getCourseResults();
+								getCourses.removeAll(getCourses);
+								CourseResult cr = v.getCourses(selected2);
+								String display = v.overallCourse();
+								if(display.equals("Not Available") || selected2.equals("(select course)")){
+									textArea.setText("No result available for this course or no course slected");
+								}else{
+									textArea.setText(display);
+								}
+								scrollPane.setVisible(true);
 							}
-							scrollPane.setVisible(true);
 						}
 					});
 				}else if(selected3.equals(choice4)){
-					String display = v.overallSchool(((Admin)us).getID());
+					sd = v.getStudentDegree();
+					sd.removeAll(sd);
+					StudentDegree sdg = v.getOveralSchool(sc);
+					String display = v.overallSchool();
 					if(display.equals("No results for this school")){
 						textArea.setText("No results set for this school yet or no students.");
 					}else{
@@ -169,7 +192,7 @@ public class ViewResult extends JFrame{
 					}
 					scrollPane.setVisible(true);
 				}
-				
+
 			}
 		});
 		panel.add(choice);
@@ -216,6 +239,10 @@ public class ViewResult extends JFrame{
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new ViewListener(this));
+		
+		JMenuItem mntmViewStudent = new JMenuItem("View Students");
+		mntmViewStudent.setActionCommand("ViewS");
+		mntmViewStudent.addActionListener(new ViewListener(this));
 
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
@@ -230,6 +257,7 @@ public class ViewResult extends JFrame{
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
+		admin.add(mntmViewStudent);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);

@@ -11,15 +11,20 @@ public class ViewListener implements ActionListener{
 	Users us;
 	Queries q = Queries.getQueries();//Queries object created to get access to the methods
 	MainQueries m = MainQueries.getMain();//MainQueries object created to access methods in the MainQueries class
+	AddQueries aq = AddQueries.getMain();
 	List<Degree> dg;//Create a list containing degree objects
 	List<Course> cdg;
 	List<Student> stt;
+	List<CourseResult> getCourses;
+	List<CourseDegree> getInfo;
 	public ViewListener(ViewResult v){
 		vr = v;//initialized to listen to buttons
 		us = q.getUser();//getUser method called to get current user
 		dg = m.getList();//initializes list by calling getList method to get all Degrees under the Admin's school
 		cdg = m.getCourseList();
 		stt = q.getStudents();
+		getCourses = aq.getInfo();
+		getInfo = m.getCourseDegreeList();
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -62,14 +67,24 @@ public class ViewListener implements ActionListener{
 
 		}else if(e.getActionCommand().equals("Add")){//listener for the add result menu item
 			stt.removeAll(stt);
+			getCourses.removeAll(getCourses);
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			vr.dispose();
 		}else if(e.getActionCommand().equals("Change Password")){
 
 
+		}else if(e.getActionCommand().equals("Add Student")){
+			dg.removeAll(dg);
+			getInfo.removeAll(getInfo);
+			CreateStudent cs = new CreateStudent();
+			cs.setVisible(true);
+			vr.dispose();
 		}else{
-
+			stt.removeAll(stt);
+			ViewStudents vs = new ViewStudents();
+			vs.setVisible(true);
+			vr.dispose();
 		}
 
 	}

@@ -35,7 +35,8 @@ public class Main extends JFrame{
 	List<Course> cdg;
 	Degree d;
 	Course cd;
-//	Student st;
+	CourseDegree courseDegree;
+	List<CourseDegree> courseDegreeList;
 	JTextField textField_2, textField_3, textField_4, textField_8;
 	Choice choice_3, choice_5, choice, choice_1;
 	String selected3, selected2, selected4, selected5;
@@ -44,7 +45,8 @@ public class Main extends JFrame{
 		sc = q.getSchool();
 		d = m.displayDegree(sc);
 		cd = m.getCourses(sc);
-//		st = q.getAll(sc);
+		courseDegree = m.getInserted(sc);
+		courseDegreeList = m.getCourseDegreeList();
 		dg = m.getList();
 		cdg = m.getCourseList();
 		

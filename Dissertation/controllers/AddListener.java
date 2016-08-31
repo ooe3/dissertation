@@ -18,12 +18,18 @@ public class AddListener implements ActionListener{
 	List<Student> stt;
 	List<Degree> dg;//Create a list containing degree objects
 	List<Course> cdg;
+	Student st;
+	List<CourseResult> crt;
+	List<CourseDegree> getCdg;
 	public AddListener(AdminAdd am){
 		ad = am;
 		us = q.getUser();//get the user currently logged in
 		dg = m.getList();//initializes list by calling getList method to get all Degrees under the Admin's school
 		cdg = m.getCourseList();
 		stt = q.getStudents();
+		st = aq.getStudent();
+		crt = aq.getInfo();
+		getCdg = m.getCourseDegreeList();
 	}
 
 	@Override
@@ -43,22 +49,26 @@ public class AddListener implements ActionListener{
 					}else{
 						//call the calculatescore method to store the result in overall
 						//It takes the number stored in the exam, cw and the percentage for both the coursework & exam of the course selected
-						int overall = aq.calculateScore(exam, cw, aq.getCwPercentage(), aq.getExamPercentage());
+						int overall = aq.calculateScore(exam, cw, aq.getDetails().getCoursework(), aq.getDetails().getExamPercentage());
 						//calls the insertCourseScore method taking the overall, selected course and name of the student
-						aq.insertCourseScore(overall, ad.selected5(), ad.getNames()[0], ad.getNames()[1]);
+						aq.insertCourseScore(overall, aq.getDetails().getCourse(), aq.getStudent().getStudentID());
 						JOptionPane.showMessageDialog(null, "Result added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
+						
+						crt.removeAll(crt);
+						CourseResult crs = aq.getDetails(aq.getStudent().getStudentID());
 						//calls the checkResults method to check if the student has all their results entered
-						if((q.checkResults(ad.getNames()[0], ad.getNames()[1])).equals("No")){
+						if((aq.checkResults()).equals("No")){
 							stt.removeAll(stt);
+							crt.removeAll(crt);
 							AdminAdd aa = new AdminAdd();
 							aa.setVisible(true);
 							ad.dispose();
 						}else{
 							int show = JOptionPane.showConfirmDialog(null, "Do you want calculate & add the overall mark for this student?");//dialog box to ask if admin wants to calculate overall mark
 							if(show == 0){//if yes, store the result in the datatabase
-								String s = aq.getResult(ad.getNames()[0], ad.getNames()[1]);
-								aq.insertOverall(s, ad.getNames()[0], ad.getNames()[1]);
+								String s = aq.getResult();
+								aq.insertOverall(s, aq.getStudent().getStudentID());
 								JOptionPane.showMessageDialog(null, "Overall added", "Window",
 										JOptionPane.INFORMATION_MESSAGE);
 								AdminAdd aa = new AdminAdd();
@@ -104,12 +114,12 @@ public class AddListener implements ActionListener{
 			if(ad.choice().getSelectedItem().equals("(select student)")){
 				JOptionPane.showMessageDialog(null, "No student selected.", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
-				if((q.checkResults(ad.getNameCalc()[0], ad.getNameCalc()[1])).equals("No")){
-					JOptionPane.showMessageDialog(null, "All results for this student has not been entered. Add results on the left", "Error message", JOptionPane.ERROR_MESSAGE);
+				if((aq.checkResults()).equals("No")){
+					JOptionPane.showMessageDialog(null, "All results for this student has not been entered or student has no result. Add results on the left if student has enrolled courses", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else {
 					//calculate the overall score of the student if all results have been stored
-					String s = aq.getResult(ad.getNameCalc()[0], ad.getNameCalc()[1]);
-					aq.insertOverall(s, ad.getNameCalc()[0], ad.getNameCalc()[1]);
+					String s = aq.getResult();
+					aq.insertOverall(s, aq.getStudent().getStudentID());
 					JOptionPane.showMessageDialog(null, "Overall add", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
 					stt.removeAll(stt);
@@ -121,8 +131,16 @@ public class AddListener implements ActionListener{
 			
 		}else if(e.getActionCommand().equals("Add Student")){
 			dg.removeAll(dg);
+			getCdg.removeAll(getCdg);
 			CreateStudent cs = new CreateStudent();
 			cs.setVisible(true);
+			ad.dispose();
+		}else{
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
+			stt.removeAll(stt);
+			ViewResult vr = new ViewResult();
+			vr.setVisible(true);
 			ad.dispose();
 		}
 

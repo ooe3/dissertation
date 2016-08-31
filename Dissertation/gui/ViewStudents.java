@@ -64,11 +64,16 @@ public class ViewStudents extends JFrame{
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new ViewStudentsListener(this));
 		
+		JMenuItem mntmViewStudent = new JMenuItem("View Students");
+		mntmViewStudent.setActionCommand("ViewS");
+		mntmViewStudent.addActionListener(new ViewStudentsListener(this));
+		
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
+		admin.add(mntmViewStudent);
 		admin.add(mntmPassword);
 		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);

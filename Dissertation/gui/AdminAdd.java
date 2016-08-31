@@ -40,15 +40,18 @@ public class AdminAdd extends JFrame{
 	List<Student> stt;
 	Student sdt;
 	School sc;
+	CourseResult crr;
+	List<CourseResult> crt;
+	int id;
 	int count = 0;
-	private JLabel lblSelectTheStudents, label, lblNewLabel_5, lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4,lblIfYouWant;
+	private JLabel lblSelectTheStudents, label, lblNewLabel_5, lblExam, lblExamPercentage, lblCoursework, lblPercentage,lblNewLabel_4,lblrIndicatesThe;
 	public AdminAdd(){
 		//initialize user object to get the current user
 		us = q.getUser();
 		sc = q.getSchool();
 		sdt = q.getAll(sc);
 		stt = q.getStudents();
-		
+
 		initialize();
 	}
 
@@ -66,7 +69,7 @@ public class AdminAdd extends JFrame{
 		JLabel lblAddingResults = new JLabel("Adding results");
 		lblAddingResults.setBounds(19, 54, 147, 16);
 		panel_3.add(lblAddingResults);
-		
+
 		//Object of the JMenuBar
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -91,15 +94,15 @@ public class AdminAdd extends JFrame{
 		JMenuItem mntmPassword = new JMenuItem("Change Password");
 		mntmPassword.setActionCommand("Change Password");
 		mntmPassword.addActionListener(new AddListener(this));
-		
+
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new AddListener(this));
-		
+
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new AddListener(this));
-		
+
 		JMenuItem mntmRefresh = new JMenuItem("Refresh");
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new AddListener(this));
@@ -127,20 +130,20 @@ public class AdminAdd extends JFrame{
 		lblNewLabel_4.setBounds(19, 137, 354, 16);
 		lblNewLabel_4.setVisible(false);
 		panel_3.add(lblNewLabel_4);
-		
+
 		//Choice object which consists a dropdown of lists
 		//Contains a lists of students
 		choice_1 = new Choice();
 		choice_1.setBounds(19, 104, 307, 27);
 		choice_1.add("(select student)");
-		
+
 		for(int i = 0; i<stt.size();i++){
 			choice_1.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 		}
 		panel_3.add(choice_1);
 		//Choice that contains a dropdown list of courses
 		choice_2 = new Choice();
-		choice_2.setBounds(20, 177, 295, 27);
+		choice_2.setBounds(19, 204, 295, 27);
 		choice_2.add("(select course)");
 		panel_3.add(choice_2);
 
@@ -150,51 +153,69 @@ public class AdminAdd extends JFrame{
 			public void itemStateChanged(ItemEvent ie)
 			{
 				String selected4 = choice_1.getSelectedItem();//store the selected item in selected4
-				lblNewLabel_4.setVisible(true);
-				tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
-				String select7 = aq.removeSelection(tokens_5[0], tokens_5[1]);//store the remove selection which takes the tokens as parameters in select7
-				String[]tokens_7 = select7.split(",");//split after each comma 
-				choice_2.setVisible(true);
-				for(int i = 0; i<tokens_7.length;i++){
-					choice_2.add(tokens_7[i]);//store the elements of tokens_7 into the dropdown list
-				}
-
-				//itemlistener for choice_2
-				choice_2.addItemListener(new ItemListener(){
-					public void itemStateChanged(ItemEvent ie)
-					{
-						
-						selected5 = choice_2.getSelectedItem();
-						//once the selecteditem is chosen, the components below become visible
-						lblExam.setVisible(true);
-						lblCoursework.setVisible(true);
-						lblPercentage.setVisible(true);
-						textField_6.setVisible(true);
-						textField_7.setVisible(true);
-						btnSubmit.setVisible(true);
-						String[] tokens = selected5.split("\\(");
-						if(tokens.length>1){
-						aq.getCourseDetails(tokens[0]);
+				if(!selected4.equals("(select student)")){
+					crt = aq.getInfo();
+					lblNewLabel_4.setVisible(true);
+					lblrIndicatesThe.setVisible(true);
+					tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
+					Student student = aq.getSelected(tokens_5[0], tokens_5[1]);
+					crt.removeAll(crt);
+					crr = aq.getDetails(student.getStudentID());
+					
+					for(int i = 0;i<crt.size();i++){
+						if(crt.get(i).getResult() != 0){
+							choice_2.add(crt.get(i).getCourseName().getCourse()+"(R)");
 						}else{
-							aq.getCourseDetails(selected5);
+							choice_2.add(crt.get(i).getCourseName().getCourse());
 						}
-						label.setVisible(true);
-						lblNewLabel_5.setVisible(true);
-						label.setText(""+aq.getCwPercentage()+"");
-						lblNewLabel_5.setText(""+aq.getExamPercentage()+"");
+					}
+					choice_2.setVisible(true);
+
+					//itemlistener for choice_2
+					choice_2.addItemListener(new ItemListener(){
+						public void itemStateChanged(ItemEvent ie)
+						{
+
+							selected5 = choice_2.getSelectedItem();
+							//once the selecteditem is chosen, the components below become visible
+							if(!selected5.equals("(select course)")){
+								lblExam.setVisible(true);
+								lblCoursework.setVisible(true);
+								lblPercentage.setVisible(true);
+								textField_6.setVisible(true);
+								textField_7.setVisible(true);
+								btnSubmit.setVisible(true);
+								label.setVisible(true);
+								lblNewLabel_5.setVisible(true);
+								String[] tokens = selected5.split("\\(");
+								if(tokens.length>1){
+									Course cs = aq.getCourseDetails(tokens[0]);
+									label.setText(""+cs.getCoursework()+"");
+									lblNewLabel_5.setText(""+cs.getExamPercentage()+"");
+								}else{
+									Course	cs = aq.getCourseDetails(selected5);
+									label.setText(""+cs.getCoursework()+"");
+									lblNewLabel_5.setText(""+cs.getExamPercentage()+"");
+								}
+							}
 
 
-					}});
-				if(ie.getStateChange() == ItemEvent.SELECTED){
-					count+=1;
-				}
-				
-				if(count > 1){
-					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
-							JOptionPane.INFORMATION_MESSAGE);
-					AdminAdd add = new AdminAdd();
-					add.setVisible(true);
-					dispose();
+
+
+						}});
+					if(ie.getStateChange() == ItemEvent.SELECTED){
+						count+=1;
+					}
+
+					if(count > 1){
+						crt.removeAll(crt);
+						stt.removeAll(stt);
+						JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
+								JOptionPane.INFORMATION_MESSAGE);
+						AdminAdd add = new AdminAdd();
+						add.setVisible(true);
+						dispose();
+					}
 				}
 			}
 		});
@@ -243,14 +264,10 @@ public class AdminAdd extends JFrame{
 		btnSubmit.setActionCommand("Submit");
 		panel_3.add(btnSubmit);
 
-		lblIfYouWant = new JLabel("*To change student or course selected, click refresh in the menu.*");
-		lblIfYouWant.setBounds(19, 6, 428, 16);
-		panel_3.add(lblIfYouWant);
-
 		lblSelectTheStudents = new JLabel("Select the student's overall average to calculate below");
 		lblSelectTheStudents.setBounds(421, 82, 354, 16);
 		panel_3.add(lblSelectTheStudents);
-		
+
 		//choice containing a drop down list of students
 		//this is used by the calculate overall button
 		choice = new Choice();
@@ -263,11 +280,17 @@ public class AdminAdd extends JFrame{
 		choice.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
+				List<CourseResult> crts = aq.getInfo();
 				name_selected = choice.getSelectedItem();
 				tokens_6 = name_selected.split(" ");
+				Student student = aq.getSelected(tokens_6[0], tokens_6[1]);
+				crts.removeAll(crts);
+				CourseResult crt = aq.getDetails(student.getStudentID());
+
+
 			}
 		});
-		
+
 
 		panel_3.add(choice);
 
@@ -276,6 +299,12 @@ public class AdminAdd extends JFrame{
 		btnCalculateOverall.addActionListener(new AddListener(this));
 		btnCalculateOverall.setActionCommand("Calculate");
 		panel_3.add(btnCalculateOverall);
+
+		lblrIndicatesThe = new JLabel("*(R) indicates the course already has a mark*");
+		lblrIndicatesThe.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+		lblrIndicatesThe.setBounds(29, 165, 251, 16);
+		lblrIndicatesThe.setVisible(false);
+		panel_3.add(lblrIndicatesThe);
 	}
 	public Choice choice(){
 		return choice;
@@ -287,17 +316,5 @@ public class AdminAdd extends JFrame{
 
 	public JTextField textField_7(){
 		return textField_7;
-	}
-
-	public String[] getNames(){
-		return tokens_5;
-	}
-	
-	public String[] getNameCalc(){
-		return tokens_6;
-	}
-
-	public String selected5(){
-		return selected5;
 	}
 }

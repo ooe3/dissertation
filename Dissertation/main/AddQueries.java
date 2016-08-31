@@ -2,14 +2,20 @@ package main;
 import gui.*;
 import java.awt.*;
 import java.sql.*;
+import java.util.List;
+import java.util.ArrayList;
 public class AddQueries {
 	private Connection conn = null;
 	private Statement st;
 	private PreparedStatement ps;
+	Student sdt;
 	Course cs;
-	
+	CourseResult crt;
+	List<CourseResult> getCourses = new ArrayList<CourseResult>();
+	Queries q = Queries.getQueries();
+
 	private static AddQueries aq;
-	
+
 	private AddQueries(){
 		conn = DatabaseConnection.getConnection();
 	}
@@ -17,12 +23,12 @@ public class AddQueries {
 	public static AddQueries getMain(){
 		if(aq==null)
 			aq = new AddQueries();
-		
+
 		return aq;
 
 	}
-	
-//Calculate the score of a course
+
+	//Calculate the score of a course
 	//Method to be called in the GUI and int result returned to pass as one
 	//of the parameters in insertCourseScore
 	public int calculateScore(int exam, int coursework, int courseMark, int examMark){
@@ -40,17 +46,43 @@ public class AddQueries {
 		finalscore+=Math.round(score);
 		return finalscore;
 	}
-	
-	public void insertCourseScore(int overall, String coursename, String fname, String lname){
+
+	public Student getSelected(String firstName, String lastName){
+		sdt = null;
+		ResultSet rs = null;
 		try{
-			int id = getStudent(fname, lname);
+			String query = "SELECT * FROM STUDENT WHERE FIRSTNAME = ? AND LASTNAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, firstName);
+			ps.setString(2, lastName);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String fName = rs.getString("FIRSTNAME");
+				String lName = rs.getString("LASTNAME");
+				int studentID = rs.getInt("STUDENTID");
+				String studentE = rs.getString("EMAIL");
+				int userid = rs.getInt("USERID");
+				sdt = new Student(userid, studentID, fName, lName, studentE);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sdt;
+	}
+
+
+
+	public void insertCourseScore(int overall, String coursename, int id){
+		try{
 			String sql = "UPDATE COURSERESULT SET RESULT = ? WHERE COURSE = ? AND STUDENTID = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setInt(1, overall);
 			ps.setString(2, coursename);
 			ps.setInt(3,id);
 			ps.executeUpdate();
-			
+
 			ps.close();
 		}catch(Exception e){ 
 			e.printStackTrace();
@@ -58,61 +90,38 @@ public class AddQueries {
 
 	}
 	
-	public int getStudent(String fname, String lname){
-		ResultSet rs = null;
-		int id = 0;
-		try{
-			String query = "SELECT STUDENTID FROM STUDENT WHERE FIRSTNAME = ? AND LASTNAME = ?";
-			ps = conn.prepareStatement(query);
-			ps.setString(1, fname);
-			ps.setString(2, lname);
-			rs = ps.executeQuery();
-			if(rs.next()){
-				id += (rs.getInt("STUDENTID"));
+	public String checkResults(){
+		StringBuilder sb = new StringBuilder("");
+		int count = 0;
+			for(int i = 0; i<getCourses.size();i++){
+				if(getCourses.get(i).getResult() == 0){
+					count+=1;
+				}
 			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return id;
+			if(count > 0 || getCourses.size() == 0){
+				sb.append("No");
+			}
+		return sb.toString();
 	}
-	
-	public String getResult(String fname, String lname){
+
+	public String getResult(){
 		StringBuilder sb = new StringBuilder("");
 		int totalcred = 0, totalpoints = 0;
 		double average = 0;
-		ResultSet rs;
-		try{
-			int id = getStudent(fname, lname);
-			String query = "SELECT cr.RESULT, c.CREDIT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE WHERE cr.STUDENTID = ?";
-			ps = conn.prepareStatement(query);
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-			while(rs.next()){
-				int res = rs.getInt("RESULT");
-				int credit = rs.getInt("CREDIT"); 
+			for(int i = 0;i<getCourses.size();i++){
+				int res = getCourses.get(i).getResult();
+				int credit = getCourses.get(i).getCourseName().getCredit();
 				totalpoints+=(res*credit);
 				totalcred+=credit;
-
-
 			}
 			average+=((double)totalpoints/totalcred);
 			String s1 = String.format("%.3f", average);
 			sb.append(s1);
-			rs.close();
-			ps.close();
-
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
 		return sb.toString();
 	}
-	
-	public void insertOverall(String mark, String fname, String lname){
+
+	public void insertOverall(String mark, int id){
 		try{
-			int id = getStudent(fname, lname);
 			String sql = "UPDATE STUDENT_DEGREE SET RESULT = ? WHERE STUDENT = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, mark);
@@ -124,86 +133,68 @@ public class AddQueries {
 		}
 
 
-}
-
-public void getCourseDetails(String course){
-	ResultSet rs = null;
-
-	try{
-		String query = "SELECT * FROM COURSES WHERE COURSENAME = ?";
-		ps = conn.prepareStatement(query);
-		ps.setString(1, course);
-		rs = ps.executeQuery();
-
-		if(rs.next()){
-			
-			String coursename = rs.getString("COURSENAME");
-			int credit = rs.getInt("CREDIT");
-			int exam = rs.getInt("EXAM");
-			int cw = rs.getInt("COURSEWORK");
-			cs = new Course(coursename, credit, exam, cw);
-		}
-		rs.close();
-		ps.close();
-	}catch(Exception e){
-		e.printStackTrace();
 	}
-}
 
-public String matric(String s, String s1){
-	String m = "";
-	ResultSet rs = null;
-	try{
-		String query = "SELECT us.MATRICNO FROM USER AS us INNER JOIN STUDENT AS s ON s.USERID = us.ID WHERE s.FIRSTNAME = ? AND s.LASTNAME = ?";
-		ps = conn.prepareStatement(query);
-		ps.setString(1, s);
-		ps.setString(2, s1);
-		rs = ps.executeQuery();
-		if(rs.next()){
+	public Course getCourseDetails(String course){
+		ResultSet rs = null;
+		cs = null;
 
-			m+=rs.getString("MATRICNO");
-		}
-		rs.close();
-		ps.close();
-	}catch(Exception e){
-		e.printStackTrace();
-	}
-	return m;
-}
-//display courses that can be removed for student
-public String removeSelection(String s, String s1){
-	StringBuilder sb = new StringBuilder("");
-	ResultSet rs = null;
-	String m = matric(s,s1);
-	try{
-		String query = "SELECT c.COURSE, c.RESULT FROM COURSERESULT AS c INNER JOIN STUDENT AS st ON c.STUDENTID = st.STUDENTID INNER JOIN USER AS us ON us.ID = st.USERID WHERE us.MATRICNO = ?";
-		ps = conn.prepareStatement(query);
-		ps.setString(1, m);
-		rs = ps.executeQuery();
+		try{
+			String query = "SELECT * FROM COURSES WHERE COURSENAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, course);
+			rs = ps.executeQuery();
 
-		while(rs.next()){
-			String name = rs.getString("COURSE");
-			int res = rs.getInt("RESULT");
-			sb.append(name);
-			if(res!=0){
-				sb.append("(R)");
+			if(rs.next()){
+
+				String coursename = rs.getString("COURSENAME");
+				int credit = rs.getInt("CREDIT");
+				int exam = rs.getInt("EXAM");
+				int cw = rs.getInt("COURSEWORK");
+				cs = new Course(coursename, credit, exam, cw);
 			}
-			
-			sb.append(",");
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		rs.close();
-		ps.close();
-	}catch(Exception e){
-		e.printStackTrace();
+		return cs;
 	}
-	return sb.toString();
-}
 
-public int getCwPercentage(){
-	return cs.getCoursework();
-}
+	public CourseResult getDetails(int id){
+		crt = null;
+		ResultSet rs = null;
+		try{
+			String query = "SELECT * FROM COURSERESULT WHERE STUDENTID = ? ORDER BY COURSE";
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, id);
+			rs = ps.executeQuery();
 
-public int getExamPercentage(){
-	return cs.getExamPercentage();
-}
+			while(rs.next()){
+				String name = rs.getString("COURSE");
+				int result = rs.getInt("RESULT");
+
+				crt = new CourseResult(getCourseDetails(name),sdt,result);
+				getCourses.add(crt);
+
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return crt;
+	}
+
+	public Course getDetails(){
+		return cs;
+	}
+
+	public Student getStudent(){
+		return sdt;
+	}
+	
+	public List<CourseResult> getInfo(){
+		return getCourses;
+	}
 }

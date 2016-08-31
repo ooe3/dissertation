@@ -17,6 +17,8 @@ public class MainListener implements ActionListener{
 	List<Degree> dg;//Create a list containing degree objects
 	List<Course> cdg;
 	List<Student> stt;
+	List<CourseDegree> courseDegreeList;
+	
 	Student st;
 	public MainListener(Main min){
 		mn = min;
@@ -24,6 +26,7 @@ public class MainListener implements ActionListener{
 		dg = m.getList();//initializes list by calling getList method to get all Degrees under the Admin's school
 		cdg = m.getCourseList();
 		stt = q.getStudents();
+		courseDegreeList = m.getCourseDegreeList();
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -66,6 +69,9 @@ public class MainListener implements ActionListener{
 
 									JOptionPane.showMessageDialog(null, "Course addition successful", "Window",
 											JOptionPane.INFORMATION_MESSAGE);
+									courseDegreeList.removeAll(courseDegreeList);
+									cdg.removeAll(cdg);
+									dg.removeAll(dg);
 									Main m = new Main();//Create new main jframe to get updated info
 									m.setVisible(true);
 									mn.dispose();//dispose current main jframe
@@ -90,6 +96,7 @@ public class MainListener implements ActionListener{
 					m.removeCourse(mn.getSelected2());
 					JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
+					courseDegreeList.removeAll(courseDegreeList);
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
 					Main m = new Main();
@@ -101,11 +108,13 @@ public class MainListener implements ActionListener{
 
 			}
 		}else if(e.getActionCommand().equals("Add") ){
+			courseDegreeList.removeAll(courseDegreeList);
 			stt.removeAll(stt);
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			mn.dispose();
 		}else if(e.getActionCommand().equals("LogOut")){
+			courseDegreeList.removeAll(courseDegreeList);
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
@@ -113,6 +122,7 @@ public class MainListener implements ActionListener{
 			sg.setVisible(true);
 			mn.dispose();
 		}else if(e.getActionCommand().equals("View")){
+			courseDegreeList.removeAll(courseDegreeList);
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
@@ -135,6 +145,9 @@ public class MainListener implements ActionListener{
 				}else{
 					JOptionPane.showMessageDialog(null, "Course added to degree succesfully", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
+					courseDegreeList.removeAll(courseDegreeList);
+					dg.removeAll(dg);
+					cdg.removeAll(cdg);
 					stt.removeAll(stt);
 					Main m = new Main();
 					m.setVisible(true);
@@ -142,17 +155,22 @@ public class MainListener implements ActionListener{
 				}
 			}
 		}else if(e.getActionCommand().equals("Refresh")){
+			courseDegreeList.removeAll(courseDegreeList);
+			cdg.removeAll(cdg);
+			dg.removeAll(dg);
 			stt.removeAll(stt);
 			Main m = new Main();
 			m.setVisible(true);
 			mn.dispose();
 		}
 		else if(e.getActionCommand().equals("Add Student")){
+			courseDegreeList.removeAll(courseDegreeList);
 			dg.removeAll(dg);
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			mn.dispose();
 		}else{
+			courseDegreeList.removeAll(courseDegreeList);
 			ViewStudents vs = new ViewStudents();
 			vs.setVisible(true);
 			mn.dispose();

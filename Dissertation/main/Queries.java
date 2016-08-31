@@ -29,7 +29,7 @@ public class Queries {
 	CourseResult cr;
 	Student st;
 	Statement stt = null;
-
+	int count = 0;
 	private static Queries q;
 	/**
 	 * The class which has all queries all possible methods
@@ -132,31 +132,7 @@ public class Queries {
 	}
 
 
-	public String checkResults(String fname, String lname){
-		StringBuilder sb = new StringBuilder("");
-		int count = 0;
-		int check = 0;
-		ResultSet rs = null;
-		try{
-			int id = getStudent(fname, lname);
-			String query1 = "SELECT cr.RESULT FROM COURSERESULT AS cr INNER JOIN COURSES AS c ON c.COURSENAME = cr.COURSE INNER JOIN STUDENT AS s ON s.STUDENTID = cr.STUDENTID WHERE s.STUDENTID = ? AND cr.result IS NULL";
-			ps = conn.prepareStatement(query1);
-			ps.setInt(1, id);
-			rs = ps.executeQuery();
-			while(rs.next()){
-				count+=1;
-
-			}
-			if(count > 0){
-				sb.append("No");
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
+	
 
 	public int getStudent(String fname, String lname){
 		ResultSet rs = null;
@@ -171,8 +147,9 @@ public class Queries {
 			if(rs.next()){
 				id += (rs.getInt("STUDENTID"));
 			}
-			ps.close();
 			rs.close();
+			ps.close();
+			
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -200,11 +177,11 @@ public class Queries {
 
 	public Student getAll(School sc){
 		ResultSet rs = null;
-		st = null;
 		try{
-			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID WHERE s.STUDENTID IN (SELECT STUDENT FROM STUDENT_DEGREE WHERE DEGREE IN (SELECT DEGREEID FROM DEGREE WHERE SCHOOL_REF = '"+sc.getName()+"')) ";
-			stt = conn.createStatement();
-			rs = stt.executeQuery(query1);
+			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID WHERE s.STUDENTID IN (SELECT STUDENT FROM STUDENT_DEGREE WHERE DEGREE IN (SELECT DEGREEID FROM DEGREE WHERE SCHOOL_REF = ?)) ";
+			ps = conn.prepareStatement(query1);
+			ps.setString(1, sc.getName());
+			rs = ps.executeQuery();
 
 			while(rs.next()){
 				int userid = rs.getInt("USERID");
@@ -220,36 +197,33 @@ public class Queries {
 				st.setMatric(matric);
 				students.add(st);
 			}
+			rs.close();
+			ps.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 
 		return st;
 	}
+	
+	public int countUsers(){
+		ResultSet rs = null;
+		try{
+			String query = "SELECT COUNT (*) FROM USER";
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
 
-	//	public Users getUsers(int id){
-	//		ResultSet rs = null;
-	//		usr = null;
-	//		try{
-	//			String query = "SELECT * FROM USER WHERE ID = ?";
-	//			ps = conn.prepareStatement(query);
-	//			ps.setInt(1, id);
-	//			rs = ps.executeQuery();
-	//			
-	//			while(rs.next()){
-	//				int userid = rs.getInt("ID");
-	////				String 
-	//				
-	////				st = new Student(userid, studentid, fname, lname, email);
-	////				st.setDegree(getSDInfo(st));
-	////				students.add(st);
-	//			}
-	//		}catch(Exception e){
-	//			e.printStackTrace();
-	//		}
-	//		return usr;
-	//	}
-
+			while(rs.next()){
+				count+= (rs.getInt(1)+1);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
 	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
@@ -266,15 +240,17 @@ public class Queries {
 				}
 			}
 			if(count == 0){
-				String sql = "INSERT INTO USER VALUES (?,?,?,?)";
+				
+				int id = countUsers();
+				String sql = "INSERT INTO USER (ID, MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?,?)";
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, countUsers());
+				ps.setInt(1, id);
 				ps.setString(2, matric);
 				ps.setString(3, matric);
 				ps.setString(4, type);
 				ps.executeUpdate();
 
-				String sql1 = "INSERT INTO STUDENT VALUES (?,?,?,?,? (SELECT ID FROM USER WHERE MATRICNO = ?))";
+				String sql1 = "INSERT INTO STUDENT  (STUDENTID, FIRSTNAME, LASTNAME, EMAIL, ADDRESS, USERID) VALUES (?,?,?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?))";
 				ps = conn.prepareStatement(sql1);
 				ps.setInt(1, students.size()+1);
 				ps.setString(2, name);
@@ -290,28 +266,11 @@ public class Queries {
 				ps.setString(2, degree);
 				ps.executeUpdate();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-
-	public int countUsers(){
-		ResultSet rs = null;
-		try{
-			String query = "SELECT COUNT (*) FROM USER";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				return rs.getInt(1)+1;
-			}
-			rs.close();
 			ps.close();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return 0;
+		return sb.toString();
 	}
 
 	public String getUnique(){
@@ -445,7 +404,7 @@ public class Queries {
 		cr = null;
 		ResultSet rs = null;
 		try{
-			String query = "SELECT * FROM COURSERESULT WHERE STUDENTID = ?";
+			String query = "SELECT * FROM COURSERESULT WHERE STUDENTID = ? ORDER BY COURSE";
 			ps = conn.prepareStatement(query);
 			ps.setInt(1, s.getStudentID());
 			rs = ps.executeQuery();

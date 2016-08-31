@@ -47,7 +47,7 @@ public class StudentQueries {
 				total+=credit;
 			}
 
-			
+
 			if(total>180){
 				sb.append("Full");
 			}else {
@@ -58,7 +58,7 @@ public class StudentQueries {
 				ps.executeUpdate();
 				ps.close();
 			}
-			
+
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -104,9 +104,12 @@ public class StudentQueries {
 	public CourseDegree displayCourses(Student s){
 		ResultSet rs = null;
 		try{
-			String query = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME NOT IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = '"+s.getStudentID()+"') AND DEGREE_ID = '"+s.getDegree().getDegree().getDegreeID()+"'";
-			st = conn.createStatement();
-			rs = st.executeQuery(query);
+			String query = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME NOT IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = ?) AND DEGREE_ID = ?";
+			
+			ps = conn.prepareStatement(query);
+			ps.setInt(1, s.getStudentID());
+			ps.setInt(2, s.getDegree().getDegree().getDegreeID());
+			rs = ps.executeQuery();
 			while(rs.next()){
 				String course = rs.getString("COURSE_NAME");
 				int degree = rs.getInt("DEGREE_ID");
@@ -114,7 +117,7 @@ public class StudentQueries {
 				coursed.add(cd);
 			}
 			rs.close();
-			st.close();
+			ps.close();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -176,18 +179,20 @@ public class StudentQueries {
 			if(count>0){
 				sb.append("* Not all results have been entered *\n");
 			}
-			average+=((double)totalpoints/totalcred);
+
 		}else{
-			return "Not Available";
+			return "No courses selected";
 		}
 
 
-
-		String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
-		sb.append(s2);
-		sb.append("\n");
-		String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, average);
-		sb.append(s1);
+		if(count != cr.size()){
+			average+=((double)totalpoints/totalcred);
+			String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);
+			sb.append(s2);
+			sb.append("\n");
+			String s1 = String.format("Your overall result is %d/%d : %.3f", totalpoints, totalcred, average);
+			sb.append(s1);
+		}
 
 		return sb.toString();
 

@@ -23,7 +23,10 @@ public class MainQueries {
 	Course c;
 	List<Degree> getDg = new ArrayList<Degree>();
 	List<Course> getCd = new ArrayList<Course>();
+	List<CourseDegree> getCdg = new ArrayList<CourseDegree>();
 	Queries q = Queries.getQueries();
+	Users us;
+	int count = 0;
 
 	private MainQueries(){
 		conn = DatabaseConnection.getConnection();
@@ -63,7 +66,7 @@ public class MainQueries {
 	}
 
 	public Course getCourses(School sc){
-		cd = null;
+		c = null;
 		ResultSet rs = null;
 		try{
 			String query = "SELECT DISTINCT c.COURSENAME, c.CREDIT, c.EXAM, c.COURSEWORK FROM COURSES AS c INNER JOIN COURSEDEGREE AS cd ON cd.COURSE_NAME = c.COURSENAME INNER JOIN DEGREE AS d ON d.DEGREEID = cd.DEGREE_ID WHERE d.SCHOOL_REF = ? ORDER BY c.COURSENAME";
@@ -115,16 +118,10 @@ public class MainQueries {
 	public String insertCourse(String s, int d, int d1, int d2){
 		String check = "";
 		int count = 0;
-		ResultSet rs = null;
-
 		try{
-
-			String query = "SELECT COURSENAME FROM COURSES";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-			while(rs.next()){
-				String name = rs.getString("COURSENAME");
-				if(s.toLowerCase().equals(name.toLowerCase())){
+			for(int i = 0; i<getCd.size();i++){
+				String name = getCd.get(i).getCourse().toLowerCase();
+				if(s.toLowerCase().equals(name)){
 					count+=1;
 					check+="Error";
 				}
@@ -139,10 +136,6 @@ public class MainQueries {
 				ps.setInt(4, d2);
 				ps.executeUpdate();
 			}
-
-
-
-			rs.close();
 			ps.close();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -150,34 +143,59 @@ public class MainQueries {
 		return check;
 	}
 
+	public CourseDegree getInserted(School sc){
+		cd = null;
+		ResultSet rs = null;
+		try{
+			String query = "select * from coursedegree inner join degree on degree.degreeid = coursedegree.degree_id where school_ref = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, sc.getName());
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String course = rs.getString("COURSE_NAME");
+				int id = rs.getInt("DEGREE_ID");
+				cd = new CourseDegree(q.getCourseDetails(course), q.getInfo(id));
+				getCdg.add(cd);
+
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return cd;
+	}
+
 	//To insert the specific course and the degree it belongs to
 	public String addCourseDegree(String course, String degree){
 		StringBuilder sb = new StringBuilder("");
 		ResultSet rs = null;
+		int count = 0;
 		try{
-
-			String query = "SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?";
-			ps = conn.prepareStatement(query);
-			ps.setString(1, degree);
-			rs = ps.executeQuery();
-			if(rs.next()){
-				int degreeid = rs.getInt("DEGREEID");
-				String query1 = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME = ? AND DEGREE_ID = ?";
-				ps = conn.prepareStatement(query1);
-				ps.setString(1, course);
-				ps.setInt(2, degreeid);
+			for(int i = 0;i<getCdg.size();i++){
+				String courseName = getCdg.get(i).getName().getCourse();
+				String degreename = getCdg.get(i).getDegreeID().getDegreeName();
+				if(courseName.equals(course) && degreename.equals(degree)){
+					count+=1;
+					sb.append("Error");
+				}
+			}
+			if(count == 0){
+				String query = "SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?";
+				ps = conn.prepareStatement(query);
+				ps.setString(1, degree);
 				rs = ps.executeQuery();
 				if(rs.next()){
-					sb.append("Error");
-				}else{
-					String sql = "INSERT INTO COURSEDEGREE VALUES ('"+course+"', '"+degreeid+"')";
+					int degreeid = rs.getInt("DEGREEID");
+					String sql = "INSERT INTO COURSEDEGREE VALUES (?, ?)";
 					ps = conn.prepareStatement(sql);
 					ps.setString(1, course);
 					ps.setInt(2, degreeid);
 					ps.executeUpdate();
 				}
+				rs.close();
 			}
-			rs.close();
+
 			ps.close();
 		}catch (Exception e){
 			e.printStackTrace();
@@ -186,33 +204,28 @@ public class MainQueries {
 	}
 
 	//Remove course from the system
-	public String removeCourse(String s){
-		ResultSet rs;
-		String get = "";
+	public void removeCourse(String s){
 		try{
-			String query = "SELECT * FROM COURSERESULT WHERE COURSE = ?";
-			ps = conn.prepareStatement(query);
+			String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = ?";
+			ps = conn.prepareStatement(sql1);
 			ps.setString(1, s);
-			rs = ps.executeQuery();
-			if(rs.next()){
-				get+="Exists";
-			}else{
-				String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = ?";
-				ps = conn.prepareStatement(sql1);
-				ps.setString(1, s);
-				ps.executeUpdate();
-				String sql = "DELETE FROM COURSES WHERE COURSENAME = ?";
-				ps = conn.prepareStatement(sql);
-				ps.setString(1, s);
-				ps.executeUpdate();
-			}
-			rs.close();
+			ps.executeUpdate();
+			String sql2 = "DELETE FROM COURSERESULT WHERE COURSE = ?";
+			ps = conn.prepareStatement(sql2);
+			ps.setString(1, s);
+			ps.executeUpdate();
+			String sql = "DELETE FROM COURSES WHERE COURSENAME = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, s);
+			ps.executeUpdate();
 			ps.close();
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return get;
+
 	}
+	
+	
 
 	public List<Degree> getList(){
 		return getDg;
@@ -220,6 +233,14 @@ public class MainQueries {
 
 	public List<Course> getCourseList(){
 		return getCd;
+	}
+
+	public List<CourseDegree> getCourseDegreeList(){
+		return getCdg;
+	}
+	
+	public int getCount(){
+	return count;
 	}
 }
 
