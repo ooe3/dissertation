@@ -206,24 +206,6 @@ public class Queries {
 		return st;
 	}
 	
-	public int countUsers(){
-		ResultSet rs = null;
-		try{
-			String query = "SELECT COUNT (*) FROM USER";
-			ps = conn.prepareStatement(query);
-			rs = ps.executeQuery();
-
-			while(rs.next()){
-				count+= (rs.getInt(1)+1);
-			}
-			rs.close();
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return count;
-	}
-	
 	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
@@ -233,31 +215,30 @@ public class Queries {
 				String fname = students.get(i).getFirstName().toLowerCase();
 				String lstname = students.get(i).getLastName().toLowerCase();
 				String mat = students.get(i).getMatric().toLowerCase();
-				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lstname)) || matric.toLowerCase().equals(mat)){
+				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))|| matric.toLowerCase().equals(mat)){
 					count+=1;
 					sb.append("Error");
 
+				}else if(matric.toLowerCase().equals(mat)){
+					count+=1;
+					sb.append("Exists");
 				}
 			}
 			if(count == 0){
-				
-				int id = countUsers();
-				String sql = "INSERT INTO USER (ID, MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?,?)";
+
+				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
 				ps = conn.prepareStatement(sql);
-				ps.setInt(1, id);
+				ps.setString(1, matric);
 				ps.setString(2, matric);
-				ps.setString(3, matric);
-				ps.setString(4, type);
+				ps.setString(3, type);
 				ps.executeUpdate();
 
-				String sql1 = "INSERT INTO STUDENT  (STUDENTID, FIRSTNAME, LASTNAME, EMAIL, ADDRESS, USERID) VALUES (?,?,?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?))";
+				String sql1 = "INSERT INTO STUDENT  (FIRSTNAME, LASTNAME, EMAIL, USERID) VALUES (?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?))";
 				ps = conn.prepareStatement(sql1);
-				ps.setInt(1, students.size()+1);
-				ps.setString(2, name);
-				ps.setString(3, lname);
-				ps.setString(4, email);
-				ps.setString(5, address);
-				ps.setString(6, matric);
+				ps.setString(1, name);
+				ps.setString(2, lname);
+				ps.setString(3, email);
+				ps.setString(4, matric);
 				ps.executeUpdate();
 
 				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?), (SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?))";
@@ -294,6 +275,17 @@ public class Queries {
 		}
 		return s1;
 	}
+	
+	public String checkFirstName(String s){
+		String s1 = "";
+		Pattern pattern = Pattern.compile("[a-zA-Z\\-]*");
+		Matcher matcher = pattern.matcher(s);
+		boolean check = matcher.matches();
+		if(!check){
+			s1+="Exists";
+		}
+		return s1;
+	}
 
 	public String checkLastName(String s){
 		String s1 = "";
@@ -308,7 +300,7 @@ public class Queries {
 
 	public String checkAddress(String s){
 		String s1 = "";
-		Pattern pattern = Pattern.compile("[a-zA-Z0-9\\s.,]*");
+		Pattern pattern = Pattern.compile("[a-zA-Z0-9\\s._-]{2,}+\\,[A-Za-z0-9\\s.,]{2,}");
 		Matcher matcher = pattern.matcher(s);
 		boolean check = matcher.matches();
 		if(!check){
@@ -319,7 +311,18 @@ public class Queries {
 
 	public String checkEmail(String s){
 		String s1 = "";
-		Pattern pattern = Pattern.compile("[a-zA-Z0-9\\@._-]*");
+		Pattern pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[A-Za-z.]{2,9}");//Tank Tutorial 19.."Java Video Tutorial 19". Newthinktank.com. N.p., 2012. Web. 1 Sept. 2016.
+		Matcher matcher = pattern.matcher(s);
+		boolean check = matcher.matches();
+		if(!check){
+			s1+="Exists";
+		}
+		return s1;
+	}
+	
+	public String checkUsername(String s){
+		String s1 = "";
+		Pattern pattern = Pattern.compile("[0-9]{7,7}+[a-z]{1,1}");//Tank Tutorial 19.."Java Video Tutorial 19". Newthinktank.com. N.p., 2012. Web. 1 Sept. 2016.
 		Matcher matcher = pattern.matcher(s);
 		boolean check = matcher.matches();
 		if(!check){

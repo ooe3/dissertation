@@ -202,6 +202,28 @@ public class MainQueries {
 		}
 		return sb.toString();
 	}
+	
+	public void removeCourseFromDegree(String course, String degree){
+		ResultSet rs = null;
+		try{
+			String query = "SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?";
+			ps = conn.prepareStatement(query);
+			ps.setString(1, degree);
+			rs = ps.executeQuery();
+			if(rs.next()){
+				int degreeid = rs.getInt("DEGREEID");
+			String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = ?";
+			ps = conn.prepareStatement(sql1);
+			ps.setString(1, course);
+			ps.setInt(2, degreeid);
+			ps.executeUpdate();
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 
 	//Remove course from the system
 	public void removeCourse(String s){

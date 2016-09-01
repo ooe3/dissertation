@@ -39,19 +39,60 @@ public class CreateListener implements ActionListener{
 			String email = cs.textField3().getText().trim();
 			String matric = cs.textField4().getText().trim();
 			//check if any of the textfields are empty
-			if(name.equals("") || lname.equals("") || address.equals("") || email.equals("") || matric.equals("") || password.equals("") || cs.getSelected().equals("") || cs.getSelected().equals("(select degree)")){
+			if(name.equals("") || lname.equals("") || email.equals("") || matric.equals("") || password.equals("") || cs.getSelected().equals("") || cs.getSelected().equals("(select degree)")){
 				JOptionPane.showMessageDialog(null, "No text entered. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				//check for special characters in any of the textfields 
-				if(q.checkString(name).equals("Exists") || q.checkLastName(lname).equals("Exists") || q.checkEmail(email).equals("Exists") || q.checkAddress(address).equals("Exists")){
-					JOptionPane.showMessageDialog(null, "Special characters not accepted", "Error message", JOptionPane.ERROR_MESSAGE);
+				if(q.checkFirstName(name).equals("Exists") || q.checkLastName(lname).equals("Exists")){
+					JOptionPane.showMessageDialog(null, "Special characters not accepted for names", "Error message", JOptionPane.ERROR_MESSAGE);
+					cs.textField().setText("");
+					cs.textField1().setText("");
+				}else if(q.checkEmail(email).equals("Exists")){
+					JOptionPane.showMessageDialog(null, "Email entered not in email format", "Error message", JOptionPane.ERROR_MESSAGE);
+					cs.textField().setText(name);
+					cs.textField1().setText(lname);
+					cs.textField3().setText("");
+					cs.textField4().setText(matric);
+					cs.passwordField().setText(matric);
+				}else if(!address.equals("")){
+					if(q.checkAddress(address).equals("Exists")){
+						JOptionPane.showMessageDialog(null, "Address entered not in the right format", "Error message", JOptionPane.ERROR_MESSAGE);
+						cs.textField().setText(name);
+						cs.textField1().setText(lname);
+						cs.textField2().setText("");
+						cs.textField4().setText(matric);
+						cs.passwordField().setText(matric);
+					}
+				}
+				else if(q.checkUsername(matric).equals("Exists")){
+					JOptionPane.showMessageDialog(null, "Username not in the right format", "Error message", JOptionPane.ERROR_MESSAGE);
+					cs.textField().setText(name);
+					cs.textField1().setText(lname);
+					cs.textField4().setText("");
+					cs.passwordField().setText("");
 				}else{
 					String[] tokens = cs.getSelected().split("\\(");//to get the course selected
-					if(q.insertStudent(name, lname, email, address, matric, tokens[0]).equals("Error")){//check if the student or matric exists already
-						JOptionPane.showMessageDialog(null, "Student exists or matric number exists", "Error message", JOptionPane.ERROR_MESSAGE);
+					String check = q.insertStudent(name, lname, email, address, matric, tokens[0]);
+					if(check.equals("Error")){//check if the student or matric exists already
+						JOptionPane.showMessageDialog(null, "This student exists", "Error message", JOptionPane.ERROR_MESSAGE);
+						cs.textField().setText("");
+						cs.textField1().setText("");
+						cs.textField2().setText("");
+						cs.textField3().setText("");
+						cs.textField4().setText("");
+						cs.passwordField().setText("");
+					}else if(check.equals("Exists")){
+						JOptionPane.showMessageDialog(null, "Matric number exists", "Error message", JOptionPane.ERROR_MESSAGE);
+						cs.textField().setText(name);
+						cs.textField1().setText(lname);
+						cs.textField2().setText(address);
+						cs.textField3().setText(email);
+						cs.textField4().setText("");
+						cs.passwordField().setText("");
 					}else{
 						JOptionPane.showMessageDialog(null, "Student added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
+						stt.removeAll(stt);
 						dg.removeAll(dg);
 						CreateStudent cst = new CreateStudent();//New CreateStudent object created to get updated info
 						cst.setVisible(true);

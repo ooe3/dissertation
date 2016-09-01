@@ -36,25 +36,24 @@ public class AddListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getActionCommand().equals("Submit")){
-			if(ad.textField_6().getText().trim().equals("") || ad.textField_7().getText().trim().equals("")){//Check if the textFields_6 or textFields_7 are empty
+			String exam = ad.textField_6().getText().trim();
+			String cw = ad.textField_7().getText().trim();
+			String checkExam = aq.checkMark(exam);
+			String checkCw = aq.checkMark(cw);
+			if(exam.equals("") || cw.trim().equals("")){//Check if the textFields_6 or textFields_7 are empty
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);//display error message
-			}else{
-				try{
-					int exam = Integer.parseInt(ad.textField_6().getText().trim());//converts input in textField_6 to integer
-					int cw = Integer.parseInt(ad.textField_7().getText().trim());//converts input in textField_7 to integer
-					if(exam > 100 || cw > 100){//Check if input in both textfields are greater than 100
-						JOptionPane.showMessageDialog(null, "Number greater than 100 or less than 0. Enter numbers between 0 & 100", "Error message", JOptionPane.ERROR_MESSAGE);
-						ad.textField_6().setText("");
-						ad.textField_7().setText("");
-					}else{
-						//call the calculatescore method to store the result in overall
-						//It takes the number stored in the exam, cw and the percentage for both the coursework & exam of the course selected
-						int overall = aq.calculateScore(exam, cw, aq.getDetails().getCoursework(), aq.getDetails().getExamPercentage());
-						//calls the insertCourseScore method taking the overall, selected course and name of the student
+			}else if(checkExam.equals("Error") || checkCw.equals("Error")){
+					JOptionPane.showMessageDialog(null, "Mark bands not entered. Enter bands from A1 - H", "Error message", JOptionPane.ERROR_MESSAGE);
+				}else{
+					int overall = aq.calculateScore(exam, cw, aq.getDetails().getCoursework(), aq.getDetails().getExamPercentage());
+					double e1 = (double)aq.getDetails().getExamPercentage()/100;
+					double c1 = (double)aq.getDetails().getCoursework()/100;
+					//calls the insertCourseScore method taking the overall, selected course and name of the student
+					int check = JOptionPane.showConfirmDialog(null, "Exam = "+exam+"*"+e1+"and Coursework = "+cw+"*"+c1+". Total = "+overall);//dialog box to ask if admin wants to calculate overall mark
+					if(check == 0){//if yes, store the result in the datatabase
 						aq.insertCourseScore(overall, aq.getDetails().getCourse(), aq.getStudent().getStudentID());
 						JOptionPane.showMessageDialog(null, "Result added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
-						
 						crt.removeAll(crt);
 						CourseResult crs = aq.getDetails(aq.getStudent().getStudentID());
 						//calls the checkResults method to check if the student has all their results entered
@@ -75,17 +74,21 @@ public class AddListener implements ActionListener{
 								aa.setVisible(true);
 								ad.dispose();
 							}else {
-								ad.setVisible(true);
+								AdminAdd aa = new AdminAdd();
+								aa.setVisible(true);
+								ad.dispose();
+								
 							}
 						}
-					}
-				}catch(NumberFormatException e1){//Exception to catch non-numeric or negative numbers
-					JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
-					ad.textField_6().setText("");
-					ad.textField_7().setText("");
 
-				}
+					}else {
+						ad.setVisible(true);
+						ad.textField_6().setText("");
+						ad.textField_7().setText("");
+					}
+				
 			}
+
 		}else if(e.getActionCommand().equals("Add") ){//calls this method if the ActionCommand is "Add"
 			ad.setVisible(true);
 		}else if(e.getActionCommand().equals("Home Menu") ){//calls this method if the ActionCommand is "Home Menu"
@@ -128,7 +131,7 @@ public class AddListener implements ActionListener{
 					ad.dispose();
 				}
 			}
-			
+
 		}else if(e.getActionCommand().equals("Add Student")){
 			dg.removeAll(dg);
 			getCdg.removeAll(getCdg);

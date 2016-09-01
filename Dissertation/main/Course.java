@@ -3,6 +3,7 @@ package main;
 public class Course {
 	private String courseName;
 	private int credit, exam, courseWork;
+	private Admin ad;
 	
 	public Course(String cs, int cred, int exam, int cw){
 		this.courseName = cs;
@@ -27,5 +28,9 @@ public class Course {
 	
 	public int getCoursework(){
 		return courseWork;
+	}
+	
+	public Admin getAdmin(){
+		return ad;
 	}
 }

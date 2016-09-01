@@ -38,7 +38,7 @@ public class MainListener implements ActionListener{
 			String cwks = mn.getTextField_8().getText().trim();
 			String name = mn.getTextField_2().getText().trim();
 			//to check textfields and options for empty inputs or no selections
-			if(name.equals("") || credits.equals("") || exams.equals("") || cwks.equals("") || mn.choice1().getSelectedItem().equals("(select degree)") || mn.choice1().getSelectedItem().equals("")){
+			if(name.equals("") || credits.equals("") || exams.equals("") || cwks.equals("") || mn.choice1().getSelectedItem().equals("(select degree)")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
 				try{
@@ -84,9 +84,9 @@ public class MainListener implements ActionListener{
 					JOptionPane.showMessageDialog(null, "Numeric input required", "Error message", JOptionPane.ERROR_MESSAGE);
 				}
 			}
-		}else if(e.getActionCommand().equals("Remove") ){
+		}else if(e.getActionCommand().equals("Remove Course") ){
 			//checks if no selection has been made
-			if(mn.choice5().getSelectedItem().equals("(select course)") || mn.choice5().getSelectedItem().equals("")){
+			if(mn.choice5().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -133,7 +133,7 @@ public class MainListener implements ActionListener{
 			mn.setVisible(true);
 		}else if(e.getActionCommand().equals("Degree")){
 			//check if no options have been selected
-			if(mn.choice3().getSelectedItem().equals("(select degree)") || mn.choice().getSelectedItem().equals("(select course)") || mn.choice().getSelectedItem().equals("") || mn.choice3().getSelectedItem().equals("")){
+			if(mn.choice3().getSelectedItem().equals("(select degree)") || mn.choice().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course or degree selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -169,7 +169,15 @@ public class MainListener implements ActionListener{
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			mn.dispose();
-		}else{
+		}else if(e.getActionCommand().equals("Remove")){
+			if(mn.choice4().getSelectedItem().equals("(select degree)") || mn.choice2().getSelectedItem().equals("(select course)")){
+				JOptionPane.showMessageDialog(null, "No course or degree selected", "Window",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				
+			}
+		}
+		else{
 			courseDegreeList.removeAll(courseDegreeList);
 			ViewStudents vs = new ViewStudents();
 			vs.setVisible(true);

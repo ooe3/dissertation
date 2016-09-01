@@ -33,6 +33,7 @@ public class StudentMain extends JFrame{
 	List<CourseDegree> cd;
 	CourseResult crt;
 	CourseDegree cde;
+	JScrollPane scrollPane;
 	public StudentMain(){
 		us = q.getUser();
 		sd = q.getStudentDegree();
@@ -73,7 +74,7 @@ public class StudentMain extends JFrame{
 		mntmPassword.addActionListener(new StudentMainListener(this));
 
 		//Student home
-		JMenuItem mntmStudentHome = new JMenuItem("Home");
+		JMenuItem mntmStudentHome = new JMenuItem("Main Page");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
 
@@ -81,7 +82,7 @@ public class StudentMain extends JFrame{
 		mntmRefresh.setActionCommand("Refresh");
 		mntmRefresh.addActionListener(new StudentMainListener(this));
 
-		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		mnMain.add(mntmStudentHome);
 		mnMain.add(mntmStudentResults);
 		mnMain.add(mntmPassword);
@@ -94,8 +95,13 @@ public class StudentMain extends JFrame{
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		textArea.setEditable(false);
 		textArea.setText(s.displayStudentCourses());
-		JScrollPane scrollPane = new JScrollPane(textArea);
+		scrollPane = new JScrollPane(textArea);
 		scrollPane.setBounds(16, 95, 978, 339);
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		   public void run() { 
+		       scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
+		   }
+		});
 		panel.add(scrollPane, BorderLayout.CENTER);
 
 		JLabel label = new JLabel();

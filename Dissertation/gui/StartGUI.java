@@ -28,7 +28,8 @@ import java.awt.List;
 import javax.swing.ImageIcon;
 
 /**
- * This class is the view class.
+ * This is the class the program begins with.
+ * Displays textfields to enter login details
  * @author ooemuwa
  *
  */

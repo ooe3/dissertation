@@ -40,10 +40,11 @@ public class ViewResult extends JFrame{
 	List<Student> stt;
 	List<StudentDegree> sd;
 	String selected3, selected2;
-	Choice choice, choice_1;
+	Choice choice, choice_1, choice_2, choice_3;
 	JTextArea textArea;
 	JLabel lblNewLabel;
 	JScrollPane scrollPane;
+	JPanel panel;
 	int count = 0;
 	final String choice1 = "View a particular students result", choice2 = "View overall results of a particular degree", 
 			choice3 = "View overall results for a particular course", choice4 = "View overall results for the school";
@@ -67,14 +68,28 @@ public class ViewResult extends JFrame{
 		getContentPane().setLayout(new CardLayout(0, 0));
 		setSize(1000, 800);
 
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
 
 		JLabel lblSelectTheOption = new JLabel("Select the option you want below");
 		lblSelectTheOption.setBounds(22, 6, 230, 16);
 		panel.add(lblSelectTheOption);
-
+		choice_2 = new Choice();
+		choice_2.setBounds(22, 86, 395, 27);
+		choice_2.setVisible(false);
+		panel.add(choice_2);
+		
+		choice_1 = new Choice();
+		choice_1.setBounds(22, 86, 395, 27);
+		choice_1.setVisible(false);
+		panel.add(choice_1);
+		
+		choice_3 = new Choice();
+		choice_3.setBounds(22, 86, 395, 27);
+		choice_3.setVisible(false);
+		panel.add(choice_3);
+		
 		choice = new Choice();
 		choice.setBounds(22, 28, 395, 27);
 		choice.add("(select option)");
@@ -91,25 +106,21 @@ public class ViewResult extends JFrame{
 				}
 
 				if(count > 1){
-					JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
-							JOptionPane.INFORMATION_MESSAGE);
-					dg.removeAll(dg);
-					cdg.removeAll(cdg);
-					stt.removeAll(stt);
-					ViewResult vr = new ViewResult();
-					vr.setVisible(true);
-					dispose();
-
+					choice_2.removeAll();
+					scrollPane.setVisible(false);
 				}
 
 				if(selected3.equals(choice1)){
 					lblNewLabel.setText("Select the student result you want to view");
 					lblNewLabel.setVisible(true);
+					
 					choice_1.add("(select student)");
 					for(int i = 0; i<stt.size();i++){
 						choice_1.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 					}
 					choice_1.setVisible(true);
+					choice_2.setVisible(false);
+					choice_3.setVisible(false);
 					choice_1.addItemListener(new ItemListener(){
 						public void itemStateChanged(ItemEvent ie)
 						{
@@ -129,15 +140,18 @@ public class ViewResult extends JFrame{
 				}else if(selected3.equals(choice2)){
 					lblNewLabel.setText("Select the degree results you want to view");
 					lblNewLabel.setVisible(true);
-					choice_1.add("(select degree)");
+					
+					choice_2.add("(select degree)");
 					for(int i = 0; i<dg.size();i++){
-						choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
+						choice_2.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 					}
-					choice_1.setVisible(true);
-					choice_1.addItemListener(new ItemListener(){
+					choice_1.setVisible(false);
+					choice_2.setVisible(true);
+					choice_3.setVisible(false);
+					choice_2.addItemListener(new ItemListener(){
 						public void itemStateChanged(ItemEvent ie)
 						{
-							selected2 = choice_1.getSelectedItem();
+							selected2 = choice_2.getSelectedItem();
 							if(!selected2.equals("(select degree)")){
 								sd = v.getStudentDegree();
 								String[] tokens = selected2.split("\\(");
@@ -156,16 +170,18 @@ public class ViewResult extends JFrame{
 				}else if(selected3.equals(choice3)){
 					lblNewLabel.setText("Select the course results you want to view");
 					lblNewLabel.setVisible(true);
-					choice_1.add("(select course)");
+					choice_3.add("(select course)");
 					for(int i = 0;i<cdg.size();i++){
-						choice_1.add(cdg.get(i).getCourse());
+						choice_3.add(cdg.get(i).getCourse());
 
 					}
-					choice_1.setVisible(true);
-					choice_1.addItemListener(new ItemListener(){
+					choice_1.setVisible(false);
+					choice_2.setVisible(false);
+					choice_3.setVisible(true);
+					choice_3.addItemListener(new ItemListener(){
 						public void itemStateChanged(ItemEvent ie)
 						{
-							selected2 = choice_1.getSelectedItem();
+							selected2 = choice_3.getSelectedItem();
 							if(!selected2.equals("(select course)")){
 								List<CourseResult> getCourses = v.getCourseResults();
 								getCourses.removeAll(getCourses);
@@ -181,6 +197,10 @@ public class ViewResult extends JFrame{
 						}
 					});
 				}else if(selected3.equals(choice4)){
+					choice_1.setVisible(false);
+					choice_2.setVisible(false);
+					choice_3.setVisible(false);
+					lblNewLabel.setVisible(false);
 					sd = v.getStudentDegree();
 					sd.removeAll(sd);
 					StudentDegree sdg = v.getOveralSchool(sc);
@@ -201,11 +221,7 @@ public class ViewResult extends JFrame{
 		lblNewLabel.setBounds(22, 61, 434, 16);
 		lblNewLabel.setVisible(false);
 		panel.add(lblNewLabel);
-
-		choice_1 = new Choice();
-		choice_1.setBounds(22, 86, 395, 27);
-		choice_1.setVisible(false);
-		panel.add(choice_1);
+		
 
 		textArea = new JTextArea();
 		textArea.setBounds(22, 148, 972, 555);
@@ -227,7 +243,7 @@ public class ViewResult extends JFrame{
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new ViewListener(this));
 		//admin home
-		JMenuItem mntmAdminHome = new JMenuItem("Home");
+		JMenuItem mntmAdminHome = new JMenuItem("Main");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new ViewListener(this));
 
@@ -252,7 +268,7 @@ public class ViewResult extends JFrame{
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new ViewListener(this));
 
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);

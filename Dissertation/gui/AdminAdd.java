@@ -86,7 +86,7 @@ public class AdminAdd extends JFrame{
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new AddListener(this));
 		//admin home
-		JMenuItem mntmAdminHome = new JMenuItem("Home");
+		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new AddListener(this));
 
@@ -111,7 +111,7 @@ public class AdminAdd extends JFrame{
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new AddListener(this));
 
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());//get users first name & last name and makes it a JMenu
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");//get users first name & last name and makes it a JMenu
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
@@ -144,7 +144,6 @@ public class AdminAdd extends JFrame{
 		//Choice that contains a dropdown list of courses
 		choice_2 = new Choice();
 		choice_2.setBounds(19, 204, 295, 27);
-		choice_2.add("(select course)");
 		panel_3.add(choice_2);
 
 		choice_2.setVisible(false);
@@ -152,16 +151,25 @@ public class AdminAdd extends JFrame{
 		choice_1.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
+				if(ie.getStateChange() == ItemEvent.SELECTED){
+					count+=1;
+				}
+
+				if(count > 1){
+					choice_2.removeAll();
+				}
+				
 				String selected4 = choice_1.getSelectedItem();//store the selected item in selected4
 				if(!selected4.equals("(select student)")){
 					crt = aq.getInfo();
 					lblNewLabel_4.setVisible(true);
 					lblrIndicatesThe.setVisible(true);
 					tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
-					Student student = aq.getSelected(tokens_5[0], tokens_5[1]);
 					crt.removeAll(crt);
-					crr = aq.getDetails(student.getStudentID());
+					Student student = aq.getSelected(tokens_5[0], tokens_5[1]);
 					
+					crr = aq.getDetails(student.getStudentID());
+					choice_2.add("(select course)");
 					for(int i = 0;i<crt.size();i++){
 						if(crt.get(i).getResult() != 0){
 							choice_2.add(crt.get(i).getCourseName().getCourse()+"(R)");
@@ -203,19 +211,7 @@ public class AdminAdd extends JFrame{
 
 
 						}});
-					if(ie.getStateChange() == ItemEvent.SELECTED){
-						count+=1;
-					}
-
-					if(count > 1){
-						crt.removeAll(crt);
-						stt.removeAll(stt);
-						JOptionPane.showMessageDialog(null, "The page needs to be refreshed before you make another selection.", "Window",
-								JOptionPane.INFORMATION_MESSAGE);
-						AdminAdd add = new AdminAdd();
-						add.setVisible(true);
-						dispose();
-					}
+					
 				}
 			}
 		});
@@ -240,25 +236,25 @@ public class AdminAdd extends JFrame{
 		lblCoursework.setVisible(false);
 		panel_3.add(lblCoursework);
 
-		lblPercentage = new JLabel("Percentage");
-		lblPercentage.setBounds(127, 265, 81, 16);
+		lblPercentage = new JLabel("% per assessment");
+		lblPercentage.setBounds(99, 266, 124, 27);
 		lblPercentage.setVisible(false);
 		panel_3.add(lblPercentage);
 
 		textField_6 = new JTextField();
-		textField_6.setBounds(217, 300, 66, 26);
+		textField_6.setBounds(214, 305, 66, 26);
 		textField_6.setVisible(false);
 		panel_3.add(textField_6);
 		textField_6.setColumns(10);
 
 		textField_7 = new JTextField();
-		textField_7.setBounds(217, 338, 66, 26);
+		textField_7.setBounds(214, 333, 66, 26);
 		textField_7.setVisible(false);
 		panel_3.add(textField_7);
 		textField_7.setColumns(10);
 
 		btnSubmit = new JButton("Submit");
-		btnSubmit.setBounds(99, 366, 117, 29);
+		btnSubmit.setBounds(161, 371, 117, 29);
 		btnSubmit.setVisible(false);
 		btnSubmit.addActionListener(new AddListener(this));
 		btnSubmit.setActionCommand("Submit");
@@ -282,10 +278,12 @@ public class AdminAdd extends JFrame{
 			{
 				List<CourseResult> crts = aq.getInfo();
 				name_selected = choice.getSelectedItem();
+				if(!name_selected.equals("(select student)")){
 				tokens_6 = name_selected.split(" ");
 				Student student = aq.getSelected(tokens_6[0], tokens_6[1]);
 				crts.removeAll(crts);
 				CourseResult crt = aq.getDetails(student.getStudentID());
+				}
 
 
 			}

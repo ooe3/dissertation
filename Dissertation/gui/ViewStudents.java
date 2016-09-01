@@ -43,7 +43,7 @@ public class ViewStudents extends JFrame{
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new ViewStudentsListener(this));
 		//admin home
-		JMenuItem mntmAdminHome = new JMenuItem("Home");
+		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new ViewStudentsListener(this));
 
@@ -68,7 +68,7 @@ public class ViewStudents extends JFrame{
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new ViewStudentsListener(this));
 		
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);

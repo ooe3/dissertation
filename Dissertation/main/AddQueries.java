@@ -31,20 +31,48 @@ public class AddQueries {
 	//Calculate the score of a course
 	//Method to be called in the GUI and int result returned to pass as one
 	//of the parameters in insertCourseScore
-	public int calculateScore(int exam, int coursework, int courseMark, int examMark){
-		double e = (double)exam/100;
-		double c = (double)coursework/100;
-		final int maxcredit = 22;
+	public int calculateScore(String exam, String coursework, int courseMark, int examMark){
+		int e = getMark(exam);
+		int c = getMark(coursework);
 		int finalscore = 0;
 
-		e*=examMark;
-		c*=courseMark;
-		double score = e+c;
-		score/=100;
-		score*=maxcredit;
+		double e1 = (double)examMark/100;
+		double c1 = (double)courseMark/100;
+
+		e1*=e;
+		c1*=c;
+		double score = e1+c1;
 
 		finalscore+=Math.round(score);
 		return finalscore;
+	}
+
+	public int getMark(String s){
+		int score = 0;
+		int[] scores = {22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
+		String[] bands = {"A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
+
+		for(int i = 0; i<scores.length;i++){
+			if(s.equals(bands[i])){
+				score+=scores[i];
+			}
+		}
+		return score;
+	}
+
+	public String checkMark(String s){
+		StringBuilder sb = new StringBuilder("");
+		int count = 0;
+		String[] marks = {"A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
+		for(int i = 0;i<marks.length;i++){
+			if(!s.equals(marks[i])){
+				count+=1;
+			}
+		}
+		if(count==marks.length){
+			sb.append("Error");
+		}
+		return sb.toString();
 	}
 
 	public Student getSelected(String firstName, String lastName){
@@ -89,18 +117,18 @@ public class AddQueries {
 		}
 
 	}
-	
+
 	public String checkResults(){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
-			for(int i = 0; i<getCourses.size();i++){
-				if(getCourses.get(i).getResult() == 0){
-					count+=1;
-				}
+		for(int i = 0; i<getCourses.size();i++){
+			if(getCourses.get(i).getResult() == 0){
+				count+=1;
 			}
-			if(count > 0 || getCourses.size() == 0){
-				sb.append("No");
-			}
+		}
+		if(count > 0 || getCourses.size() == 0){
+			sb.append("No");
+		}
 		return sb.toString();
 	}
 
@@ -108,15 +136,15 @@ public class AddQueries {
 		StringBuilder sb = new StringBuilder("");
 		int totalcred = 0, totalpoints = 0;
 		double average = 0;
-			for(int i = 0;i<getCourses.size();i++){
-				int res = getCourses.get(i).getResult();
-				int credit = getCourses.get(i).getCourseName().getCredit();
-				totalpoints+=(res*credit);
-				totalcred+=credit;
-			}
-			average+=((double)totalpoints/totalcred);
-			String s1 = String.format("%.3f", average);
-			sb.append(s1);
+		for(int i = 0;i<getCourses.size();i++){
+			int res = getCourses.get(i).getResult();
+			int credit = getCourses.get(i).getCourseName().getCredit();
+			totalpoints+=(res*credit);
+			totalcred+=credit;
+		}
+		average+=((double)totalpoints/totalcred);
+		String s1 = String.format("%.3f", average);
+		sb.append(s1);
 		return sb.toString();
 	}
 
@@ -193,7 +221,7 @@ public class AddQueries {
 	public Student getStudent(){
 		return sdt;
 	}
-	
+
 	public List<CourseResult> getInfo(){
 		return getCourses;
 	}

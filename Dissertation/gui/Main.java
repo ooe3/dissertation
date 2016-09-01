@@ -38,8 +38,9 @@ public class Main extends JFrame{
 	CourseDegree courseDegree;
 	List<CourseDegree> courseDegreeList;
 	JTextField textField_2, textField_3, textField_4, textField_8;
-	Choice choice_3, choice_5, choice, choice_1;
-	String selected3, selected2, selected4, selected5;
+	Choice choice_3, choice_5, choice, choice_1, choice_2, choice_4;
+	String selected3, selected2, selected4, selected5,selected6,selected7;
+	JScrollPane scrollPane;
 	public Main(){
 		us = q.getUser();
 		sc = q.getSchool();
@@ -60,7 +61,7 @@ public class Main extends JFrame{
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
-		setSize(1000, 800);
+		setSize(1200, 800);
 
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
@@ -77,7 +78,7 @@ public class Main extends JFrame{
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new MainListener(this));
 		//admin home
-		JMenuItem mntmAdminHome = new JMenuItem("Home");
+		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new MainListener(this));
 
@@ -102,7 +103,7 @@ public class Main extends JFrame{
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new MainListener(this));
 
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
@@ -129,10 +130,11 @@ public class Main extends JFrame{
 		panel.add(label_3);
 
 		JTextArea textArea_1 = new JTextArea();
-		textArea_1.setBounds(6, 111, 976, 335);
+		textArea_1.setBounds(6, 111, 722, 335);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
 		textArea_1.setText(m.displayAvailableCourses());
+		//panel.add(textArea_1, BorderLayout.CENTER);
 
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -175,12 +177,24 @@ public class Main extends JFrame{
 		choice_1.add("(select degree)");
 
 		choice_3 = new Choice();
-		choice_3.setBounds(533, 514, 348, 27);
+		choice_3.setBounds(807, 174, 348, 27);
 		choice_3.add("(select degree)");
+		
+		choice_4 = new Choice();
+		choice_4.setBounds(807, 342, 348, 27);
+		choice_4.add("(select degree)");
+		choice_4.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selected6 = choice_4.getSelectedItem();
+			}
+		});
+		panel.add(choice_4);
 
 		for(int i = 0; i<dg.size();i++){
 			choice_3.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 			choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
+			choice_4.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 		}
 
 		choice_3.addItemListener(new ItemListener(){
@@ -215,7 +229,7 @@ public class Main extends JFrame{
 		panel.add(lblNewLabel_3);
 
 		JButton btnRemoveCourse = new JButton("Remove Course");
-		btnRemoveCourse.setActionCommand("Remove");
+		btnRemoveCourse.setActionCommand("Remove Course");
 		btnRemoveCourse.setBounds(533, 693, 130, 29);
 		btnRemoveCourse.addActionListener(new MainListener(this));
 		panel.add(btnRemoveCourse);
@@ -229,27 +243,43 @@ public class Main extends JFrame{
 		panel.add(lblCourseworkPercentage);
 
 		JLabel lblDegree = new JLabel("Degree");
-		lblDegree.setBounds(464, 520, 61, 16);
+		lblDegree.setBounds(740, 174, 61, 16);
 		panel.add(lblDegree);
 
-		JScrollPane scrollPane = new JScrollPane(textArea_1);
-		scrollPane.setBounds(6, 111, 976, 335);
+		scrollPane = new JScrollPane(textArea_1);
+		scrollPane.setBounds(6, 111, 722, 335);
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		   public void run() { 
+		       scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
+		   }
+		});
 		panel.add(scrollPane, BorderLayout.CENTER);
 
 		JLabel lblAddCourseTo = new JLabel("Add course to degree");
-		lblAddCourseTo.setBounds(464, 458, 188, 16);
+		lblAddCourseTo.setBounds(740, 109, 188, 16);
 		panel.add(lblAddCourseTo);
 
 		JLabel lblCourse = new JLabel("Course");
-		lblCourse.setBounds(464, 486, 61, 16);
+		lblCourse.setBounds(740, 137, 61, 16);
 		panel.add(lblCourse);
-
+		choice_2 = new Choice();
+		choice_2.setBounds(807, 297, 348, 27);
+		choice_2.add("(select course)");
+		choice_2.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selected7 = choice_2.getSelectedItem();
+			}
+		});
+		panel.add(choice_2);
+		
 		choice = new Choice();
-		choice.setBounds(533, 480, 348, 27);
+		choice.setBounds(807, 131, 348, 27);
 		choice.add("(select course)");
 		for(int i = 0;i<cdg.size();i++){
 			choice_5.add(cdg.get(i).getCourse());
 			choice.add(cdg.get(i).getCourse());
+			choice_2.add(cdg.get(i).getCourse());
 
 		}
 
@@ -264,7 +294,7 @@ public class Main extends JFrame{
 		JButton btnAddToDegree = new JButton("Add to Degree");
 		btnAddToDegree.setActionCommand("Degree");
 		btnAddToDegree.addActionListener(new MainListener(this));
-		btnAddToDegree.setBounds(691, 571, 117, 29);
+		btnAddToDegree.setBounds(736, 222, 117, 29);
 		panel.add(btnAddToDegree);
 
 		JLabel lblDegree_1 = new JLabel("Degree");
@@ -279,6 +309,25 @@ public class Main extends JFrame{
 			}
 		});
 		panel.add(choice_1);
+		
+		JLabel lblRemoveCourseFrom = new JLabel("Remove course from degree");
+		lblRemoveCourseFrom.setBounds(740, 272, 188, 16);
+		panel.add(lblRemoveCourseFrom);
+		
+		JLabel lblCourse_1 = new JLabel("Course");
+		lblCourse_1.setBounds(740, 300, 61, 16);
+		panel.add(lblCourse_1);
+		
+		JLabel lblDegree_2 = new JLabel("Degree");
+		lblDegree_2.setBounds(740, 342, 61, 16);
+		panel.add(lblDegree_2);
+		
+		
+		JButton btnRemove = new JButton("Remove");
+		btnRemove.setBounds(740, 383, 117, 29);
+		btnRemove.setActionCommand("Remove");
+		btnRemove.addActionListener(new MainListener(this));
+		panel.add(btnRemove);
 
 	}
 
@@ -320,6 +369,13 @@ public class Main extends JFrame{
 	public Choice choice1(){
 		return choice_1;
 	}
+	
+	public Choice choice2(){
+		return choice_2;
+	}
+	public Choice choice4(){
+		return choice_4;
+	}
 
 	public String getSelected4(){
 		return selected4;
@@ -327,5 +383,13 @@ public class Main extends JFrame{
 
 	public String selected5(){
 		return selected5;
+	}
+	
+	public String getSelected6(){
+		return selected6;
+	}
+
+	public String selected7(){
+		return selected7;
 	}
 }

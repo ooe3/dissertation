@@ -57,11 +57,11 @@ public class ResultsFrame extends JFrame{
 		mntmPassword.addActionListener(new ResultsFrameListener(this));
 
 		//Student home
-		JMenuItem mntmStudentHome = new JMenuItem("Home");
+		JMenuItem mntmStudentHome = new JMenuItem("Main Page");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new ResultsFrameListener(this));
 
-		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		mnMain.add(mntmStudentHome);
 		mnMain.add(mntmStudentResults);
 		mnMain.add(mntmPassword);

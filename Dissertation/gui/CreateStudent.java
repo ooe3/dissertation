@@ -62,11 +62,11 @@ public class CreateStudent extends JFrame{
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
 		
-		JLabel lblFirstName = new JLabel("First Name");
+		JLabel lblFirstName = new JLabel("First Name*");
 		lblFirstName.setBounds(37, 98, 92, 16);
 		panel.add(lblFirstName);
 		
-		JLabel lblNewLabel = new JLabel("Surname");
+		JLabel lblNewLabel = new JLabel("Surname*");
 		lblNewLabel.setBounds(37, 137, 116, 16);
 		panel.add(lblNewLabel);
 		
@@ -74,19 +74,19 @@ public class CreateStudent extends JFrame{
 		lblAddress.setBounds(37, 182, 61, 16);
 		panel.add(lblAddress);
 		
-		JLabel lblEmail = new JLabel("Email");
+		JLabel lblEmail = new JLabel("Email*");
 		lblEmail.setBounds(37, 223, 61, 16);
 		panel.add(lblEmail);
 		
-		JLabel lblUsername = new JLabel("Username");
+		JLabel lblUsername = new JLabel("Username*");
 		lblUsername.setBounds(37, 267, 74, 16);
 		panel.add(lblUsername);
 		
-		JLabel lblPassword = new JLabel("Password");
-		lblPassword.setBounds(37, 317, 61, 16);
+		JLabel lblPassword = new JLabel("Password*");
+		lblPassword.setBounds(37, 317, 92, 16);
 		panel.add(lblPassword);
 		
-		JLabel lblDegree = new JLabel("Degree");
+		JLabel lblDegree = new JLabel("Degree*");
 		lblDegree.setBounds(37, 359, 61, 16);
 		panel.add(lblDegree);
 		
@@ -149,11 +149,17 @@ public class CreateStudent extends JFrame{
 		});
 		panel.add(choice);
 		
+		
 		JButton btnGenerateUniqueUsername = new JButton("Generate Unique Username");
 		btnGenerateUniqueUsername.setBounds(445, 262, 205, 29);
 		btnGenerateUniqueUsername.setActionCommand("Generate");
 		btnGenerateUniqueUsername.addActionListener(new CreateListener(this));
 		panel.add(btnGenerateUniqueUsername);
+		
+		JLabel lblIndicatesRequired = new JLabel("* indicates required fields");
+		lblIndicatesRequired.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
+		lblIndicatesRequired.setBounds(37, 57, 142, 16);
+		panel.add(lblIndicatesRequired);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -166,7 +172,7 @@ public class CreateStudent extends JFrame{
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new CreateListener(this));
 		//admin home
-		JMenuItem mntmAdminHome = new JMenuItem("Home");
+		JMenuItem mntmAdminHome = new JMenuItem("Main");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new CreateListener(this));
 
@@ -191,7 +197,7 @@ public class CreateStudent extends JFrame{
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new CreateListener(this));
 
-		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName());
+		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
