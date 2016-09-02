@@ -202,27 +202,39 @@ public class MainQueries {
 		}
 		return sb.toString();
 	}
-	
-	public void removeCourseFromDegree(String course, String degree){
+
+	public String removeCourseFromDegree(String course, String degree){
 		ResultSet rs = null;
+		StringBuilder sb = new StringBuilder("");
+		int id = 0;
+		int count = 0;
 		try{
-			String query = "SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?";
-			ps = conn.prepareStatement(query);
-			ps.setString(1, degree);
-			rs = ps.executeQuery();
-			if(rs.next()){
-				int degreeid = rs.getInt("DEGREEID");
-			String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = ?";
-			ps = conn.prepareStatement(sql1);
-			ps.setString(1, course);
-			ps.setInt(2, degreeid);
-			ps.executeUpdate();
+
+			for(int i = 0;i<getCdg.size();i++){
+				String d = getCdg.get(i).getDegreeID().getDegreeName();
+				String c = getCdg.get(i).getName().getCourse();
+				if(d.equals(degree) && c.equals(course)){
+					id+=getCdg.get(i).getDegreeID().getDegreeID();
+				}else{
+					count+=1;
+				}
 			}
-			rs.close();
-			ps.close();
+			if(count != getCdg.size()){
+				String sql1 = "DELETE FROM COURSEDEGREE WHERE COURSE_NAME = ? AND DEGREE_ID = ?";
+				ps = conn.prepareStatement(sql1);
+				ps.setString(1, course);
+				ps.setInt(2, id);
+				ps.executeUpdate();
+				ps.close();
+			}else{
+				sb.append("Error");
+			}
+
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		return sb.toString();
 	}
 
 	//Remove course from the system
@@ -246,8 +258,8 @@ public class MainQueries {
 		}
 
 	}
-	
-	
+
+
 
 	public List<Degree> getList(){
 		return getDg;
@@ -260,9 +272,9 @@ public class MainQueries {
 	public List<CourseDegree> getCourseDegreeList(){
 		return getCdg;
 	}
-	
+
 	public int getCount(){
-	return count;
+		return count;
 	}
 }
 

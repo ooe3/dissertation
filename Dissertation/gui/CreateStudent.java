@@ -160,6 +160,10 @@ public class CreateStudent extends JFrame{
 		lblIndicatesRequired.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
 		lblIndicatesRequired.setBounds(37, 57, 142, 16);
 		panel.add(lblIndicatesRequired);
+		
+		JLabel lbldefaultPasswordIs = new JLabel("*Default password is the username*");
+		lbldefaultPasswordIs.setBounds(454, 317, 236, 16);
+		panel.add(lbldefaultPasswordIs);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

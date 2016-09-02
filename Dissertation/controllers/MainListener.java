@@ -18,7 +18,7 @@ public class MainListener implements ActionListener{
 	List<Course> cdg;
 	List<Student> stt;
 	List<CourseDegree> courseDegreeList;
-	
+
 	Student st;
 	public MainListener(Main min){
 		mn = min;
@@ -174,7 +174,27 @@ public class MainListener implements ActionListener{
 				JOptionPane.showMessageDialog(null, "No course or degree selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
-				
+				int show = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+mn.choice2().getSelectedItem()+" from "+mn.choice4().getSelectedItem()+"?");//dialog box to ask
+				if(show == 0){
+					String[] tokens = mn.getSelected6().split("\\(");
+					String check = m.removeCourseFromDegree(mn.selected7(), tokens[0]);
+					if(check.equals("Error")){
+						JOptionPane.showMessageDialog(null, "Course already removed from this degree", "Window",
+								JOptionPane.ERROR_MESSAGE);
+					}else{
+					JOptionPane.showMessageDialog(null, "Removal successful", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+					
+					}
+					courseDegreeList.removeAll(courseDegreeList);
+					dg.removeAll(dg);
+					cdg.removeAll(cdg);
+					Main m = new Main();
+					m.setVisible(true);
+					mn.dispose();
+				}else{
+					mn.setVisible(true);
+				}
 			}
 		}
 		else{
