@@ -33,7 +33,7 @@ public class AddDegreeListener implements ActionListener{
 			String type = ad.textField1().getText().trim();
 			if(name.equals("") || type.equals("")){
 				JOptionPane.showMessageDialog(null, "One or more textfields empty. Enter text", "Error message", JOptionPane.ERROR_MESSAGE);
-			}else if(!name.matches("[a-zA-Z\\s]*") || !type.matches("[a-zA-Z]*")){
+			}else if(!name.matches("[a-zA-Z\\s&]*") || !type.matches("[a-zA-Z]*")){
 					JOptionPane.showMessageDialog(null, "Special characters not accepted or incorrect format", "Error message", JOptionPane.ERROR_MESSAGE);
 				}else{
 					String check = m.insertDegree(name, type, sc);

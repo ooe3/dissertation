@@ -69,12 +69,12 @@ public class AddDegree extends JFrame{
 		panel.add(lblAddAdministrator);
 
 		textField = new JTextField();
-		textField.setBounds(158, 93, 168, 26);
+		textField.setBounds(158, 93, 359, 26);
 		panel.add(textField);
 		textField.setColumns(10);
 
 		textField_1 = new JTextField();
-		textField_1.setBounds(158, 132, 168, 26);
+		textField_1.setBounds(158, 132, 359, 26);
 		panel.add(textField_1);
 		textField_1.setColumns(10);
 
