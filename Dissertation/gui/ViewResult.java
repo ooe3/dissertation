@@ -45,6 +45,7 @@ public class ViewResult extends JFrame{
 	JLabel lblNewLabel;
 	JScrollPane scrollPane;
 	JPanel panel;
+	int id = 0;
 	int count = 0;
 	final String choice1 = "View a particular students result", choice2 = "View overall results of a particular degree", 
 			choice3 = "View overall results for a particular course", choice4 = "View overall results for the school";
@@ -156,7 +157,12 @@ public class ViewResult extends JFrame{
 								sd = v.getStudentDegree();
 								String[] tokens = selected2.split("\\(");
 								sd.removeAll(sd);
-								StudentDegree sd = v.getDegreeInfo(tokens[0]);
+								for(int i = 0; i<dg.size();i++){
+									if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
+										id = dg.get(i).getDegreeID();
+									}
+								}
+								StudentDegree sd = v.getDegreeInfo(id);
 								String display = v.degreeResult();
 								if(display.equals("No results for that degree") || selected2.equals("(select degree)")){
 									textArea.setText("No result available for this degree or no degree selected");

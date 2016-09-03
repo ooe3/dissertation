@@ -211,7 +211,7 @@ public class Queries {
 		return st;
 	}
 
-	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
+	public String insertStudent(String name, String lname, String email, String address, String matric, int degree){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
 		final String type = "Student";
@@ -250,10 +250,10 @@ public class Queries {
 				ps.setString(4, matric);
 				ps.executeUpdate();
 
-				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?), (SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?))";
+				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?), ?)";
 				ps = conn.prepareStatement(sql2);
 				ps.setString(1, matric);
-				ps.setString(2, degree);
+				ps.setInt(2, degree);
 				ps.executeUpdate();
 			}
 			ps.close();

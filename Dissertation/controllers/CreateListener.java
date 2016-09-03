@@ -19,6 +19,7 @@ public class CreateListener implements ActionListener{
 	List<Degree> dg;//List containing degree object
 	List<Student> stt;
 	List<Course> cdg;
+	int id = 0;
 	public CreateListener(CreateStudent c){
 		cs = c;//initialize CreateStudent
 		us = q.getUser();//initialize Users object to get the current user
@@ -72,7 +73,12 @@ public class CreateListener implements ActionListener{
 					cs.passwordField().setText("");
 				}else{
 					String[] tokens = cs.getSelected().split("\\(");//to get the course selected
-					String check = q.insertStudent(name, lname, email, address, matric, tokens[0]);
+					for(int i = 0; i<dg.size();i++){
+						if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
+							id = dg.get(i).getDegreeID();
+						}
+					}
+					String check = q.insertStudent(name, lname, email, address, matric, id);
 					if(check.equals("Error")){//check if the student or matric exists already
 						JOptionPane.showMessageDialog(null, "This student exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						cs.textField().setText("");

@@ -180,10 +180,6 @@ public class CreateStudent extends JFrame{
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new CreateListener(this));
 
-		//change password menu item
-		JMenuItem mntmPassword = new JMenuItem("Change Password");
-		mntmPassword.setActionCommand("Change Password");
-		mntmPassword.addActionListener(new CreateListener(this));
 		
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
@@ -192,10 +188,6 @@ public class CreateStudent extends JFrame{
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new CreateListener(this));
-		
-		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Refresh");
-		mntmRefresh.addActionListener(new CreateListener(this));
 		
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
@@ -207,8 +199,6 @@ public class CreateStudent extends JFrame{
 		admin.add(mntmCreate);
 		admin.add(mntmView);
 		admin.add(mntmViewStudent);
-		admin.add(mntmPassword);
-		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
 	}

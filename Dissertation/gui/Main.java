@@ -20,7 +20,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import controllers.StudentMainListener;
 import main.*;
 import controllers.*;
 import javax.swing.JScrollBar;
@@ -91,19 +90,14 @@ public class Main extends JFrame{
 		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new MainListener(this));
-
-		//change password menu item
-		JMenuItem mntmPassword = new JMenuItem("Change Password");
-		mntmPassword.setActionCommand("Change Password");
-		mntmPassword.addActionListener(new MainListener(this));
+		
+		JMenuItem mntmAddDegree = new JMenuItem("Add Degree");
+		mntmAddDegree.setActionCommand("AddD");
+		mntmAddDegree.addActionListener(new MainListener(this));
 
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new MainListener(this));
-
-		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Refresh");
-		mntmRefresh.addActionListener(new MainListener(this));
 
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
@@ -116,11 +110,10 @@ public class Main extends JFrame{
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmAddDegree);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
 		admin.add(mntmViewStudent);
-		admin.add(mntmPassword);
-		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
 

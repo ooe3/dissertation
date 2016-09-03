@@ -96,13 +96,13 @@ public class ViewResultQueries {
 		return s;
 	}
 
-	public StudentDegree getDegreeInfo(String name){
+	public StudentDegree getDegreeInfo(int id){
 		sd = null;
 		ResultSet rs = null;
 		try{
-			String query = "SELECT * FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE WHERE d.DEGREENAME = ? AND sd.RESULT IS NOT NULL";
+			String query = "SELECT * FROM STUDENT_DEGREE AS sd INNER JOIN DEGREE AS d ON d.DEGREEID = sd.DEGREE WHERE d.DEGREEID = ? AND sd.RESULT IS NOT NULL";
 			ps = conn.prepareStatement(query);
-			ps.setString(1, name);
+			ps.setInt(1, id);
 			rs = ps.executeQuery();
 			while(rs.next()){
 				int student = rs.getInt("STUDENT");

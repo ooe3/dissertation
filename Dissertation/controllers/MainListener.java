@@ -19,7 +19,7 @@ public class MainListener implements ActionListener{
 	List<Course> cdg;
 	List<Student> stt;
 	List<CourseDegree> courseDegreeList;
-
+	int id = 0;
 	Student st;
 	public MainListener(Main min){
 		mn = min;
@@ -62,7 +62,12 @@ public class MainListener implements ActionListener{
 
 							}else{
 								String[] tokens = mn.selected5().split("\\(");//gets the degree selection and splits it on the opening bracket
-								String degree = m.addCourseDegree(name, tokens[0]);//calls the addCourseDegree method to store the course and degree
+								for(int i = 0; i<dg.size();i++){
+									if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
+										id = dg.get(i).getDegreeID();
+									}
+								}
+								String degree = m.addCourseDegree(name, id);//calls the addCourseDegree method to store the course and degree
 								if(degree.equals("Error")){//checks if the course has already been assigned to the degree
 									JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 											JOptionPane.ERROR_MESSAGE);
@@ -142,7 +147,12 @@ public class MainListener implements ActionListener{
 						JOptionPane.ERROR_MESSAGE);
 			}else{
 				String[] tokens = mn.getSelected3().split("\\(");//gets the degree selection and splits it on the opening bracket
-				String degree = m.addCourseDegree(mn.getSelected4(), tokens[0]);//calls the addCourseDegree method to store the course and degree
+				for(int i = 0; i<dg.size();i++){
+					if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
+						id = dg.get(i).getDegreeID();
+					}
+				}
+				String degree = m.addCourseDegree(mn.getSelected4(), id);//calls the addCourseDegree method to store the course and degree
 				if(degree.equals("Error")){//checks if the course has already been assigned to the degree
 					JOptionPane.showMessageDialog(null, "Course already assigned to this degree", "Window",
 							JOptionPane.ERROR_MESSAGE);
@@ -158,13 +168,9 @@ public class MainListener implements ActionListener{
 					mn.dispose();
 				}
 			}
-		}else if(e.getActionCommand().equals("Refresh")){
-			courseDegreeList.removeAll(courseDegreeList);
-			cdg.removeAll(cdg);
-			dg.removeAll(dg);
-			stt.removeAll(stt);
-			Main m = new Main();
-			m.setVisible(true);
+		}else if(e.getActionCommand().equals("AddD")){
+			AddDegree adg = new AddDegree();
+			adg.setVisible(true);
 			mn.dispose();
 		}
 		else if(e.getActionCommand().equals("Add Student")){
@@ -181,7 +187,12 @@ public class MainListener implements ActionListener{
 				int show = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+mn.choice2().getSelectedItem()+" from "+mn.choice4().getSelectedItem()+"?");//dialog box to ask
 				if(show == 0){
 					String[] tokens = mn.getSelected6().split("\\(");
-					String check = m.removeCourseFromDegree(mn.selected7(), tokens[0]);
+					for(int i = 0; i<dg.size();i++){
+						if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
+							id = dg.get(i).getDegreeID();
+						}
+					}
+					String check = m.removeCourseFromDegree(mn.selected7(), id);
 					if(check.equals("Error")){
 						JOptionPane.showMessageDialog(null, "Course already removed from this degree", "Window",
 								JOptionPane.ERROR_MESSAGE);

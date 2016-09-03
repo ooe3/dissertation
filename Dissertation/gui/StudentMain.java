@@ -69,24 +69,15 @@ public class StudentMain extends JFrame{
 		mntmStudentResults.setActionCommand("View");
 		mntmStudentResults.addActionListener(new StudentMainListener(this));
 
-		JMenuItem mntmPassword = new JMenuItem("Change Password");
-		mntmPassword.setActionCommand("Change Password");
-		mntmPassword.addActionListener(new StudentMainListener(this));
-
 		//Student home
 		JMenuItem mntmStudentHome = new JMenuItem("Main Page");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
 
-		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Refresh");
-		mntmRefresh.addActionListener(new StudentMainListener(this));
 
 		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		mnMain.add(mntmStudentHome);
 		mnMain.add(mntmStudentResults);
-		mnMain.add(mntmPassword);
-		mnMain.add(mntmRefresh);
 		mnMain.add(mntmLogOut);
 		menuBar.add(mnMain);
 

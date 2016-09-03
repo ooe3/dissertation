@@ -113,6 +113,34 @@ public class MainQueries {
 
 		return dg;
 	}
+	
+	public String insertDegree(String name, String type, School sc){
+		String check = "";
+		int counted = 0;
+		try{
+			for(int i = 0; i<getDg.size();i++){
+				String degreename = getDg.get(i).getDegreeName();
+				String degreetype = getDg.get(i).getDegreeType();
+				if((degreename.toLowerCase().equals(name.toLowerCase()))&&(degreetype.toLowerCase().equals(type.toLowerCase()))){
+					counted+=1;
+					check+="Error";
+				}
+
+			}
+			if(counted == 0){
+				String sql = "INSERT INTO DEGREE (DEGREENAME, DEGREETYPE, SCHOOL_REF) VALUES (?,?,?)";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, name);
+				ps.setString(2, type);
+				ps.setString(3, sc.getName());
+				ps.executeUpdate();
+			}
+			ps.close();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return check;
+	}
 
 	//Insert new courses into the system by admin
 	public String insertCourse(String s, int d, int d1, int d2){
@@ -167,33 +195,27 @@ public class MainQueries {
 	}
 
 	//To insert the specific course and the degree it belongs to
-	public String addCourseDegree(String course, String degree){
+	public String addCourseDegree(String course, int degree){
 		StringBuilder sb = new StringBuilder("");
 		ResultSet rs = null;
 		int count = 0;
 		try{
 			for(int i = 0;i<getCdg.size();i++){
 				String courseName = getCdg.get(i).getName().getCourse();
-				String degreename = getCdg.get(i).getDegreeID().getDegreeName();
-				if(courseName.equals(course) && degreename.equals(degree)){
+				int degreeid = getCdg.get(i).getDegreeID().getDegreeID();
+				if(courseName.equals(course) && (degreeid == degree)){
 					count+=1;
 					sb.append("Error");
 				}
 			}
 			if(count == 0){
-				String query = "SELECT DEGREEID FROM DEGREE WHERE DEGREENAME = ?";
-				ps = conn.prepareStatement(query);
-				ps.setString(1, degree);
-				rs = ps.executeQuery();
-				if(rs.next()){
-					int degreeid = rs.getInt("DEGREEID");
+				
 					String sql = "INSERT INTO COURSEDEGREE VALUES (?, ?)";
 					ps = conn.prepareStatement(sql);
 					ps.setString(1, course);
-					ps.setInt(2, degreeid);
+					ps.setInt(2, degree);
 					ps.executeUpdate();
-				}
-				rs.close();
+			
 			}
 
 			ps.close();
@@ -203,7 +225,7 @@ public class MainQueries {
 		return sb.toString();
 	}
 
-	public String removeCourseFromDegree(String course, String degree){
+	public String removeCourseFromDegree(String course, int degree){
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder("");
 		int id = 0;
@@ -211,10 +233,10 @@ public class MainQueries {
 		try{
 
 			for(int i = 0;i<getCdg.size();i++){
-				String d = getCdg.get(i).getDegreeID().getDegreeName();
+				int d = getCdg.get(i).getDegreeID().getDegreeID();
 				String c = getCdg.get(i).getName().getCourse();
-				if(d.equals(degree) && c.equals(course)){
-					id+=getCdg.get(i).getDegreeID().getDegreeID();
+				if(d == degree && c.equals(course)){
+					id=getCdg.get(i).getDegreeID().getDegreeID();
 				}else{
 					count+=1;
 				}
