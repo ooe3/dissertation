@@ -14,6 +14,7 @@ public class MainListener implements ActionListener{
 	Users us;
 	Queries q = Queries.getQueries();//Queries object created to access methods in the Queries class
 	MainQueries m = MainQueries.getMain();//MainQueries object created to access methods in the MainQueries class
+	StudentQueries sq = StudentQueries.getMain();
 	List<Degree> dg;//Create a list containing degree objects
 	List<Course> cdg;
 	List<Student> stt;
@@ -72,6 +73,7 @@ public class MainListener implements ActionListener{
 									courseDegreeList.removeAll(courseDegreeList);
 									cdg.removeAll(cdg);
 									dg.removeAll(dg);
+									stt.removeAll(stt);
 									Main m = new Main();//Create new main jframe to get updated info
 									m.setVisible(true);
 									mn.dispose();//dispose current main jframe
@@ -99,6 +101,7 @@ public class MainListener implements ActionListener{
 					courseDegreeList.removeAll(courseDegreeList);
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
+					stt.removeAll(stt);
 					Main m = new Main();
 					m.setVisible(true);
 					mn.dispose();
@@ -118,6 +121,7 @@ public class MainListener implements ActionListener{
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
+			q.closeConnection();
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			mn.dispose();
@@ -189,12 +193,34 @@ public class MainListener implements ActionListener{
 					courseDegreeList.removeAll(courseDegreeList);
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
+					stt.removeAll(stt);
 					Main m = new Main();
 					m.setVisible(true);
 					mn.dispose();
 				}else{
 					mn.setVisible(true);
 				}
+			}
+		}else if(e.getActionCommand().equals("Enroll")){
+			if(mn.choiceStudent().getSelectedItem().equals("(select student)") || mn.choiceCourse().getSelectedItem().equals("(select course)")){
+				JOptionPane.showMessageDialog(null, "No student or course  selected", "Window",
+						JOptionPane.ERROR_MESSAGE);
+			}else{
+				if(sq.insertChoice(mn.selectedCourse(), mn.getID()).equals("Full")){
+					JOptionPane.showMessageDialog(null, "Maximum credits selected for this student.", "Window",
+							JOptionPane.ERROR_MESSAGE);
+				}else {
+					JOptionPane.showMessageDialog(null, "Student enrolled in course successful", "Window",
+							JOptionPane.INFORMATION_MESSAGE);
+
+				}
+				courseDegreeList.removeAll(courseDegreeList);
+				cdg.removeAll(cdg);
+				dg.removeAll(dg);
+				stt.removeAll(stt);
+				Main m = new Main();
+				m.setVisible(true);
+				mn.dispose();
 			}
 		}
 		else{

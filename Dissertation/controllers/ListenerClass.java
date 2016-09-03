@@ -46,6 +46,9 @@ public class ListenerClass implements ActionListener{
 			sg.matric().setText("");
 			sg.pass().setText("");
 
+		}else{
+			CreateAdmin ca = new CreateAdmin();
+			ca.setVisible(true);
 		}
 
 	}

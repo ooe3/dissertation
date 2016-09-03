@@ -1,5 +1,7 @@
 package gui;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 import javax.swing.*;
 import main.*;
@@ -8,14 +10,17 @@ import controllers.*;
 public class ViewStudents extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
+	MainQueries m = MainQueries.getMain();
 	School sc;
-	List<Student> studentList;
-	Student sdt;
+	List<Degree> dg;
+//	List<Student> studentList;
+//	Student sdt;
+	Choice choice_1;
+	JTextArea textArea_1;
 	public ViewStudents(){
 		us = q.getUser();
 		sc = q.getSchool();
-		sdt = q.getAll(sc);
-		studentList = q.getStudents();
+		
 		
 		initialize();
 	}
@@ -79,19 +84,51 @@ public class ViewStudents extends JFrame{
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
 		
-		JTextArea textArea_1 = new JTextArea();
+		textArea_1 = new JTextArea();
 		textArea_1.setBounds(6, 111, 976, 607);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(q.allStudents());
+		textArea_1.setText(q.allStudents("All"));
+		
 		
 		JScrollPane scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 976, 607);
 		panel.add(scrollPane, BorderLayout.CENTER);
 		
 		JLabel lblAllStudentDetails = new JLabel("All Student Details");
-		lblAllStudentDetails.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-		lblAllStudentDetails.setBounds(6, 16, 409, 38);
+		lblAllStudentDetails.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		lblAllStudentDetails.setBounds(6, 6, 409, 29);
 		panel.add(lblAllStudentDetails);
+		
+		choice_1 = new Choice();
+		choice_1.setBounds(6, 63, 315, 27);
+		choice_1.add("(select degree)");
+		dg = m.getList();
+		dg.removeAll(dg);
+		List<Student> studentList = q.getStudents();
+		studentList.removeAll(studentList);
+		Student sdt = q.getAll(sc);
+		Degree d = m.displayDegree(sc);
+		for(int i = 0;i<dg.size();i++){
+			choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
+		}
+		choice_1.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				String selected = choice_1.getSelectedItem();
+				
+				if(selected.equals("(select degree)")){
+					textArea_1.setText(q.allStudents("All"));
+				}else{
+					textArea_1.setText(q.allStudents(selected));
+				}
+			}
+		});
+		panel.add(choice_1);
+		
+		JLabel lblFilterStudentsBy = new JLabel("Filter students by degree");
+		lblFilterStudentsBy.setBounds(6, 41, 200, 16);
+		panel.add(lblFilterStudentsBy);
 	}
+	
 }

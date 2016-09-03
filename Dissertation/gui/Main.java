@@ -25,22 +25,32 @@ import main.*;
 import controllers.*;
 import javax.swing.JScrollBar;
 import java.awt.Button;
+import java.awt.Label;
+import java.awt.Panel;
 
 public class Main extends JFrame{
 	Users us;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
+	StudentQueries sq = StudentQueries.getMain();
+	AddQueries aq = AddQueries.getMain();
 	School sc;
 	List<Degree> dg;
 	List<Course> cdg;
+	List<CourseDegree> cr;
+	List<CourseResult> courseResult;
 	Degree d;
 	Course cd;
 	CourseDegree courseDegree;
 	List<CourseDegree> courseDegreeList;
 	JTextField textField_2, textField_3, textField_4, textField_8;
-	Choice choice_3, choice_5, choice, choice_1, choice_2, choice_4;
-	String selected3, selected2, selected4, selected5,selected6,selected7;
+	Choice choice_3, choice_5, choice, choice_1, choice_2, choice_4, choice_6, choice_7;
+	String selected3, selected2, selected4, selected5,selected6,selected7, selectedStudent, selectedCourse;
 	JScrollPane scrollPane;
+	JLabel lblNewLabel;
+	JButton btnEnrollStudent;
+	int count = 0;
+	int id = 0;
 	public Main(){
 		us = q.getUser();
 		sc = q.getSchool();
@@ -50,7 +60,7 @@ public class Main extends JFrame{
 		courseDegreeList = m.getCourseDegreeList();
 		dg = m.getList();
 		cdg = m.getCourseList();
-		
+		courseResult = q.getDetails();
 		initialize();
 
 	}
@@ -179,10 +189,11 @@ public class Main extends JFrame{
 		choice_3 = new Choice();
 		choice_3.setBounds(807, 174, 348, 27);
 		choice_3.add("(select degree)");
-		
+
 		choice_4 = new Choice();
 		choice_4.setBounds(807, 342, 348, 27);
 		choice_4.add("(select degree)");
+		
 		choice_4.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
@@ -249,9 +260,9 @@ public class Main extends JFrame{
 		scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 722, 335);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-		   public void run() { 
-		       scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
-		   }
+			public void run() { 
+				scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
+			}
 		});
 		panel.add(scrollPane, BorderLayout.CENTER);
 
@@ -272,7 +283,7 @@ public class Main extends JFrame{
 			}
 		});
 		panel.add(choice_2);
-		
+
 		choice = new Choice();
 		choice.setBounds(807, 131, 348, 27);
 		choice.add("(select course)");
@@ -309,25 +320,96 @@ public class Main extends JFrame{
 			}
 		});
 		panel.add(choice_1);
-		
+
 		JLabel lblRemoveCourseFrom = new JLabel("Remove course from degree");
 		lblRemoveCourseFrom.setBounds(740, 272, 188, 16);
 		panel.add(lblRemoveCourseFrom);
-		
+
 		JLabel lblCourse_1 = new JLabel("Course");
 		lblCourse_1.setBounds(740, 300, 61, 16);
 		panel.add(lblCourse_1);
-		
+
 		JLabel lblDegree_2 = new JLabel("Degree");
 		lblDegree_2.setBounds(740, 342, 61, 16);
 		panel.add(lblDegree_2);
-		
-		
+
+
 		JButton btnRemove = new JButton("Remove");
 		btnRemove.setBounds(740, 383, 117, 29);
 		btnRemove.setActionCommand("Remove");
 		btnRemove.addActionListener(new MainListener(this));
 		panel.add(btnRemove);
+
+		JLabel lblEnrollStudentOnto = new JLabel("Enroll Student Onto a Course");
+		lblEnrollStudentOnto.setBounds(740, 486, 188, 16);
+		panel.add(lblEnrollStudentOnto);
+
+		choice_6 = new Choice();
+		choice_6.setBounds(740, 509, 393, 27);
+		choice_6.setVisible(true);
+		choice_6.add("(select student)");
+		
+		choice_7 = new Choice();
+		choice_7.setBounds(740, 558, 393, 27);
+		choice_7.setVisible(false);
+		panel.add(choice_7);
+		Student sdt = q.getAll(sc);
+		List<Student> stt = q.getStudents();
+		for(int i = 0;i<stt.size();i++){
+			choice_6.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
+		}
+		choice_6.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selectedStudent = choice_6.getSelectedItem();
+				if(!selectedStudent.equals("(select student)")){
+					
+					if(ie.getStateChange() == ItemEvent.SELECTED){
+						count+=1;
+					}
+
+					if(count > 1){
+						choice_7.removeAll();
+					}
+					btnEnrollStudent.setVisible(true);
+					lblNewLabel.setVisible(true);
+					choice_7.setVisible(true);
+					choice_7.add("(select course)");
+					String[] tokens_5 = selectedStudent.split(" ");
+					Student st = aq.getSelected(tokens_5[0], tokens_5[1]);
+					id=st.getStudentID();
+					cr = sq.getCD();
+					cr.removeAll(cr);
+					courseResult.removeAll(courseResult);
+					CourseResult crt = q.getDetails(st);
+					CourseDegree cde = sq.displayCourses(st);
+					for(int i = 0; i<cr.size();i++){
+						choice_7.add(cr.get(i).getName().getCourse());
+					}
+					choice_7.addItemListener(new ItemListener(){
+						public void itemStateChanged(ItemEvent ie)
+						{
+							selectedCourse = choice_7.getSelectedItem();
+						}
+					});
+				}
+			}
+		});
+		panel.add(choice_6);
+
+		
+
+		btnEnrollStudent = new JButton("Enroll Student");
+		btnEnrollStudent.setBounds(740, 599, 117, 29);
+		btnEnrollStudent.setVisible(false);
+		btnEnrollStudent.addActionListener(new MainListener(this));
+		btnEnrollStudent.setActionCommand("Enroll");
+		panel.add(btnEnrollStudent);
+		
+		lblNewLabel = new JLabel("Select the course below");
+		lblNewLabel.setBounds(740, 543, 188, 16);
+		lblNewLabel.setVisible(false);
+		panel.add(lblNewLabel);
 
 	}
 
@@ -369,7 +451,7 @@ public class Main extends JFrame{
 	public Choice choice1(){
 		return choice_1;
 	}
-	
+
 	public Choice choice2(){
 		return choice_2;
 	}
@@ -384,12 +466,31 @@ public class Main extends JFrame{
 	public String selected5(){
 		return selected5;
 	}
-	
+
 	public String getSelected6(){
 		return selected6;
 	}
 
 	public String selected7(){
 		return selected7;
+	}
+
+	public String selectedStudent(){
+		return selectedStudent;
+	}
+	public String selectedCourse(){
+		return selectedCourse;
+	}
+	
+	public int getID(){
+		return id;
+	}
+	
+	public Choice choiceStudent(){
+		return choice_6;
+	}
+	
+	public Choice choiceCourse(){
+		return choice_7;
 	}
 }

@@ -33,8 +33,7 @@ public class ResultsFrameListener implements ActionListener{
 		cd.removeAll(cd);
 		StudentMain sm = new StudentMain();
 		sm.setVisible(true);
-	}else if(e.getActionCommand().equals("Change Password") ){
-		
+		rf.dispose();
 	}else if(e.getActionCommand().equals("Log Out") ){
 		StartGUI sg = new StartGUI();
 		sg.setVisible(true);

@@ -71,9 +71,6 @@ public class ViewListener implements ActionListener{
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			vr.dispose();
-		}else if(e.getActionCommand().equals("Change Password")){
-
-
 		}else if(e.getActionCommand().equals("Add Student")){
 			dg.removeAll(dg);
 			getInfo.removeAll(getInfo);

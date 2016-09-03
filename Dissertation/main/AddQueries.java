@@ -91,6 +91,7 @@ public class AddQueries {
 				String studentE = rs.getString("EMAIL");
 				int userid = rs.getInt("USERID");
 				sdt = new Student(userid, studentID, fName, lName, studentE);
+				sdt.setDegree(q.getSDInfo(sdt));
 			}
 			rs.close();
 			ps.close();

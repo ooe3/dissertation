@@ -40,6 +40,8 @@ public class StartGUI extends JFrame{
 	private JPanel panel;
 	private JButton btnLogIn;
 	private JLabel lblLogInPage, lblNewLabel, lblNewLabel_1;
+	private JLabel lblToAddAn;
+	private JButton btnAddAdmin;
 	
 	
 	/**
@@ -94,8 +96,17 @@ public class StartGUI extends JFrame{
 		btnLogIn = new JButton("Log In");
 		btnLogIn.setActionCommand("LOG_IN");
 		btnLogIn.addActionListener(new ListenerClass(this));
-		btnLogIn.setBounds(390, 310, 181, 49);
+		btnLogIn.setBounds(416, 306, 181, 49);
 		panel.add(btnLogIn);
+		
+		lblToAddAn = new JLabel("To add an administrator, click the button below");
+		lblToAddAn.setBounds(356, 423, 326, 16);
+		panel.add(lblToAddAn);
+		
+		btnAddAdmin = new JButton("Add Admin");
+		btnAddAdmin.addActionListener(new ListenerClass(this));
+		btnAddAdmin.setBounds(456, 451, 117, 29);
+		panel.add(btnAddAdmin);
 
 
 		setVisible(true);

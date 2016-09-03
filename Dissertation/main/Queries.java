@@ -49,10 +49,8 @@ public class Queries {
 				}
 			}
 		});
-
-
 	}
-	//as in she was giving me two options because she’s still following me
+	//
 
 	public static Queries getQueries(){
 		if(q==null)
@@ -132,7 +130,7 @@ public class Queries {
 	}
 
 
-	
+
 
 	public int getStudent(String fname, String lname){
 		ResultSet rs = null;
@@ -149,24 +147,29 @@ public class Queries {
 			}
 			rs.close();
 			ps.close();
-			
+
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return id;
 	}
 
-	public String allStudents(){
+	public String allStudents(String s){
 		StringBuilder sb = new StringBuilder("");
 		String display = String.format(" %-40.40s %-20s %-40.40s %-10s\n", "Name","Matric Number","Degree" ,"Email");
 		sb.append(display+"\n");
 		for(int i = 0; i<students.size(); i++){
 			String name = students.get(i).getFirstName()+" "+students.get(i).getLastName();
 			String matric = students.get(i).getMatric();
-			String degree =students.get(i).getDegree().getDegree().getDegreeName();
+			String degree =students.get(i).getDegree().getDegree().getDegreeName()+"("+students.get(i).getDegree().getDegree().getDegreeType()+")";
 			String email = students.get(i).getEmail();
+			if(degree.equals(s)){
 			String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
 			sb.append(area+"\n");
+			}else if(s.equals("All")){
+				String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
+				sb.append(area+"\n");
+			}
 		}
 		if(students.size() == 0){
 			sb.append("No students registered to this school yet. Add a student using the Add student option");
@@ -178,7 +181,7 @@ public class Queries {
 	public Student getAll(School sc){
 		ResultSet rs = null;
 		try{
-			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID WHERE s.STUDENTID IN (SELECT STUDENT FROM STUDENT_DEGREE WHERE DEGREE IN (SELECT DEGREEID FROM DEGREE WHERE SCHOOL_REF = ?)) ";
+			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID WHERE s.STUDENTID IN (SELECT STUDENT FROM STUDENT_DEGREE WHERE DEGREE IN (SELECT DEGREEID FROM DEGREE WHERE SCHOOL_REF = ?)) ORDER BY s.LASTNAME";
 			ps = conn.prepareStatement(query1);
 			ps.setString(1, sc.getName());
 			rs = ps.executeQuery();
@@ -205,7 +208,7 @@ public class Queries {
 
 		return st;
 	}
-	
+
 	public String insertStudent(String name, String lname, String email, String address, String matric, String degree){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
@@ -275,7 +278,7 @@ public class Queries {
 		}
 		return s1;
 	}
-	
+
 	public String checkFirstName(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z\\-]*");
@@ -319,7 +322,7 @@ public class Queries {
 		}
 		return s1;
 	}
-	
+
 	public String checkUsername(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[0-9]{7,7}+[a-z]{1,1}");//Tank Tutorial 19.."Java Video Tutorial 19". Newthinktank.com. N.p., 2012. Web. 1 Sept. 2016.
@@ -415,8 +418,11 @@ public class Queries {
 			while(rs.next()){
 				String name = rs.getString("COURSE");
 				int result = rs.getInt("RESULT");
-
+				if(us == null){
 				cr = new CourseResult(getCourseDetails(name),(Student)us,result);
+				}else{
+					cr = new CourseResult(getCourseDetails(name),st,result);
+				}
 				courseDetails.add(cr);
 
 			}
@@ -477,6 +483,15 @@ public class Queries {
 
 	public List<Student> getStudents(){
 		return students;
+	}
+
+	public void closeConnection(){
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) { e.printStackTrace();}
+		}
+
 	}
 
 

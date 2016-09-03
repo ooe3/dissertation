@@ -25,7 +25,7 @@ public class StudentMainListener implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("ADD") ){
-			if(sm.getChoice().getSelectedItem().equals("(select course)") || sm.getChoice().getSelectedItem().equals("")){
+			if(sm.getChoice().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -46,7 +46,7 @@ public class StudentMainListener implements ActionListener{
 			mn.setVisible(true);
 			sm.dispose();
 		}else if(e.getActionCommand().equals("REMOVE") ){
-			if(sm.getChoice_1().getSelectedItem().equals("(select course)") || sm.getChoice_1().getSelectedItem().equals("")){
+			if(sm.getChoice_1().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
