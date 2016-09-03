@@ -20,8 +20,10 @@ public class Queries {
 	private PreparedStatement ps = null;
 	List<CourseResult> courseDetails = new ArrayList<CourseResult>();
 	List<Student> students = new ArrayList<Student>();
+	List<Admin> administrator = new ArrayList<Admin>();
+	List<School> schools = new ArrayList<School>();
 	Users us;
-	//Users usr;
+	Admin ad;
 	Degree dg;
 	School sc;
 	StudentDegree sd;
@@ -218,6 +220,7 @@ public class Queries {
 				String fname = students.get(i).getFirstName().toLowerCase();
 				String lstname = students.get(i).getLastName().toLowerCase();
 				String mat = students.get(i).getMatric().toLowerCase();
+				String mail = students.get(i).getEmail().toLowerCase();
 				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))|| matric.toLowerCase().equals(mat)){
 					count+=1;
 					sb.append("Error");
@@ -225,6 +228,9 @@ public class Queries {
 				}else if(matric.toLowerCase().equals(mat)){
 					count+=1;
 					sb.append("Exists");
+				}else if(email.toLowerCase().equals(mail)){
+					count+=1;
+					sb.append("Already");
 				}
 			}
 			if(count == 0){
@@ -256,6 +262,98 @@ public class Queries {
 		}
 		return sb.toString();
 	}
+	
+	public Admin getAll(){
+		ResultSet rs = null;
+		try{
+			String query1 = "SELECT * FROM ADMIN AS ad INNER JOIN USER AS us on us.ID = ad.USERID";
+			ps = conn.prepareStatement(query1);
+			rs = ps.executeQuery();
+
+			while(rs.next()){
+				
+				int userid = rs.getInt("USERID");
+				int adminID = rs.getInt("ADMINID");
+				String adminf = rs.getString("FIRSTNAME");
+				String adminl = rs.getString("LASTNAME");
+				String adminE = rs.getString("EMAIL");
+				String matric = rs.getString("MATRICNO");
+				//String schoolref = rs.getString("SCHOOLREF");
+				ad = new Admin(userid, adminID, adminf, adminl, adminE);
+				ad.setMatric(matric);
+				administrator.add(ad);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return ad;
+	}
+	
+	public String insertAdmin(String name, String lname, String email, String address, String matric, String school){
+		StringBuilder sb = new StringBuilder("");
+		int count = 0;
+		int check = 0;
+		final String type = "Admin";
+		try{
+			for(int i = 0;i<administrator.size();i++){
+				String fname = administrator.get(i).getFirstName().toLowerCase();
+				String lstname = administrator.get(i).getLastName().toLowerCase();
+				String mat = administrator.get(i).getMatric().toLowerCase();
+				String mail = administrator.get(i).getEmail().toLowerCase();
+				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))|| matric.toLowerCase().equals(mat)){
+					count+=1;
+					sb.append("Error");
+
+				}else if(matric.toLowerCase().equals(mat)){
+					count+=1;
+					sb.append("Exists");
+				}else if(email.toLowerCase().equals(mail)){
+					count+=1;
+					sb.append("Already");
+				}
+			}
+			for(int i = 0; i<schools.size();i++){
+				String schl = schools.get(i).getName();
+				if(school.equals(schl)){
+					check+=1;
+				}
+			}
+			if(count == 0){
+
+				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, matric);
+				ps.setString(2, matric);
+				ps.setString(3, type);
+				ps.executeUpdate();
+				if(check == 0){
+				String sql2 = "INSERT INTO SCHOOL (SCHOOLNAME) VALUES (?)";
+				ps = conn.prepareStatement(sql2);
+				ps.setString(1, school);
+				ps.executeUpdate();
+				}
+				
+				String sql1 = "INSERT INTO ADMIN  (FIRSTNAME, LASTNAME, EMAIL, USERID, SCHOOLREF) VALUES (?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?),(SELECT SCHOOLNAME FROM SCHOOL WHERE SCHOOLNAME = ?))";
+				ps = conn.prepareStatement(sql1);
+				ps.setString(1, name);
+				ps.setString(2, lname);
+				ps.setString(3, email);
+				ps.setString(4, matric);
+				ps.setString(5, school);
+				ps.executeUpdate();
+
+				
+			}
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+	
 
 	public String getUnique(){
 		StringBuilder sb = new StringBuilder("");
@@ -352,6 +450,26 @@ public class Queries {
 			e.printStackTrace();
 		}
 		return sc;
+	}
+	
+	public School getList(){
+		School s = null;
+		ResultSet rs = null;
+		try{
+			String query = "SELECT * FROM SCHOOL";
+			ps = conn.prepareStatement(query);
+			rs = ps.executeQuery();
+			while(rs.next()){
+				String school = rs.getString("SCHOOLNAME");
+				s = new School(school);
+				schools.add(s);
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return s;
 	}
 
 	public Degree getInfo(int ID){
@@ -493,6 +611,13 @@ public class Queries {
 		}
 
 	}
-
+	
+	public List<Admin> getAdmin(){
+		return administrator;
+	}
+	
+	public List<School> getSchools(){
+		return schools;
+	}
 
 }

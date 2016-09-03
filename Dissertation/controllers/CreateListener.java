@@ -89,7 +89,16 @@ public class CreateListener implements ActionListener{
 						cs.textField3().setText(email);
 						cs.textField4().setText("");
 						cs.passwordField().setText("");
-					}else{
+					}else if(check.equals("Already")){
+						JOptionPane.showMessageDialog(null, "Email exists", "Error message", JOptionPane.ERROR_MESSAGE);
+						cs.textField().setText(name);
+						cs.textField1().setText(lname);
+						cs.textField2().setText(address);
+						cs.textField3().setText("");
+						cs.textField4().setText(matric);
+						cs.passwordField().setText(matric);
+					}
+					else{ 
 						JOptionPane.showMessageDialog(null, "Student added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
 						stt.removeAll(stt);

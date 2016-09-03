@@ -8,5 +8,11 @@ import gui.StartGUI;
 public class Run {
 	public static void main(String[] args) {
 		StartGUI window = new StartGUI();
+		String yo = "";
+		String se = "Yo";
+		if(!yo.equals("") && !se.equals("")){
+			System.out.print(se);
+		}
 	}
+	
 }

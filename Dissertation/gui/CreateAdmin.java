@@ -22,14 +22,16 @@ public class CreateAdmin extends JFrame{
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	Student sdt;
+	Choice choice;
+	List<School> getSchool;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
 	private JTextField textField_4;
 	private JPasswordField passwordField;
-	private String selected3;
 	private JTextField textField_5;
+	String selected;
 	public CreateAdmin(){
 		
 		
@@ -78,7 +80,7 @@ public class CreateAdmin extends JFrame{
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new CreateAdminListener(this));
 		btnAdd.setActionCommand("ADD");
-		btnAdd.setBounds(209, 403, 117, 29);
+		btnAdd.setBounds(209, 421, 117, 29);
 		panel.add(btnAdd);
 		
 		JLabel lblAddAdministrator = new JLabel("Add Administrator");
@@ -130,6 +132,7 @@ public class CreateAdmin extends JFrame{
 		panel.add(lblIndicatesRequired);
 		
 		JLabel lbldefaultPasswordIs = new JLabel("*Default password is the username*");
+		lbldefaultPasswordIs.setFont(new Font("Lucida Grande", Font.PLAIN, 11));
 		lbldefaultPasswordIs.setBounds(454, 317, 236, 16);
 		panel.add(lbldefaultPasswordIs);
 		
@@ -137,6 +140,42 @@ public class CreateAdmin extends JFrame{
 		textField_5.setBounds(158, 354, 255, 26);
 		panel.add(textField_5);
 		textField_5.setColumns(10);
+		
+		JLabel lblnoNeedTo = new JLabel("Type school like this \"Computer Science\" not \"computer science\"");
+		lblnoNeedTo.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		lblnoNeedTo.setBounds(425, 360, 350, 16);
+		panel.add(lblnoNeedTo);
+		
+		JLabel lblAdamSmithBusiness = new JLabel("e.g Adam Smith Business. No need to include school");
+		lblAdamSmithBusiness.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		lblAdamSmithBusiness.setBounds(454, 378, 305, 16);
+		panel.add(lblAdamSmithBusiness);
+		
+		JLabel lblComputerScienceNo = new JLabel("e.g Computer Science. No need for \"School of\"");
+		lblComputerScienceNo.setFont(new Font("Lucida Grande", Font.PLAIN, 10));
+		lblComputerScienceNo.setBounds(452, 394, 280, 16);
+		panel.add(lblComputerScienceNo);
+		
+		choice = new Choice();
+		choice.setBounds(158, 388, 255, 27);
+		choice.add("(select school)");
+		getSchool = q.getSchools();
+		School sc = q.getList();
+		for(int i = 0;i<getSchool.size();i++){
+			choice.add(getSchool.get(i).getName());
+		}
+		choice.addItemListener(new ItemListener(){
+			public void itemStateChanged(ItemEvent ie)
+			{
+				selected = choice.getSelectedItem();
+			}
+
+		});
+		panel.add(choice);
+		
+		JLabel lblOrSelectSchool = new JLabel("or select school");
+		lblOrSelectSchool.setBounds(22, 393, 107, 16);
+		panel.add(lblOrSelectSchool);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -148,10 +187,6 @@ public class CreateAdmin extends JFrame{
 		JMenu admin = new JMenu("Home");
 		admin.add(mntmGoBack);
 		menuBar.add(admin);
-	}
-	
-	public String getSelected(){
-		return selected3;
 	}
 	
 	public JTextField textField(){
@@ -174,7 +209,19 @@ public class CreateAdmin extends JFrame{
 		return textField_4;
 	}
 	
+	public JTextField textField5(){
+		return textField_5;
+	}
+	
 	public JPasswordField passwordField(){
 		return passwordField;
+	}
+	
+	public String getSelected(){
+		return selected;
+	}
+	
+	public Choice choice(){
+		return choice;
 	}
 }
