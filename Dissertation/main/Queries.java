@@ -166,10 +166,10 @@ public class Queries {
 			String degree =students.get(i).getDegree().getDegree().getDegreeName()+"("+students.get(i).getDegree().getDegree().getDegreeType()+")";
 			String email = students.get(i).getEmail();
 			if(degree.equals(s)){
-			String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
+			String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
 			sb.append(area+"\n");
 			}else if(s.equals("All")){
-				String area = String.format(" %-40.40s %-20s %-40.40s %-10s\n", name, matric, degree, email);
+				String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
 				sb.append(area+"\n");
 			}
 		}

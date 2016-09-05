@@ -37,10 +37,10 @@ public class AdminAdd extends JFrame{
 	JButton btnSubmit;
 	String selected5, name_selected;
 	String[] tokens_5, tokens_6;
-	List<Student> stt;
+	List<Student> stt;//creates list of student objects
 	Student sdt;
 	School sc;
-	CourseResult crr;
+	CourseResult crr;//CourseResult object
 	List<CourseResult> crt;
 	int id;
 	int count = 0;
@@ -48,24 +48,29 @@ public class AdminAdd extends JFrame{
 	public AdminAdd(){
 		//initialize user object to get the current user
 		us = q.getUser();
-		sc = q.getSchool();
-		sdt = q.getAll(sc);
-		stt = q.getStudents();
+		sc = q.getSchool();//calls getSchool method to get the current school of the user
+		sdt = q.getAll(sc);//gets all students under the school
+		stt = q.getStudents();//initalizes the list by calling getStudents method which contains the list of students
 
-		initialize();
+		initialize();//calls the initialize method
 	}
 
 	public void initialize(){
+		/*
+		 * Create JFrame and sets its properties
+		 * Adds the functionality to exit on close
+		 */
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		setSize(1000, 800);
-
+		
+		//JPanel to add all the various components
 		JPanel panel_3 = new JPanel();
 		getContentPane().add(panel_3, "name_1845822356495898");
 		panel_3.setLayout(null);
-
+		//Adding results label
 		JLabel lblAddingResults = new JLabel("Adding results");
 		lblAddingResults.setBounds(19, 54, 147, 16);
 		panel_3.add(lblAddingResults);
@@ -90,11 +95,6 @@ public class AdminAdd extends JFrame{
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new AddListener(this));
 
-		//change password menu item
-		JMenuItem mntmPassword = new JMenuItem("Change Password");
-		mntmPassword.setActionCommand("Change Password");
-		mntmPassword.addActionListener(new AddListener(this));
-
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new AddListener(this));
@@ -102,23 +102,22 @@ public class AdminAdd extends JFrame{
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new AddListener(this));
-
-		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Refresh");
-		mntmRefresh.addActionListener(new AddListener(this));
-
+		
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new AddListener(this));
+		
+		JMenuItem mntmAddDegree = new JMenuItem("Add Degree");
+		mntmAddDegree.setActionCommand("AddD");
+		mntmAddDegree.addActionListener(new AddListener(this));
 
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");//get users first name & last name and makes it a JMenu
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmCreate);
+		admin.add(mntmAddDegree);
 		admin.add(mntmView);
 		admin.add(mntmViewStudent);
-		admin.add(mntmPassword);
-		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
 
@@ -136,7 +135,7 @@ public class AdminAdd extends JFrame{
 		choice_1 = new Choice();
 		choice_1.setBounds(19, 104, 307, 27);
 		choice_1.add("(select student)");
-
+		//gets items in the list and adds it to the choice dropdown
 		for(int i = 0; i<stt.size();i++){
 			choice_1.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 		}
@@ -150,27 +149,32 @@ public class AdminAdd extends JFrame{
 		//itemlistener for the choice containing the dropdown list of courses
 		choice_1.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
-			{
+			{	
+				//checks to see if the choice selection has been changed
+				//increases count by 1
 				if(ie.getStateChange() == ItemEvent.SELECTED){
 					count+=1;
 				}
-
+				//once count greater than one, it removes all selections in the choice
 				if(count > 1){
 					choice_2.removeAll();
 				}
 				
 				String selected4 = choice_1.getSelectedItem();//store the selected item in selected4
 				if(!selected4.equals("(select student)")){
-					crt = aq.getInfo();
+					crt = aq.getInfo();//initializes the list by calling the 
 					lblNewLabel_4.setVisible(true);
 					lblrIndicatesThe.setVisible(true);
 					tokens_5 = selected4.split(" ");//split selected4 after each space in tokens. This contains the name of the student
+					//clears any possible objects in the list before adding a new set
 					crt.removeAll(crt);
-					Student student = aq.getSelected(tokens_5[0], tokens_5[1]);
-					
+					//Create student object. initializes by calling the getSelected method which takes the firstname and the lastname
+					Student student = aq.getSelected(tokens_5[0], tokens_5[1]);//
+					//initializes the courseresult list and calls getDetails which then adds the new selection to the list
 					crr = aq.getDetails(student.getStudentID());
 					choice_2.add("(select course)");
 					for(int i = 0;i<crt.size();i++){
+						//if there is a result already for the course, an "R" is displayed beside it
 						if(crt.get(i).getResult() != 0){
 							choice_2.add(crt.get(i).getCourseName().getCourse()+"(R)");
 						}else{
@@ -195,7 +199,9 @@ public class AdminAdd extends JFrame{
 								btnSubmit.setVisible(true);
 								label.setVisible(true);
 								lblNewLabel_5.setVisible(true);
-								String[] tokens = selected5.split("\\(");
+								String[] tokens = selected5.split("\\(");//splits the selected from the opening bracket
+								//if there is an R beside the course, we use the split string above
+								//if not, the selected choice is taken as splitting is not needed.
 								if(tokens.length>1){
 									Course cs = aq.getCourseDetails(tokens[0]);
 									label.setText(""+cs.getCoursework()+"");
@@ -270,18 +276,23 @@ public class AdminAdd extends JFrame{
 		choice.setBounds(421, 104, 340, 27);
 		choice.add("(select student)");
 		for(int i = 0; i<stt.size();i++){
+			//adds the students full name to the choices
 			choice.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
 		}
 
 		choice.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
+				//Creates another courseresult object
 				List<CourseResult> crts = aq.getInfo();
 				name_selected = choice.getSelectedItem();
 				if(!name_selected.equals("(select student)")){
+				//split it after a space
 				tokens_6 = name_selected.split(" ");
-				Student student = aq.getSelected(tokens_6[0], tokens_6[1]);
+				Student student = aq.getSelected(tokens_6[0], tokens_6[1]);//pass the firstname and lastname seperately as parameters
+				//removes all objects to allow addition of new set of objects
 				crts.removeAll(crts);
+				//calls the method which adds the courseresult objects to the list
 				CourseResult crt = aq.getDetails(student.getStudentID());
 				}
 
@@ -304,6 +315,9 @@ public class AdminAdd extends JFrame{
 		lblrIndicatesThe.setVisible(false);
 		panel_3.add(lblrIndicatesThe);
 	}
+	/*
+	 * Choice and JTextField methods created below to access in another class
+	 */
 	public Choice choice(){
 		return choice;
 	}

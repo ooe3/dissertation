@@ -104,7 +104,7 @@ public class StudentMain extends JFrame{
 		panel.add(lblEmail);
 		JLabel label_1 = new JLabel();
 		label_1.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
-		label_1.setBounds(175, 6, 400, 28);
+		label_1.setBounds(175, 6, 792, 28);
 		label_1.setText(sd.getDegree().getDegreeType()+" "+sd.getDegree().getDegreeName());
 		panel.add(label_1);
 
