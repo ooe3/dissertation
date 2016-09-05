@@ -19,6 +19,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import controllers.StudentMainListener;
 import main.*;
+import other.StudentDegree;
+import other.Users;
 import controllers.*;
 
 public class ResultsFrame extends JFrame{

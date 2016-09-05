@@ -9,6 +9,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JOptionPane;
 import gui.StartGUI;
+import other.Admin;
+import other.Course;
+import other.CourseResult;
+import other.DatabaseConnection;
+import other.Degree;
+import other.School;
+import other.Student;
+import other.StudentDegree;
+import other.Users;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -158,7 +167,7 @@ public class Queries {
 
 	public String allStudents(String s){
 		StringBuilder sb = new StringBuilder("");
-		String display = String.format(" %-40.40s %-20s %-40.40s %-10s\n", "Name","Matric Number","Degree" ,"Email");
+		String display = String.format(" %-40.40s %-20s %-50.50s %-10s\n", "Name","Matric Number","Degree" ,"Email");
 		sb.append(display+"\n");
 		for(int i = 0; i<students.size(); i++){
 			String name = students.get(i).getFirstName()+" "+students.get(i).getLastName();

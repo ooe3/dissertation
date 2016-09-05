@@ -1,5 +1,4 @@
-package main;
-
+package other;
 public class CourseResult {
 	Course cs;
 	Student st;

@@ -21,6 +21,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import main.*;
+import other.Degree;
+import other.School;
+import other.Student;
+import other.Users;
 import controllers.*;
 import javax.swing.JScrollBar;
 public class CreateStudent extends JFrame{

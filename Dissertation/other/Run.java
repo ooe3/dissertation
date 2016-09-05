@@ -1,4 +1,5 @@
-package main;
+package other;
+
 import java.awt.EventQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

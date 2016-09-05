@@ -6,7 +6,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import gui.*;
 import main.Queries;
-import main.Users;
+import other.Users;
 /*
  * The listener class for the StartGUI
  * 

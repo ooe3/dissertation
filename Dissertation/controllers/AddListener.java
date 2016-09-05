@@ -6,6 +6,12 @@ import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
+import other.Course;
+import other.CourseDegree;
+import other.CourseResult;
+import other.Degree;
+import other.Student;
+import other.Users;
 /*
  * This is the actionListener for AdminAdd class
  */

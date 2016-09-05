@@ -5,6 +5,10 @@ import java.awt.event.ItemListener;
 import java.util.List;
 import javax.swing.*;
 import main.*;
+import other.Degree;
+import other.School;
+import other.Student;
+import other.Users;
 import controllers.*;
 
 public class ViewStudents extends JFrame{

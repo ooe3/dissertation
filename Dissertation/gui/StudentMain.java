@@ -1,5 +1,10 @@
 package gui;
 import main.*;
+import other.CourseDegree;
+import other.CourseResult;
+import other.Student;
+import other.StudentDegree;
+import other.Users;
 import controllers.*;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;

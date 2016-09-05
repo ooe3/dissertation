@@ -1,4 +1,5 @@
-package main;
+package other;
+
 import java.sql.*;
 public class Admin extends Users {
 	int adminID;

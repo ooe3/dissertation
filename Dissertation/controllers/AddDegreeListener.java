@@ -5,6 +5,12 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
+import other.Course;
+import other.CourseDegree;
+import other.Degree;
+import other.School;
+import other.Student;
+import other.Users;
 /*
  * This is the listener class for the AddDegree Class
  * Listens to the buttons or menu items selected and performs the required

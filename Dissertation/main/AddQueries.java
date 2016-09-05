@@ -1,5 +1,9 @@
 package main;
 import gui.*;
+import other.Course;
+import other.CourseResult;
+import other.DatabaseConnection;
+import other.Student;
 import java.awt.*;
 import java.sql.*;
 import java.util.List;

@@ -6,6 +6,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import gui.*;
 import main.*;
+import other.CourseDegree;
+import other.CourseResult;
+import other.Student;
+import other.Users;
 
 public class StudentMainListener implements ActionListener{
 	StudentMain sm;

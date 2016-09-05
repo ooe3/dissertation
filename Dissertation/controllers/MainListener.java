@@ -6,6 +6,11 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
+import other.Course;
+import other.CourseDegree;
+import other.Degree;
+import other.Student;
+import other.Users;
 /*
  * The listener class for Main class
  */

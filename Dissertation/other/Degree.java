@@ -1,5 +1,4 @@
-package main;
-
+package other;
 public class Degree {
 	private int degreeID;
 	private String degreeName, degreeType;

@@ -5,6 +5,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
+import other.CourseDegree;
+import other.CourseResult;
+import other.Users;
 /*
  * Listener class for ResultsFrame class
  */

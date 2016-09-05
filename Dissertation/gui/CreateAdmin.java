@@ -1,5 +1,8 @@
 package gui;
 import main.*;
+import other.School;
+import other.Student;
+import other.Users;
 import java.awt.CardLayout;
 import java.awt.Choice;
 import java.awt.Font;

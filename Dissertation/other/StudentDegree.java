@@ -1,4 +1,5 @@
-package main;
+package other;
+
 
 public class StudentDegree {
 	private String result;

@@ -1,5 +1,10 @@
 package main;
 import gui.*;
+import other.CourseResult;
+import other.DatabaseConnection;
+import other.School;
+import other.Student;
+import other.StudentDegree;
 import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;

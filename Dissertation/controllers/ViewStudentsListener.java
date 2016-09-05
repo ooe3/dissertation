@@ -6,6 +6,9 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import gui.*;
 import main.*;
+import other.Course;
+import other.Degree;
+import other.Student;
 
 public class ViewStudentsListener implements ActionListener{
 	ViewStudents vs;

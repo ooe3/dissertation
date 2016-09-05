@@ -1,4 +1,5 @@
-package main;
+package other;
+
 import javax.swing.*;
 import java.sql.*;
 
