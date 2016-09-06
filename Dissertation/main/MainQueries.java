@@ -22,7 +22,7 @@ import java.awt.event.ItemListener;
 
 public class MainQueries {
 	private Connection conn = null;
-	private PreparedStatement ps = null;
+	private PreparedStatement ps;
 
 	private static MainQueries mq;
 	Degree dg;

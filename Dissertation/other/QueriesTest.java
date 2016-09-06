@@ -11,9 +11,7 @@ public class QueriesTest {
 	public void test() {
 	Queries q = Queries.getQueries();
 	School sc = new School("Engineering");
-	Degree d = new Degree(1,"Information Technology", "MSc", sc);
-//	Users us = q.LogIn("2600422a", "2600422a");
-//	assertNull(us);
+	Student sdt = new Student(1,1, "Chukwubuikem", "Emuwa","olubunmi_e@hotmail.coom");
 	
 	String s = q.checkAddress("London");
 	assertEquals("Exists", s);
@@ -35,6 +33,29 @@ public class QueriesTest {
 	
 	Degree dg = q.getInfo(1);
 	assertNotNull(dg);
+	
+	Users us = q.LogIn("2200422e", "2200422e");
+	assertNotNull(us);
+	
+	Student st = q.getAll(sc);
+	assertNotNull(st);
+	
+	School sh = q.getSchoolInfo("Engineering");
+	assertNotNull(sh);
+	
+	School sh1 = q.getSchoolInfo("Football");
+	assertNull(sh1);
+	
+	StudentDegree sd = q.getSDInfo(sdt);
+	assertNotNull(sd);
+	
+	CourseResult cr = q.getDetails(sdt);
+	assertNotNull(cr);
+	
+	Course c = q.getCourseDetails("Advance");
+	assertNull(c);
+	
+	
 	}
 	
 

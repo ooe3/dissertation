@@ -50,16 +50,9 @@ public class Queries {
 
 	//provides the access to the database
 	private Queries(){
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+		
 					conn = DatabaseConnection.getConnection();
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+				
 	}
 	//
 
