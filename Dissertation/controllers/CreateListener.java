@@ -28,7 +28,7 @@ public class CreateListener implements ActionListener{
 		cs = c;//initialize CreateStudent
 		us = q.getUser();//initialize Users object to get the current user
 		dg = mq.getList();//List initialized to get Degree objects
-		stt = q.getStudents();
+		stt = mq.getStudents();
 		cdg = mq.getCourseList();
 	}
 
@@ -82,7 +82,7 @@ public class CreateListener implements ActionListener{
 							id = dg.get(i).getDegreeID();
 						}
 					}
-					String check = q.insertStudent(name, lname, email, address, matric, id);
+					String check = mq.insertStudent(name, lname, email, address, matric, id);
 					if(check.equals("Error")){//check if the student or matric exists already
 						JOptionPane.showMessageDialog(null, "This student exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						cs.textField().setText("");

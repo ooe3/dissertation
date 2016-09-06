@@ -12,6 +12,7 @@ import other.CourseDegree;
 import other.DatabaseConnection;
 import other.Degree;
 import other.School;
+import other.Student;
 import other.Users;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,8 @@ public class MainQueries {
 	List<Degree> getDg = new ArrayList<Degree>();
 	List<Course> getCd = new ArrayList<Course>();
 	List<CourseDegree> getCdg = new ArrayList<CourseDegree>();
+	Student st;
+	List<Student> students = new ArrayList<Student>();
 	Queries q = Queries.getQueries();
 	Users us;
 	int count = 0;
@@ -119,7 +122,7 @@ public class MainQueries {
 
 		return dg;
 	}
-	
+
 	public String insertDegree(String name, String type, School sc){
 		String check = "";
 		int counted = 0;
@@ -200,6 +203,97 @@ public class MainQueries {
 		return cd;
 	}
 
+	//method which stores all the students in the student object
+	public Student getAll(){
+		ResultSet rs = null;
+		try{
+			String query1 = "SELECT * FROM STUDENT AS s INNER JOIN USER AS us on us.ID = s.USERID";
+			ps = conn.prepareStatement(query1);
+			rs = ps.executeQuery();
+
+			while(rs.next()){
+				int userid = rs.getInt("USERID");
+				int studentid = rs.getInt("STUDENTID");
+				String fname = rs.getString("FIRSTNAME");
+				String lname = rs.getString("LASTNAME");
+				String email = rs.getString("EMAIL");
+				String matric = rs.getString("MATRICNO");
+				//query1 executed, the variables above get the data from the columns in the table
+				//and then passed to the student object below
+
+
+				st = new Student(userid, studentid, fname, lname, email);
+				st.setDegree(q.getSDInfo(st));
+				st.setMatric(matric);
+				students.add(st);//student objects added to student list
+			}
+			rs.close();
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+
+		return st;
+	}
+	//insertStudent for adding a student
+	//takes the firstname, lastname, email, address, matric, and degreeid
+	public String insertStudent(String name, String lname, String email, String address, String matric, int degree){
+		StringBuilder sb = new StringBuilder("");
+		int count = 0;
+		final String type = "Student";
+		try{
+			//check to see if the student exists which have already been stored in the objetcts
+			for(int i = 0;i<students.size();i++){
+				String fname = students.get(i).getFirstName().toLowerCase();
+				String lstname = students.get(i).getLastName().toLowerCase();
+				String mat = students.get(i).getMatric().toLowerCase();
+				String mail = students.get(i).getEmail().toLowerCase();
+				//first converted to lower case before checking to see if the student exists
+				//firstname, lastname, matric and email are checked to see if they exist
+				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))&& matric.toLowerCase().equals(mat)){
+					count+=1;//count increased if found
+					sb.append("Error");
+
+				}else if(matric.toLowerCase().equals(mat)){
+					count+=1;//count increased if found
+					sb.append("Exists");
+				}else if(email.toLowerCase().equals(mail)){
+					count+=1;//count increased if found
+					sb.append("Already");
+				}
+			}
+			//if count is still 0, then the queries below can be inserted
+			if(count == 0){
+
+				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, matric);
+				ps.setString(2, matric);
+				ps.setString(3, type);
+				ps.executeUpdate();
+
+				String sql1 = "INSERT INTO STUDENT  (FIRSTNAME, LASTNAME, EMAIL, USERID) "
+					+ "VALUES (?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?))";
+				ps = conn.prepareStatement(sql1);
+				ps.setString(1, name);
+				ps.setString(2, lname);
+				ps.setString(3, email);
+				ps.setString(4, matric);
+				ps.executeUpdate();
+
+				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?), ?)";
+				ps = conn.prepareStatement(sql2);
+				ps.setString(1, matric);
+				ps.setInt(2, degree);
+				ps.executeUpdate();
+			}
+			ps.close();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return sb.toString();
+	}
+
 	//To insert the specific course and the degree it belongs to
 	public String addCourseDegree(String course, int degree){
 		StringBuilder sb = new StringBuilder("");
@@ -215,13 +309,13 @@ public class MainQueries {
 				}
 			}
 			if(count == 0){
-				
-					String sql = "INSERT INTO COURSEDEGREE VALUES (?, ?)";
-					ps = conn.prepareStatement(sql);
-					ps.setString(1, course);
-					ps.setInt(2, degree);
-					ps.executeUpdate();
-			
+
+				String sql = "INSERT INTO COURSEDEGREE VALUES (?, ?)";
+				ps = conn.prepareStatement(sql);
+				ps.setString(1, course);
+				ps.setInt(2, degree);
+				ps.executeUpdate();
+
 			}
 
 			ps.close();
@@ -303,6 +397,10 @@ public class MainQueries {
 
 	public int getCount(){
 		return count;
+	}
+
+	public List<Student> getStudents(){
+		return students;
 	}
 }
 

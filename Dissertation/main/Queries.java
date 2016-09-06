@@ -26,7 +26,7 @@ import java.awt.event.ItemListener;
 public class Queries {
 	//	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
-	private PreparedStatement ps = null;
+	private PreparedStatement ps;
 	List<CourseResult> courseDetails = new ArrayList<CourseResult>();
 	List<Student> students = new ArrayList<Student>();
 	List<Admin> administrator = new ArrayList<Admin>();
@@ -92,6 +92,7 @@ public class Queries {
 
 
 				//type is checked to see whether we need to query the student or admin table
+				//if student, it performs the query from the student table and creates a new object
 				if(type.equals("Student")){
 					String query1 = "SELECT * FROM STUDENT INNER JOIN USER ON USER.ID = STUDENT.USERID WHERE USER.MATRICNO = ?";
 					ps = conn.prepareStatement(query1);
@@ -99,7 +100,7 @@ public class Queries {
 					rs = ps.executeQuery();
 
 					while(rs.next()){
-
+						
 						int studentID = rs.getInt("STUDENTID");
 						String studentf = rs.getString("FIRSTNAME");
 						String studentl = rs.getString("LASTNAME");
@@ -111,13 +112,13 @@ public class Queries {
 					}
 
 				}else {
+					//if admin, it performs the query from the admin table and creates a new object
 					String query2 = "SELECT * FROM ADMIN INNER JOIN USER ON USER.ID = ADMIN.USERID WHERE USER.MATRICNO = ?";
 					ps = conn.prepareStatement(query2);
 					ps.setString(1, matricno);
 					rs = ps.executeQuery();
 
 					while(rs.next()){
-
 						int adminID = rs.getInt("ADMINID");
 						String adminf = rs.getString("FIRSTNAME");
 						String adminl = rs.getString("LASTNAME");
@@ -139,56 +140,34 @@ public class Queries {
 		} 
 		return us;
 	}
-
-
-
-
-	public int getStudent(String fname, String lname){
-		ResultSet rs = null;
-		int id = 0;
-		try{
-			String query = "SELECT STUDENTID FROM STUDENT WHERE FIRSTNAME = ? AND LASTNAME = ?";
-			ps = conn.prepareStatement(query);
-			ps.setString(1, fname);
-			ps.setString(2, lname);
-			rs = ps.executeQuery();
-
-			if(rs.next()){
-				id += (rs.getInt("STUDENTID"));
-			}
-			rs.close();
-			ps.close();
-
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return id;
-	}
-
+	//method to return a string that consists of all students and their details
+	//or a string of students in a particular degree
 	public String allStudents(String s){
 		StringBuilder sb = new StringBuilder("");
 		String display = String.format(" %-40.40s %-20s %-50.50s %-10s\n", "Name","Matric Number","Degree" ,"Email");
 		sb.append(display+"\n");
+		//loop through the student list and get the information
 		for(int i = 0; i<students.size(); i++){
 			String name = students.get(i).getFirstName()+" "+students.get(i).getLastName();
 			String matric = students.get(i).getMatric();
 			String degree =students.get(i).getDegree().getDegree().getDegreeName()+"("+students.get(i).getDegree().getDegree().getDegreeType()+")";
 			String email = students.get(i).getEmail();
-			if(degree.equals(s)){
+			if(degree.equals(s)){//if a particular degree has been selected
 			String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
 			sb.append(area+"\n");
-			}else if(s.equals("All")){
+			}else if(s.equals("All")){//if no particular degree has been selected
 				String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
 				sb.append(area+"\n");
 			}
 		}
-		if(students.size() == 0){
+		if(students.size() == 0){//if no students exist in the school yet
 			sb.append("No students registered to this school yet. Add a student using the Add student option");
 		}
 
 		return sb.toString();
 	}
-
+	//method which stores all the students in a school in the student object
+	//School is passed as the parameter to know which School
 	public Student getAll(School sc){
 		ResultSet rs = null;
 		try{
@@ -204,12 +183,14 @@ public class Queries {
 				String lname = rs.getString("LASTNAME");
 				String email = rs.getString("EMAIL");
 				String matric = rs.getString("MATRICNO");
+				//query1 executed, the variables above get the data from the columns in the table
+				//and then passed to the student object below
 
 
 				st = new Student(userid, studentid, fname, lname, email);
 				st.setDegree(getSDInfo(st));
 				st.setMatric(matric);
-				students.add(st);
+				students.add(st);//student objects added to student list
 			}
 			rs.close();
 			ps.close();
@@ -219,59 +200,7 @@ public class Queries {
 
 		return st;
 	}
-
-	public String insertStudent(String name, String lname, String email, String address, String matric, int degree){
-		StringBuilder sb = new StringBuilder("");
-		int count = 0;
-		final String type = "Student";
-		try{
-			for(int i = 0;i<students.size();i++){
-				String fname = students.get(i).getFirstName().toLowerCase();
-				String lstname = students.get(i).getLastName().toLowerCase();
-				String mat = students.get(i).getMatric().toLowerCase();
-				String mail = students.get(i).getEmail().toLowerCase();
-				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))|| matric.toLowerCase().equals(mat)){
-					count+=1;
-					sb.append("Error");
-
-				}else if(matric.toLowerCase().equals(mat)){
-					count+=1;
-					sb.append("Exists");
-				}else if(email.toLowerCase().equals(mail)){
-					count+=1;
-					sb.append("Already");
-				}
-			}
-			if(count == 0){
-
-				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
-				ps = conn.prepareStatement(sql);
-				ps.setString(1, matric);
-				ps.setString(2, matric);
-				ps.setString(3, type);
-				ps.executeUpdate();
-
-				String sql1 = "INSERT INTO STUDENT  (FIRSTNAME, LASTNAME, EMAIL, USERID) VALUES (?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?))";
-				ps = conn.prepareStatement(sql1);
-				ps.setString(1, name);
-				ps.setString(2, lname);
-				ps.setString(3, email);
-				ps.setString(4, matric);
-				ps.executeUpdate();
-
-				String sql2 = "INSERT INTO STUDENT_DEGREE (STUDENT, DEGREE) VALUES ((SELECT s.STUDENTID FROM STUDENT AS s INNER JOIN USER AS us ON us.ID = s.USERID WHERE us.MATRICNO = ?), ?)";
-				ps = conn.prepareStatement(sql2);
-				ps.setString(1, matric);
-				ps.setInt(2, degree);
-				ps.executeUpdate();
-			}
-			ps.close();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return sb.toString();
-	}
-	
+	//method to return Admin objects
 	public Admin getAll(){
 		ResultSet rs = null;
 		try{
@@ -287,10 +216,11 @@ public class Queries {
 				String adminl = rs.getString("LASTNAME");
 				String adminE = rs.getString("EMAIL");
 				String matric = rs.getString("MATRICNO");
-				//String schoolref = rs.getString("SCHOOLREF");
+				//int and string variables passed as parameters
+				//to the Admin Object
 				ad = new Admin(userid, adminID, adminf, adminl, adminE);
 				ad.setMatric(matric);
-				administrator.add(ad);
+				administrator.add(ad);//admin object stored in the list
 			}
 			rs.close();
 			ps.close();

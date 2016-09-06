@@ -75,7 +75,8 @@ public class StudentQueries {
 		StringBuilder sb = new StringBuilder("");
 
 		for(int i = 0;i<cr.size();i++){
-			String t1 = String.format(" %-40.40s %-10d\n", cr.get(i).getCourseName().getCourse(), cr.get(i).getCourseName().getCredit());
+			String t1 = String.format(" %-40.40s %-10d\n", 
+					cr.get(i).getCourseName().getCourse(), cr.get(i).getCourseName().getCredit());
 			sb.append(t1);
 			sb.append("\n");
 		}
@@ -92,7 +93,8 @@ public class StudentQueries {
 
 	public String getScore(int id){
 		String s = "";
-		String[] score = {"A1","A2","A3","A4","A5","B1","B2","B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
+		String[] score = {"A1","A2","A3","A4","A5","B1","B2",
+				"B3","C1","C2","C3","D1","D2","D3","E1","E2","E3","F1","F2","F3","G1","G2","H"};
 		int[] mark = {22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0};
 		for(int i = 0; i<score.length;i++){
 			if(id == mark[i]){
@@ -108,7 +110,8 @@ public class StudentQueries {
 	public CourseDegree displayCourses(Student s){
 		ResultSet rs = null;
 		try{
-			String query = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME NOT IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = ?) AND DEGREE_ID = ?";
+			String query = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME NOT "
+				+ "IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = ?) AND DEGREE_ID = ?";
 			
 			ps = conn.prepareStatement(query);
 			ps.setInt(1, s.getStudentID());

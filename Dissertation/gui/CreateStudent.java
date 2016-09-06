@@ -48,9 +48,9 @@ public class CreateStudent extends JFrame{
 		us = q.getUser();
 		sc = q.getSchool();
 		d = m.displayDegree(sc);
-		sdt = q.getAll(sc);
+		sdt = m.getAll();
 		dg = m.getList();
-		stt = q.getStudents();
+		stt = m.getStudents();
 		
 		initialize();
 	}

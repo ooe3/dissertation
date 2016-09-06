@@ -10,7 +10,9 @@ import other.CourseDegree;
 import other.CourseResult;
 import other.Student;
 import other.Users;
-
+/*
+ * The listener class for StudentMain class
+ */
 public class StudentMainListener implements ActionListener{
 	StudentMain sm;
 	Queries q = Queries.getQueries();
@@ -75,7 +77,6 @@ public class StudentMainListener implements ActionListener{
 
 		}else if(e.getActionCommand().equals("View") ){
 			ResultsFrame rf = new ResultsFrame();
-			rf.getText().setText(sq.displayResult());
 			rf.setVisible(true);
 			sm.dispose();
 		}else if(e.getActionCommand().equals("Log Out") ){
