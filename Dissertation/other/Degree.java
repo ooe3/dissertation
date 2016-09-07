@@ -3,6 +3,8 @@ public class Degree {
 	private int degreeID;
 	private String degreeName, degreeType;
 	private School sc;
+	//Degree object
+	//includes School object as a parameter
 	
 	public Degree(int id, String name, String type, School s){
 		//default

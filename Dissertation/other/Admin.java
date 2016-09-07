@@ -1,5 +1,6 @@
 package other;
-
+//Admin class that extends Users class
+//inherits methods from Users class
 import java.sql.*;
 public class Admin extends Users {
 	int adminID;

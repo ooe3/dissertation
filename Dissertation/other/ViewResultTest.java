@@ -3,7 +3,7 @@ package other;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import main.ViewResultQueries;
-
+//Test class for ViewResult methods
 public class ViewResultTest {
 
 	@Test

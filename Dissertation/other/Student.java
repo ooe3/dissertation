@@ -1,7 +1,7 @@
 package other;
 
 import java.sql.*;
-
+//Student class
 /**
  * Class which inherits Users class
  *  created to pass every student information

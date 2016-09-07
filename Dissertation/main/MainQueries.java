@@ -20,20 +20,23 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
+//class that execute queries for the Main
 public class MainQueries {
 	private Connection conn = null;
 	private PreparedStatement ps;
 
 	private static MainQueries mq;
+	//class objects created
 	Degree dg;
 	CourseDegree cd;
 	Course c;
+	//list objects created to store class objects
 	List<Degree> getDg = new ArrayList<Degree>();
 	List<Course> getCd = new ArrayList<Course>();
 	List<CourseDegree> getCdg = new ArrayList<CourseDegree>();
 	Student st;
 	List<Student> students = new ArrayList<Student>();
-	Queries q = Queries.getQueries();
+	Queries q = Queries.getQueries();//getQueries method called Queries object
 	Users us;
 	int count = 0;
 
@@ -50,6 +53,7 @@ public class MainQueries {
 	}
 
 	//return strings that contains courses available
+	//displays it in specified format
 	public String displayAvailableCourses(){
 		StringBuilder sb = new StringBuilder("");
 		String display = String.format(" %-50.50s %-10s %-10s %-10s\n", "Courses","Credit","Exam","Coursework");
@@ -73,7 +77,8 @@ public class MainQueries {
 
 		return sb.toString();
 	}
-
+	//Course object returned and
+	//stored in list containing course objects
 	public Course getCourses(School sc){
 		c = null;
 		ResultSet rs = null;
@@ -98,7 +103,8 @@ public class MainQueries {
 		return c;
 
 	}
-
+	//Degree object returned
+	//and added list containing degree objects
 	public Degree displayDegree(School sc){
 		ResultSet rs = null;
 		dg = null;
@@ -122,7 +128,8 @@ public class MainQueries {
 
 		return dg;
 	}
-
+	//adds degree 
+	//returns string if the degree exixts already
 	public String insertDegree(String name, String type, School sc){
 		String check = "";
 		int counted = 0;
@@ -152,6 +159,8 @@ public class MainQueries {
 	}
 
 	//Insert new courses into the system by admin
+	//Course details passed as parameters
+	//return string if it already exists
 	public String insertCourse(String s, int d, int d1, int d2){
 		String check = "";
 		int count = 0;
@@ -179,7 +188,7 @@ public class MainQueries {
 		}
 		return check;
 	}
-
+	//CourseDegree object created and stored in a list
 	public CourseDegree getInserted(School sc){
 		cd = null;
 		ResultSet rs = null;
@@ -264,7 +273,7 @@ public class MainQueries {
 			}
 			//if count is still 0, then the queries below can be inserted
 			if(count == 0){
-
+				//execute all queries
 				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, matric);
@@ -294,7 +303,8 @@ public class MainQueries {
 		return sb.toString();
 	}
 
-	//To insert the specific course and the degree it belongs to
+	//To insert the specific course and the degree it belongs to.
+	//return string if the degree has already been added
 	public String addCourseDegree(String course, int degree){
 		StringBuilder sb = new StringBuilder("");
 		ResultSet rs = null;
@@ -324,7 +334,8 @@ public class MainQueries {
 		}
 		return sb.toString();
 	}
-
+	//remove course from degree
+	//returns string "Error" if course has already been removed
 	public String removeCourseFromDegree(String course, int degree){
 		ResultSet rs = null;
 		StringBuilder sb = new StringBuilder("");

@@ -3,6 +3,8 @@ public class CourseResult {
 	Course cs;
 	Student st;
 	private int result;
+	//CourseResult object
+	//takes course and student objects as parameters
 	
 	public CourseResult(Course c, Student s, int res){
 		//default

@@ -10,40 +10,42 @@ import other.School;
 import other.Student;
 import other.Users;
 import controllers.*;
-
+//ViewStudents class
 public class ViewStudents extends JFrame{
+	//Objects created
 	Users us;
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
 	School sc;
+	//list containing degree
 	List<Degree> dg;
-//	List<Student> studentList;
-//	Student sdt;
 	Choice choice_1;
 	JTextArea textArea_1;
+	JScrollPane scrollPane;
 	public ViewStudents(){
+		//methods called to get info
 		us = q.getUser();
 		sc = q.getSchool();
-		
-		
+
+
 		initialize();
 	}
-	
+
 	public void initialize(){
-		
+		//set frame properties
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		setSize(1000, 800);
-
+		//JPanel object
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
-
+		//JMenuBar
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
+		//JMenu items created
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new ViewStudentsListener(this));
@@ -55,55 +57,54 @@ public class ViewStudents extends JFrame{
 		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new ViewStudentsListener(this));
+		//Add Degree
+		JMenuItem mntmAddDegree = new JMenuItem("Add Degree");
+		mntmAddDegree.setActionCommand("AddDegree");
+		mntmAddDegree.addActionListener(new ViewStudentsListener(this));
 
-		//change password menu item
-		JMenuItem mntmPassword = new JMenuItem("Change Password");
-		mntmPassword.setActionCommand("Change Password");
-		mntmPassword.addActionListener(new ViewStudentsListener(this));
-		
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new ViewStudentsListener(this));
-		
-		JMenuItem mntmRefresh = new JMenuItem("Refresh");
-		mntmRefresh.setActionCommand("Refresh");
-		mntmRefresh.addActionListener(new ViewStudentsListener(this));
-		
+
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new ViewStudentsListener(this));
-		
+
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new ViewStudentsListener(this));
-		
+		//JMenu to add menu items
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
+		admin.add(mntmAddDegree);
 		admin.add(mntmCreate);
 		admin.add(mntmView);
 		admin.add(mntmViewStudent);
-		admin.add(mntmPassword);
-		admin.add(mntmRefresh);
 		admin.add(mntmLogOut);
 		menuBar.add(admin);
-		
+
 		textArea_1 = new JTextArea();
 		textArea_1.setBounds(6, 111, 976, 607);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(q.allStudents("All"));
-		
-		
-		JScrollPane scrollPane = new JScrollPane(textArea_1);
+		textArea_1.setText(q.allStudents("All"));//method to display all students
+
+
+		scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 976, 607);
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+		   public void run() { 
+		       scrollPane.getVerticalScrollBar().setValue(0);//scroll start at the top
+		   }
+		});
 		panel.add(scrollPane, BorderLayout.CENTER);
-		
+
 		JLabel lblAllStudentDetails = new JLabel("All Student Details");
 		lblAllStudentDetails.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		lblAllStudentDetails.setBounds(6, 6, 409, 29);
 		panel.add(lblAllStudentDetails);
-		
+
 		choice_1 = new Choice();
 		choice_1.setBounds(6, 63, 315, 27);
 		choice_1.add("(select degree)");
@@ -120,7 +121,7 @@ public class ViewStudents extends JFrame{
 			public void itemStateChanged(ItemEvent ie)
 			{
 				String selected = choice_1.getSelectedItem();
-				
+
 				if(selected.equals("(select degree)")){
 					textArea_1.setText(q.allStudents("All"));
 				}else{
@@ -129,10 +130,10 @@ public class ViewStudents extends JFrame{
 			}
 		});
 		panel.add(choice_1);
-		
+
 		JLabel lblFilterStudentsBy = new JLabel("Filter students by degree");
 		lblFilterStudentsBy.setBounds(6, 41, 200, 16);
 		panel.add(lblFilterStudentsBy);
 	}
-	
+
 }

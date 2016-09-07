@@ -4,7 +4,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import main.MainQueries;
-
+//Test for the MainQueries
 public class MainQueriesTest {
 	
 	@Test

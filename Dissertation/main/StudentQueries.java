@@ -16,17 +16,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-
+/*
+ * Class the contains the main queries to be executed by the studentMain class
+ */
 public class StudentQueries {
-
+	//Connection object and PreparedStatement object
 	private Connection conn = null;
 	private PreparedStatement ps = null;
-	private Statement st = null;
-	Queries q = Queries.getQueries();
-	List<CourseResult> cr = q.getDetails();
-	List<CourseDegree> coursed = new ArrayList<CourseDegree>();
+	Queries q = Queries.getQueries();//getQueries method called on Queries object
+	List<CourseResult> cr = q.getDetails();//getDetails method called on List object
+	List<CourseDegree> coursed = new ArrayList<CourseDegree>();//new ArrayList created
 	CourseDegree cd;
 
+	//static to prevent class from being instantiated
 	private static StudentQueries sq;
 
 	private StudentQueries(){
@@ -43,18 +45,19 @@ public class StudentQueries {
 	//Insert course selected by student
 	public String insertChoice(String s, int d){
 		StringBuilder sb = new StringBuilder("");
-		//int total = 0;
 		int total = q.getCourseDetails(s).getCredit();
 		try{
+			//retrieve list containing courseresult objects
 			for(int i = 0;i<cr.size();i++){
 				int credit = cr.get(i).getCourseName().getCredit();
 				total+=credit;
 			}
 
-
+			//check if total greater than 180
 			if(total>180){
 				sb.append("Full");
 			}else {
+				//String sql executed
 				String sql = "INSERT INTO COURSERESULT (COURSE, STUDENTID) VALUES (?,?)";
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, s);
@@ -73,7 +76,7 @@ public class StudentQueries {
 	//String s supplies the lastname of the student
 	public String displayStudentCourses(){
 		StringBuilder sb = new StringBuilder("");
-
+		//retrieve list containing courseresult objects
 		for(int i = 0;i<cr.size();i++){
 			String t1 = String.format(" %-40.40s %-10d\n", 
 					cr.get(i).getCourseName().getCourse(), cr.get(i).getCourseName().getCredit());
@@ -90,7 +93,8 @@ public class StudentQueries {
 
 		return sb.toString();
 	}
-
+	//method to match score to band marks
+	//returns the band mark
 	public String getScore(int id){
 		String s = "";
 		String[] score = {"A1","A2","A3","A4","A5","B1","B2",
@@ -110,18 +114,20 @@ public class StudentQueries {
 	public CourseDegree displayCourses(Student s){
 		ResultSet rs = null;
 		try{
+			//String query executed
 			String query = "SELECT * FROM COURSEDEGREE WHERE COURSE_NAME NOT "
-				+ "IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = ?) AND DEGREE_ID = ?";
-			
+					+ "IN (SELECT COURSE FROM COURSERESULT WHERE STUDENTID = ?) AND DEGREE_ID = ?";
+
 			ps = conn.prepareStatement(query);
 			ps.setInt(1, s.getStudentID());
 			ps.setInt(2, s.getDegree().getDegree().getDegreeID());
 			rs = ps.executeQuery();
+			//retrieve data from the database
 			while(rs.next()){
-				String course = rs.getString("COURSE_NAME");
-				int degree = rs.getInt("DEGREE_ID");
-				cd = new CourseDegree(q.getCourseDetails(course), q.getInfo(degree));
-				coursed.add(cd);
+				String course = rs.getString("COURSE_NAME");//store in string course
+				int degree = rs.getInt("DEGREE_ID");//store in degree id
+				cd = new CourseDegree(q.getCourseDetails(course), q.getInfo(degree));//Course object created
+				coursed.add(cd);//Course added to the list
 			}
 			rs.close();
 			ps.close();
@@ -140,6 +146,7 @@ public class StudentQueries {
 	public void removeChoice(String s, int d){
 		//ResultSet rs = null;
 		try{
+			//sql that executes delete query
 			String sql = "DELETE FROM COURSERESULT WHERE COURSE = ? AND STUDENTID = ?";
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, s);
@@ -153,30 +160,36 @@ public class StudentQueries {
 
 	}
 
+	//method to return string in specified format
 	public String displayResult(){
 		StringBuilder sb = new StringBuilder("");
+		//int and double variables
 		int totalcred = 0, totalpoints = 0;
 		double average = 0;
 		int count = 0;
 		String display = String.format("%-50.50s %-10s %-10s %-10s\n", "Course", "Credit", "Mark", "Total");
 		sb.append(display);
 		sb.append("\n");
+		//check list for courses
+		//if 0, means no courses selected
 		if(cr.size() !=0){
+			//retrieve info from courseresult list
 			for(int i = 0; i<cr.size();i++){
+				//pass data into the respective variables
 				int res = cr.get(i).getResult();
 				int credit = cr.get(i).getCourseName().getCredit();
 				String course = cr.get(i).getCourseName().getCourse();
 				String mark = getScore(res);
-				int total = res*credit;
+				int total = res*credit;//perform multiplication on res and credit
 				String p;
-				if(res ==0){
-					count+=1;
+				if(res ==0){//if res == 0, display an empty string
+					count+=1;//increase count by 1
 					mark = "";
 					p = "";
 				}else{
-					p = ""+total+"";
-					totalpoints+=total;
-					totalcred+=credit;
+					p = ""+total+"";//return the total
+					totalpoints+=total;//calculate total pints
+					totalcred+=credit;//calculate total credits
 				}
 				String s = String.format("%-50.50s %-10d %-10s %-10s\n", course, credit, mark, p);
 				sb.append(s);
@@ -184,14 +197,14 @@ public class StudentQueries {
 
 			}
 			if(count>0){
-				sb.append("* Not all results have been entered *\n");
+				sb.append("* Not all results have been entered *\n");//add this string if count greater than zero
 			}
 
 		}else{
-			return "No courses selected";
+			return "No courses selected";//return string
 		}
 
-
+		//calculate the overall if all results are available
 		if(count != cr.size()){
 			average+=((double)totalpoints/totalcred);
 			String s2 = String.format(" %65s:%5d\n", "Total", totalpoints);

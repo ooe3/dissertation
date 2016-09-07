@@ -91,7 +91,7 @@ public class CreateListener implements ActionListener{
 						cs.textField3().setText("");
 						cs.textField4().setText("");
 						cs.passwordField().setText("");
-					}else if(check.equals("Exists")){
+					}else if(check.equals("Exists")){//check if matric exists
 						JOptionPane.showMessageDialog(null, "Matric number exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						cs.textField().setText(name);
 						cs.textField1().setText(lname);
@@ -99,7 +99,7 @@ public class CreateListener implements ActionListener{
 						cs.textField3().setText(email);
 						cs.textField4().setText("");
 						cs.passwordField().setText("");
-					}else if(check.equals("Already")){
+					}else if(check.equals("Already")){//check if email exists
 						JOptionPane.showMessageDialog(null, "Email exists", "Error message", JOptionPane.ERROR_MESSAGE);
 						cs.textField().setText(name);
 						cs.textField1().setText(lname);
@@ -111,6 +111,7 @@ public class CreateListener implements ActionListener{
 					else{ 
 						JOptionPane.showMessageDialog(null, "Student added", "Window",
 								JOptionPane.INFORMATION_MESSAGE);
+						//clear objects from the list
 						stt.removeAll(stt);
 						dg.removeAll(dg);
 						CreateStudent cst = new CreateStudent();//New CreateStudent object created to get updated info
@@ -120,7 +121,7 @@ public class CreateListener implements ActionListener{
 				}
 			}
 		}else if(e.getActionCommand().equals("Generate")){//to generate unique matric number for student
-			String s1 = cs.textField1().getText().trim();
+			String s1 = cs.textField1().getText().trim();//removal of white spaces
 			if(q.checkLastName(s1).equals("Exists")){//check for special characters
 				JOptionPane.showMessageDialog(null, "Last name contains special characters", "Error message", JOptionPane.ERROR_MESSAGE);
 			}else{
@@ -168,6 +169,11 @@ public class CreateListener implements ActionListener{
 			cs.dispose();
 		}else if(e.getActionCommand().equals("Add Student")){
 			cs.setVisible(true);
+		}else if(e.getActionCommand().equals("AddDegree")){
+			dg.removeAll(dg);
+			AddDegree adg = new AddDegree();
+			adg.setVisible(true);
+			cs.dispose();
 		}else{
 			stt.removeAll(stt);
 			ViewStudents vs = new ViewStudents();

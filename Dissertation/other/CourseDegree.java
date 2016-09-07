@@ -1,6 +1,7 @@
 package other;
 
-
+//CourseDegree class
+//Takes course object and degree object as parameters
 public class CourseDegree {
 	private Course cs;
 	private Degree dg;

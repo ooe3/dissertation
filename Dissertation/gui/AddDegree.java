@@ -19,14 +19,16 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import controllers.*;
-
+//Add Degree frame
 public class AddDegree extends JFrame{
+	//Class objects created
 	Users us;
 	School sc;
+	//methods called in Queries and MAinQueries
 	Queries q = Queries.getQueries();
 	MainQueries m = MainQueries.getMain();
-	Student sdt;
-	Choice choice;
+	Student sdt;//Student object
+	Choice choice;//Choice object
 	List<School> getSchool;
 	private JTextField textField;
 	private JTextField textField_1;
@@ -36,22 +38,23 @@ public class AddDegree extends JFrame{
 	private JTextField textField_5;
 	String selected;
 	public AddDegree(){
-		us = q.getUser();
-		sc = q.getSchool();
+		us = q.getUser();//getUser method called
+		sc = q.getSchool();//getSchool method called
 		initialize();
 	}
 
 	public void initialize(){
+		//set the properties of the frame
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		getContentPane().setLayout(new CardLayout(0, 0));
 		setSize(800, 500);
-
+		//JPanel object
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
-
+		//JLable objects
 		JLabel lblFirstName = new JLabel("Degree Name*");
 		lblFirstName.setBounds(37, 98, 92, 16);
 		panel.add(lblFirstName);
@@ -80,14 +83,14 @@ public class AddDegree extends JFrame{
 		textField_1.setBounds(158, 132, 359, 26);
 		panel.add(textField_1);
 		textField_1.setColumns(10);
-
+		//JMenuBar
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
+		//JMenu item objects
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new AddDegreeListener(this));
-
+		//Add result
 		JMenuItem mntmResults = new JMenuItem("Add Result");
 		mntmResults.setActionCommand("Add Result");
 		mntmResults.addActionListener(new AddDegreeListener(this));
@@ -95,23 +98,23 @@ public class AddDegree extends JFrame{
 		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new AddDegreeListener(this));
-
+		//View General results
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new AddDegreeListener(this));
-
+		//Add student
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new AddDegreeListener(this));
-
+		//View Students
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new AddDegreeListener(this));
-
+		//Add Degree
 		JMenuItem mntmAddDegree = new JMenuItem("Add Degree");
 		mntmAddDegree.setActionCommand("AddD");
 		mntmAddDegree.addActionListener(new AddDegreeListener(this));
-
+		//JMenu object and menu items added
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);

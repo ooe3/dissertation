@@ -9,7 +9,7 @@ import main.*;
 import other.Course;
 import other.Degree;
 import other.Student;
-
+//ViewStudentsListener class
 public class ViewStudentsListener implements ActionListener{
 	ViewStudents vs;
 	List<Degree> dg;//Create a list containing degree objects
@@ -29,10 +29,12 @@ public class ViewStudentsListener implements ActionListener{
 	// TODO Auto-generated method stub
 		if(e.getActionCommand().equals("Add") ){
 			stt.removeAll(stt);
+			//AdminAdd object created and displayed
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			vs.dispose();
 		}else if(e.getActionCommand().equals("LogOut")){
+			//StartGui object created and displayed
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			vs.dispose();
@@ -40,6 +42,7 @@ public class ViewStudentsListener implements ActionListener{
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
+			//ViewResult object created and displayed
 			ViewResult vr = new ViewResult();
 			vr.setVisible(true);
 			vs.dispose();
@@ -47,19 +50,19 @@ public class ViewStudentsListener implements ActionListener{
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
+			//Main object created and displayed
 			Main mn = new Main();
 			mn.setVisible(true);
 			vs.dispose();
-		}else if(e.getActionCommand().equals("Refresh")){
-			stt.removeAll(stt);
-			ViewStudents m = new ViewStudents();
-			m.setVisible(true);
+		}else if(e.getActionCommand().equals("AddDegree")){
+			dg.removeAll(dg);
+			AddDegree adg = new AddDegree();
+			adg.setVisible(true);
 			vs.dispose();
-		}else if(e.getActionCommand().equals("Change Password")){
-			
 		}
 		else{
 			dg.removeAll(dg);
+			//CreateStudent object created and displayed
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			vs.dispose();

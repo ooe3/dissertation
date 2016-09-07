@@ -26,32 +26,34 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
+/*
+ * StudentMain class displayed as a JFrame
+ */
 public class StudentMain extends JFrame{
-	Users us;
-	Queries q = Queries.getQueries();
-	StudentQueries s = StudentQueries.getMain();
-	String select, selected, selected1;
-	Choice choice, choice_4;
-	StudentDegree sd;
-	List<CourseResult> cr;
-	List<CourseDegree> cd;
-	CourseResult crt;
-	CourseDegree cde;
-	JScrollPane scrollPane;
+	Users us;//Users object created
+	Queries q = Queries.getQueries();//Queries object to access all methods in Queries class
+	StudentQueries s = StudentQueries.getMain();//StudentQueries object created to access all methods in the StudentQueries class
+	String select, selected, selected1;//String variables created
+	Choice choice, choice_4;//Choice objects
+	StudentDegree sd;//StudentDegree objects
+	List<CourseResult> cr;//list object containing CourseResult object
+	List<CourseDegree> cd;//list object containing CourseDegree object
+	CourseResult crt;//CourseResult object
+	CourseDegree cde;//CourseDegree object
+	JScrollPane scrollPane;//JScrollPane object
 	public StudentMain(){
-		us = q.getUser();
-		sd = q.getStudentDegree();
-		crt = q.getDetails((Student)us);
-		cde = s.displayCourses((Student)us);
-		cr = q.getDetails();
-		cd = s.getCD();
-		initialize();
+		us = q.getUser();//getUser method called to get current user
+		sd = q.getStudentDegree();//getStudentDegree method called to get the students degree
+		crt = q.getDetails((Student)us);//getDetails to show students details
+		cde = s.displayCourses((Student)us);//displayCourses to return the courses the student can choose from.
+		cr = q.getDetails();//getDetails method called
+		cd = s.getCD();//getCd method called
+		initialize();//initialize method called
 
 	}
 
 	public void initialize(){
-
+		//set the properties of the JFrame
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,7 +66,7 @@ public class StudentMain extends JFrame{
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
+		//LogOut menu item
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("Log Out");
 		mntmLogOut.addActionListener(new StudentMainListener(this));
@@ -74,32 +76,34 @@ public class StudentMain extends JFrame{
 		mntmStudentResults.setActionCommand("View");
 		mntmStudentResults.addActionListener(new StudentMainListener(this));
 
-		//Student home
+		//Student home menu item
 		JMenuItem mntmStudentHome = new JMenuItem("Main Page");
 		mntmStudentHome.setActionCommand("Home Menu");
 		mntmStudentHome.addActionListener(new StudentMainListener(this));
 
+		//JMenu created and displays users firstname and lastname
 
 		JMenu mnMain = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
+		//add the menuitems to the menu
 		mnMain.add(mntmStudentHome);
 		mnMain.add(mntmStudentResults);
 		mnMain.add(mntmLogOut);
 		menuBar.add(mnMain);
-
+		//JTextArea object created and properties set
 		JTextArea textArea = new JTextArea();
 		textArea.setBounds(16, 95, 978, 339);
 		textArea.setFont(new Font("Courier", Font.PLAIN, 14));
 		textArea.setEditable(false);
-		textArea.setText(s.displayStudentCourses());
-		scrollPane = new JScrollPane(textArea);
+		textArea.setText(s.displayStudentCourses());//displayStudentCourses method called to display the string returned
+		scrollPane = new JScrollPane(textArea);//textArea passed as the parameter to make use of the scroll functions
 		scrollPane.setBounds(16, 95, 978, 339);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-		   public void run() { 
-		       scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
-		   }
+			public void run() { 
+				scrollPane.getVerticalScrollBar().setValue(0);//scroll start at the top
+			}
 		});
 		panel.add(scrollPane, BorderLayout.CENTER);
-
+		//JLabel objects created
 		JLabel label = new JLabel();
 		label.setBounds(219, 58, 276, 16);
 		label.setText(us.getEmail());
@@ -112,7 +116,7 @@ public class StudentMain extends JFrame{
 		label_1.setBounds(175, 6, 792, 28);
 		label_1.setText(sd.getDegree().getDegreeType()+" "+sd.getDegree().getDegreeName());
 		panel.add(label_1);
-
+		//Choice objects created
 		choice = new Choice();
 		choice.setBounds(22, 495, 264, 27);
 		choice.add("(select course)");
@@ -122,12 +126,12 @@ public class StudentMain extends JFrame{
 		choice_4.setBounds(22, 623, 281, 27);
 		choice_4.add("(select course)");
 		panel.add(choice_4);
-		
+		//loop to get list objects and to the choice
 		for(int i = 0; i<cr.size();i++){
 
 			choice_4.add(cr.get(i).getCourseName().getCourse());
 		}
-
+		//itemlistener for choice
 		choice_4.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
@@ -135,9 +139,11 @@ public class StudentMain extends JFrame{
 			}
 
 		});
+		//loop to get list objects and to the choice
 		for(int i = 0; i<cd.size();i++){
 			choice.add(cd.get(i).getName().getCourse());
 		}
+		//itemlistener for choice
 		choice.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{

@@ -33,18 +33,20 @@ import javax.swing.JScrollBar;
 import java.awt.Button;
 import java.awt.Label;
 import java.awt.Panel;
-
+//Main class to display frame
 public class Main extends JFrame{
 	Users us;
-	Queries q = Queries.getQueries();
-	MainQueries m = MainQueries.getMain();
-	StudentQueries sq = StudentQueries.getMain();
-	AddQueries aq = AddQueries.getMain();
+	Queries q = Queries.getQueries();//getQueries method called on Queries object
+	MainQueries m = MainQueries.getMain();//getMain method called on MainQueris object
+	StudentQueries sq = StudentQueries.getMain();//getMain method called on StudentQueries object
+	AddQueries aq = AddQueries.getMain();//getMain method called on AddQueries object
 	School sc;
+	//list objects created
 	List<Degree> dg;
 	List<Course> cdg;
 	List<CourseDegree> cr;
 	List<CourseResult> courseResult;
+	//class objects created
 	Degree d;
 	Course cd;
 	CourseDegree courseDegree;
@@ -58,12 +60,14 @@ public class Main extends JFrame{
 	int count = 0;
 	int id = 0;
 	public Main(){
-		us = q.getUser();
-		sc = q.getSchool();
-		d = m.displayDegree(sc);
-		cd = m.getCourses(sc);
-		courseDegree = m.getInserted(sc);
-		courseDegreeList = m.getCourseDegreeList();
+
+		us = q.getUser();//getUser method called on user
+		sc = q.getSchool();//getSchool method called on school
+		d = m.displayDegree(sc);//displayDegree method called on degree
+		cd = m.getCourses(sc);//getCourse method called on CourseDegree
+		courseDegree = m.getInserted(sc);//getInserted method called on the list
+		courseDegreeList = m.getCourseDegreeList();//getCourseDegreeList called on the listt
+		//methods called to return list
 		dg = m.getList();
 		cdg = m.getCourseList();
 		courseResult = q.getDetails();
@@ -72,7 +76,7 @@ public class Main extends JFrame{
 	}
 
 	public void initialize(){
-
+		//set Jframe properties
 		setTitle("University Record System");
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -82,14 +86,14 @@ public class Main extends JFrame{
 		JPanel panel = new JPanel();
 		getContentPane().add(panel, "name_1756148928342669");
 		panel.setLayout(null);
-
+		//JMenuBar object
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-
+		//LogOut menu item
 		JMenuItem mntmLogOut = new JMenuItem("Log Out");
 		mntmLogOut.setActionCommand("LogOut");
 		mntmLogOut.addActionListener(new MainListener(this));
-
+		//Add result menu item
 		JMenuItem mntmResults = new JMenuItem("Add Result");
 		mntmResults.setActionCommand("Add");
 		mntmResults.addActionListener(new MainListener(this));
@@ -97,24 +101,25 @@ public class Main extends JFrame{
 		JMenuItem mntmAdminHome = new JMenuItem("Main Page");
 		mntmAdminHome.setActionCommand("Home Menu");
 		mntmAdminHome.addActionListener(new MainListener(this));
-		
+		//add degree menu item
 		JMenuItem mntmAddDegree = new JMenuItem("Add Degree");
 		mntmAddDegree.setActionCommand("AddD");
 		mntmAddDegree.addActionListener(new MainListener(this));
-
+		//view general results menu item
 		JMenuItem mntmView = new JMenuItem("View General Results");
 		mntmView.setActionCommand("View");
 		mntmView.addActionListener(new MainListener(this));
-
+		//add student menu item
 		JMenuItem mntmCreate = new JMenuItem("Add Student");
 		mntmCreate.setActionCommand("Add Student");
 		mntmCreate.addActionListener(new MainListener(this));
-
+		//viewStudent menu item
 		JMenuItem mntmViewStudent = new JMenuItem("View Students");
 		mntmViewStudent.setActionCommand("ViewS");
 		mntmViewStudent.addActionListener(new MainListener(this));
-
+		//JMenu item
 		JMenu admin = new JMenu(us.getFirstName() + " " + us.getLastName()+" | Home");
+		//Menu items added to menu
 		admin.add(mntmAdminHome);
 		admin.add(mntmResults);
 		admin.add(mntmAddDegree);
@@ -128,6 +133,7 @@ public class Main extends JFrame{
 		label.setFont(new Font("Lucida Grande", Font.PLAIN, 24));
 		label.setBounds(177, 16, 400, 28);
 		String school = sc.getName();
+		//set the label depending on the school
 		if(school.equals("Dental") || school.equals("Adam Smith Business")){
 			label.setText(school+" School");
 		}else{
@@ -135,7 +141,7 @@ public class Main extends JFrame{
 		}
 		panel.add(label);
 
-		JLabel label_3 = new JLabel(us.getEmail());
+		JLabel label_3 = new JLabel(us.getEmail());//display users email
 		label_3.setBounds(227, 83, 276, 16);
 		panel.add(label_3);
 
@@ -143,8 +149,7 @@ public class Main extends JFrame{
 		textArea_1.setBounds(6, 111, 722, 335);
 		textArea_1.setFont(new Font("Courier", Font.PLAIN, 14));//set font type for text in text area
 		textArea_1.setEditable(false);
-		textArea_1.setText(m.displayAvailableCourses());
-		//panel.add(textArea_1, BorderLayout.CENTER);
+		textArea_1.setText(m.displayAvailableCourses());//displayAvailableCourses method called
 
 		JLabel lblAddACourse = new JLabel("Create a course");
 		lblAddACourse.setBounds(18, 458, 130, 16);
@@ -181,7 +186,7 @@ public class Main extends JFrame{
 		textField_8.setBounds(177, 571, 259, 26);
 		panel.add(textField_8);
 		textField_8.setColumns(10);
-
+		//Choice objects
 		choice_1 = new Choice();
 		choice_1.setBounds(177, 603, 259, 27);
 		choice_1.add("(select degree)");
@@ -193,7 +198,7 @@ public class Main extends JFrame{
 		choice_4 = new Choice();
 		choice_4.setBounds(807, 342, 348, 27);
 		choice_4.add("(select degree)");
-		
+		//item listener
 		choice_4.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
@@ -201,8 +206,9 @@ public class Main extends JFrame{
 			}
 		});
 		panel.add(choice_4);
-
+		//retrieve objects and pass through the three choice selections
 		for(int i = 0; i<dg.size();i++){
+			//retrieve degree names and type
 			choice_3.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 			choice_1.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
 			choice_4.add(dg.get(i).getDegreeName()+"("+dg.get(i).getDegreeType()+")");
@@ -256,12 +262,12 @@ public class Main extends JFrame{
 		JLabel lblDegree = new JLabel("Degree");
 		lblDegree.setBounds(740, 174, 61, 16);
 		panel.add(lblDegree);
-
+		//JScroll Pane to use scroll feature in textArea
 		scrollPane = new JScrollPane(textArea_1);
 		scrollPane.setBounds(6, 111, 722, 335);
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() { 
-				scrollPane.getVerticalScrollBar().setValue(0);//makes the scroll start at the top of the text
+				scrollPane.getVerticalScrollBar().setValue(0);//start scroll at the top
 			}
 		});
 		panel.add(scrollPane, BorderLayout.CENTER);
@@ -287,7 +293,9 @@ public class Main extends JFrame{
 		choice = new Choice();
 		choice.setBounds(807, 131, 348, 27);
 		choice.add("(select course)");
+		//list retrieved and objects added to all choice selections
 		for(int i = 0;i<cdg.size();i++){
+			//retrieve the course names
 			choice_5.add(cdg.get(i).getCourse());
 			choice.add(cdg.get(i).getCourse());
 			choice_2.add(cdg.get(i).getCourse());
@@ -348,43 +356,51 @@ public class Main extends JFrame{
 		choice_6.setBounds(740, 509, 393, 27);
 		choice_6.setVisible(true);
 		choice_6.add("(select student)");
-		
+
 		choice_7 = new Choice();
 		choice_7.setBounds(740, 558, 393, 27);
 		choice_7.setVisible(false);
 		panel.add(choice_7);
+		//getAll method called Student object
 		Student sdt = q.getAll(sc);
+		//Student object retrieved from the list
 		List<Student> stt = q.getStudents();
 		for(int i = 0;i<stt.size();i++){
-			choice_6.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());
+			choice_6.add(stt.get(i).getFirstName()+" "+stt.get(i).getLastName());//retrieve firstname and lastname
 		}
 		choice_6.addItemListener(new ItemListener(){
 			public void itemStateChanged(ItemEvent ie)
 			{
 				selectedStudent = choice_6.getSelectedItem();
 				if(!selectedStudent.equals("(select student)")){
-					
+					//execute methods when not equal to the string above
+
 					if(ie.getStateChange() == ItemEvent.SELECTED){
 						count+=1;
 					}
-
+					//removeAll selections if a new option selected
 					if(count > 1){
 						choice_7.removeAll();
 					}
+
+					//set components to visible
 					btnEnrollStudent.setVisible(true);
 					lblNewLabel.setVisible(true);
 					choice_7.setVisible(true);
 					choice_7.add("(select course)");
+					//split selected after whitespace
 					String[] tokens_5 = selectedStudent.split(" ");
-					Student st = aq.getSelected(tokens_5[0], tokens_5[1]);
-					id=st.getStudentID();
+					Student st = aq.getSelected(tokens_5[0], tokens_5[1]);//called getSelected on students with tokens as parameter
+					id=st.getStudentID();//get ID of person selected
+					//remove all objects in the list
 					cr = sq.getCD();
 					cr.removeAll(cr);
 					courseResult.removeAll(courseResult);
+					//New objects created
 					CourseResult crt = q.getDetails(st);
 					CourseDegree cde = sq.displayCourses(st);
 					for(int i = 0; i<cr.size();i++){
-						choice_7.add(cr.get(i).getName().getCourse());
+						choice_7.add(cr.get(i).getName().getCourse());//retrieve coursename
 					}
 					choice_7.addItemListener(new ItemListener(){
 						public void itemStateChanged(ItemEvent ie)
@@ -397,7 +413,7 @@ public class Main extends JFrame{
 		});
 		panel.add(choice_6);
 
-		
+
 
 		btnEnrollStudent = new JButton("Enroll Student");
 		btnEnrollStudent.setBounds(740, 599, 117, 29);
@@ -405,7 +421,7 @@ public class Main extends JFrame{
 		btnEnrollStudent.addActionListener(new MainListener(this));
 		btnEnrollStudent.setActionCommand("Enroll");
 		panel.add(btnEnrollStudent);
-		
+
 		lblNewLabel = new JLabel("Select the course below");
 		lblNewLabel.setBounds(740, 543, 188, 16);
 		lblNewLabel.setVisible(false);
@@ -481,15 +497,15 @@ public class Main extends JFrame{
 	public String selectedCourse(){
 		return selectedCourse;
 	}
-	
+
 	public int getID(){
 		return id;
 	}
-	
+
 	public Choice choiceStudent(){
 		return choice_6;
 	}
-	
+
 	public Choice choiceCourse(){
 		return choice_7;
 	}

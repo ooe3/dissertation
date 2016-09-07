@@ -23,14 +23,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+//Queries class
 public class Queries {
 	//	DatabaseConnection dc;//Databaseconnection object
 	private Connection conn = null;
 	private PreparedStatement ps;
+
+	//Lists created to store class objects
 	List<CourseResult> courseDetails = new ArrayList<CourseResult>();
 	List<Student> students = new ArrayList<Student>();
 	List<Admin> administrator = new ArrayList<Admin>();
 	List<School> schools = new ArrayList<School>();
+	//Class objects creatd
 	Users us;
 	Admin ad;
 	Degree dg;
@@ -39,7 +43,6 @@ public class Queries {
 	Course cs;
 	CourseResult cr;
 	Student st;
-	Statement stt = null;
 	int count = 0;
 	private static Queries q;
 	/**
@@ -50,9 +53,9 @@ public class Queries {
 
 	//provides the access to the database
 	private Queries(){
-		
-					conn = DatabaseConnection.getConnection();
-				
+
+		conn = DatabaseConnection.getConnection();
+
 	}
 	//
 
@@ -93,7 +96,7 @@ public class Queries {
 					rs = ps.executeQuery();
 
 					while(rs.next()){
-						
+
 						int studentID = rs.getInt("STUDENTID");
 						String studentf = rs.getString("FIRSTNAME");
 						String studentl = rs.getString("LASTNAME");
@@ -146,8 +149,8 @@ public class Queries {
 			String degree =students.get(i).getDegree().getDegree().getDegreeName()+"("+students.get(i).getDegree().getDegree().getDegreeType()+")";
 			String email = students.get(i).getEmail();
 			if(degree.equals(s)){//if a particular degree has been selected
-			String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
-			sb.append(area+"\n");
+				String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
+				sb.append(area+"\n");
 			}else if(s.equals("All")){//if no particular degree has been selected
 				String area = String.format(" %-40.40s %-20s %-50.50s %-10s\n", name, matric, degree, email);
 				sb.append(area+"\n");
@@ -202,7 +205,7 @@ public class Queries {
 			rs = ps.executeQuery();
 
 			while(rs.next()){
-				
+
 				int userid = rs.getInt("USERID");
 				int adminID = rs.getInt("ADMINID");
 				String adminf = rs.getString("FIRSTNAME");
@@ -223,18 +226,21 @@ public class Queries {
 
 		return ad;
 	}
-	
+	//method to create an admin
+	//string is returned if the admin is in the system
 	public String insertAdmin(String name, String lname, String email, String address, String matric, String school){
 		StringBuilder sb = new StringBuilder("");
 		int count = 0;
 		int check = 0;
 		final String type = "Admin";
 		try{
+			//retrieve the elements from the administrator list
 			for(int i = 0;i<administrator.size();i++){
 				String fname = administrator.get(i).getFirstName().toLowerCase();
 				String lstname = administrator.get(i).getLastName().toLowerCase();
 				String mat = administrator.get(i).getMatric().toLowerCase();
 				String mail = administrator.get(i).getEmail().toLowerCase();
+				//validation checks
 				if((name.toLowerCase().equals(fname) && lstname.toLowerCase().equals(lname))|| matric.toLowerCase().equals(mat)){
 					count+=1;
 					sb.append("Error");
@@ -247,27 +253,29 @@ public class Queries {
 					sb.append("Already");
 				}
 			}
+			//retrieve elements from the list
 			for(int i = 0; i<schools.size();i++){
 				String schl = schools.get(i).getName();
 				if(school.equals(schl)){
-					check+=1;
+					check+=1;//increase check by one
 				}
 			}
 			if(count == 0){
-
+				//execute the queries
 				String sql = "INSERT INTO USER (MATRICNO, PASSWORD, USERTYPE) VALUES (?,?,?)";
 				ps = conn.prepareStatement(sql);
 				ps.setString(1, matric);
 				ps.setString(2, matric);
 				ps.setString(3, type);
 				ps.executeUpdate();
+				//if the school is in the database, skip this step
 				if(check == 0){
-				String sql2 = "INSERT INTO SCHOOL (SCHOOLNAME) VALUES (?)";
-				ps = conn.prepareStatement(sql2);
-				ps.setString(1, school);
-				ps.executeUpdate();
+					String sql2 = "INSERT INTO SCHOOL (SCHOOLNAME) VALUES (?)";
+					ps = conn.prepareStatement(sql2);
+					ps.setString(1, school);
+					ps.executeUpdate();
 				}
-				
+
 				String sql1 = "INSERT INTO ADMIN  (FIRSTNAME, LASTNAME, EMAIL, USERID, SCHOOLREF) VALUES (?,?,?,(SELECT ID FROM USER WHERE MATRICNO = ?),(SELECT SCHOOLNAME FROM SCHOOL WHERE SCHOOLNAME = ?))";
 				ps = conn.prepareStatement(sql1);
 				ps.setString(1, name);
@@ -277,7 +285,7 @@ public class Queries {
 				ps.setString(5, school);
 				ps.executeUpdate();
 
-				
+
 			}
 			ps.close();
 		}catch(Exception e){
@@ -285,8 +293,9 @@ public class Queries {
 		}
 		return sb.toString();
 	}
-	
 
+	//method to generate the unique username
+	//uses random to generate the 6 digits
 	public String getUnique(){
 		StringBuilder sb = new StringBuilder("");
 		final String initial = "2";
@@ -297,7 +306,8 @@ public class Queries {
 		sb.append(val);
 		return sb.toString();
 	}
-	//
+	//method to check string for characters not in the pattern
+	// \\s means a space
 	public String checkString(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z\\s-]*");
@@ -308,7 +318,7 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//method to check string for characters not in the pattern
 	public String checkFirstName(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z\\-]*");
@@ -319,7 +329,7 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//method to check string for characters not in the pattern
 	public String checkLastName(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z\\-]*");
@@ -330,7 +340,8 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//method to check string for characters not in the pattern
+	//has to have a comma e.g London, GB
 	public String checkAddress(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9\\s._-]{2,}+\\,[A-Za-z0-9\\s.,]{2,}");
@@ -341,7 +352,8 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//method to check the email
+	//has to have the @ sign
 	public String checkEmail(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[A-Za-z.]{2,9}");//Tank Tutorial 19.."Java Video Tutorial 19". Newthinktank.com. N.p., 2012. Web. 1 Sept. 2016.
@@ -352,7 +364,8 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//method to check the username
+	//accepets 0-9 for the first 7 characters and alphabet for the last
 	public String checkUsername(String s){
 		String s1 = "";
 		Pattern pattern = Pattern.compile("[0-9]{7,7}+[a-z]{1,1}");//Tank Tutorial 19.."Java Video Tutorial 19". Newthinktank.com. N.p., 2012. Web. 1 Sept. 2016.
@@ -363,7 +376,7 @@ public class Queries {
 		}
 		return s1;
 	}
-
+	//School object returned based on s
 	public School getSchoolInfo(String s){
 		sc = null;
 		ResultSet rs = null;
@@ -383,7 +396,7 @@ public class Queries {
 		}
 		return sc;
 	}
-	
+	//School object returned to get all schools
 	public School getList(){
 		School s = null;
 		ResultSet rs = null;
@@ -403,7 +416,7 @@ public class Queries {
 		}
 		return s;
 	}
-
+	//Degree object returned based on the ID
 	public Degree getInfo(int ID){
 		dg = null;
 		ResultSet rs = null;
@@ -430,6 +443,7 @@ public class Queries {
 	public Degree getDegree(){
 		return dg;
 	}
+	//StudentDegree object returned
 
 	public StudentDegree getSDInfo(Student s){
 		sd = null;
@@ -442,10 +456,11 @@ public class Queries {
 			while(rs.next()){
 				String result = rs.getString("RESULT");
 				int id = rs.getInt("DEGREE");
+
 				if(us==null){
-					sd = new StudentDegree((Student) us,getInfo(id),result);
+					sd = new StudentDegree((Student) us,getInfo(id),result);//if User object using method, execute this method
 				}else{
-					sd = new StudentDegree(st,getInfo(id),result);
+					sd = new StudentDegree(st,getInfo(id),result);//if a student object
 				}
 			}
 			rs.close();
@@ -455,7 +470,7 @@ public class Queries {
 		}
 		return sd;
 	}
-
+	//CourseResult object returned 
 	public CourseResult getDetails(Student s){
 		cr = null;
 		ResultSet rs = null;
@@ -469,11 +484,11 @@ public class Queries {
 				String name = rs.getString("COURSE");
 				int result = rs.getInt("RESULT");
 				if(us == null){
-				cr = new CourseResult(getCourseDetails(name),(Student)us,result);
+					cr = new CourseResult(getCourseDetails(name),(Student)us,result);//if its User object, execute this method
 				}else{
-					cr = new CourseResult(getCourseDetails(name),st,result);
+					cr = new CourseResult(getCourseDetails(name),st,result);//otherwise
 				}
-				courseDetails.add(cr);
+				courseDetails.add(cr);//add to the list
 
 			}
 
@@ -485,7 +500,7 @@ public class Queries {
 		}
 		return cr;
 	}
-
+	//Course object returned based on the string course
 	public Course getCourseDetails(String course){
 		ResultSet rs = null;
 		cs = null;
@@ -534,7 +549,7 @@ public class Queries {
 	public List<Student> getStudents(){
 		return students;
 	}
-
+	//method to close connection
 	public void closeConnection(){
 		if (conn != null) {
 			try {
@@ -543,11 +558,11 @@ public class Queries {
 		}
 
 	}
-	
+
 	public List<Admin> getAdmin(){
 		return administrator;
 	}
-	
+
 	public List<School> getSchools(){
 		return schools;
 	}

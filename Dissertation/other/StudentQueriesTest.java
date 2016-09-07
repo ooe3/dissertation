@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import main.Queries;
 import main.StudentQueries;
-
+//Test class for StudentQueries
 public class StudentQueriesTest {
 
 	@Test

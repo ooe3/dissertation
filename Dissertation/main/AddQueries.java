@@ -196,7 +196,7 @@ public class AddQueries {
 				int credit = rs.getInt("CREDIT");
 				int exam = rs.getInt("EXAM");
 				int cw = rs.getInt("COURSEWORK");
-				cs = new Course(coursename, credit, exam, cw);
+				cs = new Course(coursename, credit, exam, cw);//create new object
 			}
 			rs.close();
 			ps.close();
@@ -219,8 +219,8 @@ public class AddQueries {
 				String name = rs.getString("COURSE");
 				int result = rs.getInt("RESULT");
 
-				crt = new CourseResult(getCourseDetails(name),sdt,result);
-				getCourses.add(crt);
+				crt = new CourseResult(getCourseDetails(name),sdt,result);//create new object
+				getCourses.add(crt);//add object to list
 
 			}
 			rs.close();

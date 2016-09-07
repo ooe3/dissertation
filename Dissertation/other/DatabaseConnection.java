@@ -3,7 +3,9 @@ package other;
 import javax.swing.*;
 import java.sql.*;
 
-
+/*
+ * database connection class to initiate connection
+ */
 public class DatabaseConnection{
 	private static Connection conn = null;
 

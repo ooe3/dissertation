@@ -1,5 +1,6 @@
 package other;
-
+//StudentDegree class
+//Takes StudentObject and Degree Object
 
 public class StudentDegree {
 	private String result;

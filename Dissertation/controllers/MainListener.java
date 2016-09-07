@@ -95,17 +95,19 @@ public class MainListener implements ActionListener{
 			}else{
 				//confirmation dialog box to confirm admin selection
 				int show = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+mn.choice5().getSelectedItem()+"?");//dialog box to ask
-				if(show == 0){
+				if(show == 0){//0 means yes
 					m.removeCourse(mn.getSelected2());
 					JOptionPane.showMessageDialog(null, "Removal successful", "Window",
 							JOptionPane.INFORMATION_MESSAGE);
 					courseDegreeList.removeAll(courseDegreeList);
+					//objects removed from the lists
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
 					stt.removeAll(stt);
+					//Main Object created and displayed
 					Main m = new Main();
 					m.setVisible(true);
-					mn.dispose();
+					mn.dispose();//current disposed
 				}else{
 					mn.setVisible(true);
 				}
@@ -114,15 +116,16 @@ public class MainListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Add") ){
 			courseDegreeList.removeAll(courseDegreeList);
 			stt.removeAll(stt);
+			//AdminAdd object created and displayed
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
-			mn.dispose();
+			mn.dispose();//current disposed
 		}else if(e.getActionCommand().equals("LogOut")){
 			courseDegreeList.removeAll(courseDegreeList);
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
-			q.closeConnection();
+			//StartGUI object created and displayed
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			mn.dispose();
@@ -131,6 +134,7 @@ public class MainListener implements ActionListener{
 			cdg.removeAll(cdg);
 			dg.removeAll(dg);
 			stt.removeAll(stt);
+			//ViewResult object created and displayed
 			ViewResult vr = new ViewResult();
 			vr.setVisible(true);
 			mn.dispose();
@@ -159,12 +163,14 @@ public class MainListener implements ActionListener{
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
 					stt.removeAll(stt);
+					//Main object created and displayed
 					Main m = new Main();
 					m.setVisible(true);
 					mn.dispose();
 				}
 			}
 		}else if(e.getActionCommand().equals("AddD")){
+			//AddDegree object created and displayed
 			AddDegree adg = new AddDegree();
 			adg.setVisible(true);
 			mn.dispose();
@@ -172,24 +178,28 @@ public class MainListener implements ActionListener{
 		else if(e.getActionCommand().equals("Add Student")){
 			courseDegreeList.removeAll(courseDegreeList);
 			dg.removeAll(dg);
+			//CreateStudent object created and displayed
 			CreateStudent c = new CreateStudent();
 			c.setVisible(true);
 			mn.dispose();
 		}else if(e.getActionCommand().equals("Remove")){
+			//check if a selection has been made
 			if(mn.choice4().getSelectedItem().equals("(select degree)") || mn.choice2().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No course or degree selected", "Window",
 						JOptionPane.ERROR_MESSAGE);
 			}else{
+				//confirm dialog to provide yes, no, or cancel
 				int show = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete "+mn.choice2().getSelectedItem()+" from "+mn.choice4().getSelectedItem()+"?");//dialog box to ask
 				if(show == 0){
-					String[] tokens = mn.getSelected6().split("\\(");
+					String[] tokens = mn.getSelected6().split("\\(");//split the selected to get the degreename
 					for(int i = 0; i<dg.size();i++){
 						if((dg.get(i).getDegreeName().equals(tokens[0]))&&(dg.get(i).getDegreeType().equals(tokens[1].substring(0, tokens[1].length()-1)))){
-							id = dg.get(i).getDegreeID();
+							id = dg.get(i).getDegreeID();//get the id of the selected degree
 						}
 					}
+					//call the removeCourseFromDegree method
 					String check = m.removeCourseFromDegree(mn.selected7(), id);
-					if(check.equals("Error")){
+					if(check.equals("Error")){//string returns "Error"
 						JOptionPane.showMessageDialog(null, "Course already removed from this degree", "Window",
 								JOptionPane.ERROR_MESSAGE);
 					}else{
@@ -201,6 +211,7 @@ public class MainListener implements ActionListener{
 					dg.removeAll(dg);
 					cdg.removeAll(cdg);
 					stt.removeAll(stt);
+					//Main class object created
 					Main m = new Main();
 					m.setVisible(true);
 					mn.dispose();
@@ -208,12 +219,12 @@ public class MainListener implements ActionListener{
 					mn.setVisible(true);
 				}
 			}
-		}else if(e.getActionCommand().equals("Enroll")){
+		}else if(e.getActionCommand().equals("Enroll")){//perform enroll option
 			if(mn.choiceStudent().getSelectedItem().equals("(select student)") || mn.choiceCourse().getSelectedItem().equals("(select course)")){
 				JOptionPane.showMessageDialog(null, "No student or course  selected", "Window",
-						JOptionPane.ERROR_MESSAGE);
+						JOptionPane.ERROR_MESSAGE);//error message
 			}else{
-				if(sq.insertChoice(mn.selectedCourse(), mn.getID()).equals("Full")){
+				if(sq.insertChoice(mn.selectedCourse(), mn.getID()).equals("Full")){//check for string returned
 					JOptionPane.showMessageDialog(null, "Maximum credits selected for this student.", "Window",
 							JOptionPane.ERROR_MESSAGE);
 				}else {
@@ -225,6 +236,7 @@ public class MainListener implements ActionListener{
 				cdg.removeAll(cdg);
 				dg.removeAll(dg);
 				stt.removeAll(stt);
+				//Main Object created and displayed
 				Main m = new Main();
 				m.setVisible(true);
 				mn.dispose();
@@ -232,6 +244,7 @@ public class MainListener implements ActionListener{
 		}
 		else{
 			courseDegreeList.removeAll(courseDegreeList);
+			//ViewStudent object created an displayed
 			ViewStudents vs = new ViewStudents();
 			vs.setVisible(true);
 			mn.dispose();

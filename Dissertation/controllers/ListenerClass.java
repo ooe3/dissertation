@@ -14,8 +14,8 @@ import other.Users;
 public class ListenerClass implements ActionListener{
 	StartGUI sg;//StartGUI object
 	Queries q = Queries.getQueries();//Queries object to access all methods in Queries class
-	Users us;
-	String matricno, password;
+	Users us;//Users objects
+	String matricno, password;//Variables matricno, password
 	public ListenerClass(StartGUI sg){
 		this.sg = sg;//Initialize the StartGUI object
 	}
@@ -41,12 +41,14 @@ public class ListenerClass implements ActionListener{
 					}
 				}else {
 					JOptionPane.showMessageDialog(null, "Incorrect username or password", "Incorrect",
-							JOptionPane.ERROR_MESSAGE);
+							JOptionPane.ERROR_MESSAGE);//Error message to be displayed
 				}
+			//setText method to empty string called on the textField and PasswordField
 			sg.matric().setText("");
 			sg.pass().setText("");
 
 		}else{
+			//CreateAdmin object created and displayed
 			CreateAdmin ca = new CreateAdmin();
 			ca.setVisible(true);
 		}

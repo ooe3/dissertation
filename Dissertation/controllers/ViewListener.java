@@ -46,17 +46,6 @@ public class ViewListener implements ActionListener{
 			StartGUI sg = new StartGUI();
 			sg.setVisible(true);
 			vr.dispose();
-		}else if(e.getActionCommand().equals("Refresh")){//listener for the refresh menu item
-			/*
-			 * New ViewResult frame created and shown
-			 * current viewResult frame disposed
-			 */
-			cdg.removeAll(cdg);
-			dg.removeAll(dg);
-			stt.removeAll(stt);
-			ViewResult vrt = new ViewResult();
-			vrt.setVisible(true);
-			vr.dispose();
 		}else if(e.getActionCommand().equals("Home Menu")){//listener for the home menu menu item
 			/*
 			 * New Main frame created and shown
@@ -74,17 +63,25 @@ public class ViewListener implements ActionListener{
 		}else if(e.getActionCommand().equals("Add")){//listener for the add result menu item
 			stt.removeAll(stt);
 			getCourses.removeAll(getCourses);
+			//AdminAdd object created
 			AdminAdd ad = new AdminAdd();
 			ad.setVisible(true);
 			vr.dispose();
 		}else if(e.getActionCommand().equals("Add Student")){
 			dg.removeAll(dg);
 			getInfo.removeAll(getInfo);
+			//CreateStudnt object created
 			CreateStudent cs = new CreateStudent();
 			cs.setVisible(true);
 			vr.dispose();
+		}else if(e.getActionCommand().equals("AddDegree")){
+			dg.removeAll(dg);
+			//AddDEgree object created
+			AddDegree adg = new AddDegree();
+			adg.setVisible(true);
+			vr.dispose();
 		}else{
-			stt.removeAll(stt);
+			//Viewstudents object created
 			ViewStudents vs = new ViewStudents();
 			vs.setVisible(true);
 			vr.dispose();

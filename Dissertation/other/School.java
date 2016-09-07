@@ -1,6 +1,6 @@
 package other;
 
-
+//School class 
 public class School {
 	private String schoolName;
 	
